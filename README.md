@@ -94,16 +94,7 @@ If you prefer to run the application without Docker, follow these steps:
 - Open your web browser and navigate to `http://127.0.0.1:5000` (or `http://localhost:5000` if using Docker).
 - Follow the instructions on the web interface to upload files and manage them.
 
-## Contributing
-If you want to contribute to this project, please follow these steps:
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature-branch`).
-3. Make your changes and commit them (`git commit -m "Description of changes"`).
-4. Push to the branch (`git push origin feature-branch`).
-5. Create a pull request.
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Acknowledgments
-- Mention any resources, libraries, or individuals that helped you in the development of this project.
