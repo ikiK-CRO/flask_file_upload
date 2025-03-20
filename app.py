@@ -124,5 +124,5 @@ def get_file(file_uuid):
     return render_template('get_file.html', file_uuid=file_uuid)
 
 if __name__ == '__main__':
-    # Use host '0.0.0.0' to make the container accessible externally
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
