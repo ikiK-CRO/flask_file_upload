@@ -1,5 +1,38 @@
 # Dokumentacija za Sustav za Sigurno Dijeljenje Datoteka
 
+## Korišteni programski jezici i tehnologije
+
+### Programski jezici
+- **Python**: Glavni backend jezik za serversku logiku i obradu podataka
+- **JavaScript**: Klijentska validacija, AJAX uploadanje datoteka i interaktivnost sučelja
+- **HTML**: Struktura web stranica
+- **CSS**: Stiliziranje web stranica
+
+### Web tehnologije
+- **Flask**: Python web framework za izradu aplikacije
+- **Jinja2**: Sustav predložaka za generiranje HTML-a
+- **SQLAlchemy**: ORM (Object-Relational Mapping) za rad s bazom podataka
+- **Flask-Bcrypt**: Hashiranje i validacija lozinki
+- **Bootstrap**: Frontend framework za responzivni dizajn
+- **AJAX**: Asinkrono uploadanje datoteka bez ponovnog učitavanja stranice
+
+### Baze podataka
+- **SQLite**: Lokalna baza podataka za razvoj i demonstraciju
+- **PostgreSQL**: Produkcijska baza podataka za Heroku deployment
+
+### Infrastruktura i deployment
+- **Docker**: Kontejnerizacija aplikacije za jednostavno pokretanje i deployment
+- **Heroku**: Cloud platforma za hosting aplikacije (LIVE DEMO: https://uploadfile-47843913ee68.herokuapp.com/)
+
+### Sigurnost i validacija
+- **Werkzeug**: Utility biblioteka za sigurnosne funkcije
+- **Regularne ekspresije**: Validacija i sanitizacija korisničkog unosa
+- **MIME validacija**: Provjera stvarnog tipa uploadanih datoteka
+
+### Praćenje i dijagnostika
+- **Python logging**: Strukturirano logiranje aktivnosti
+- **RotatingFileHandler**: Rotiranje log datoteka za optimalno korištenje prostora
+
 ## Sadržaj
 
 1. [Tehnička dokumentacija](#tehnička-dokumentacija)
