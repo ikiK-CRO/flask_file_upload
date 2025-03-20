@@ -95,7 +95,8 @@ def upload_file():
 
             # Return the download URL to the user
             file_url = url_for('get_file', file_uuid=file_uuid, _external=True)
-            return f"File uploaded successfully! Access it at: <a href='{file_url}'>{file_url}</a>"
+            success_message = f"File uploaded successfully! Access it at: <a href='{file_url}'>{file_url}</a>"
+            return render_template('index.html', success_message=success_message)
         else:
             flash("File and password are required!")
     return render_template('index.html')
