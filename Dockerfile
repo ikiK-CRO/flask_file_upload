@@ -8,14 +8,16 @@ ENV PYTHONUNBUFFERED 1
 # Set the working directory
 WORKDIR /app
 
-# Install build dependencies (if needed) and pip dependencies
+# Copy the requirements file into the container
 COPY requirements.txt /app/
-RUN pip install --upgrade pip && pip install -r requirements.txt
 
-# Copy the application code
+# Install pip dependencies globally
+RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
+
+# Copy the rest of the application code into the container
 COPY . /app/
 
-# Expose port 5000 for Flask
+# Expose port 5000 for Flask (container-side)
 EXPOSE 5000
 
 # Run the Flask application
