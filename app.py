@@ -1,7 +1,7 @@
 import os
 import uuid
 import re
-from flask import Flask, request, redirect, url_for, render_template, send_from_directory, flash
+from flask import Flask, request, redirect, url_for, render_template, send_from_directory, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from werkzeug.utils import secure_filename
@@ -65,6 +65,8 @@ def upload_file():
         if uploaded_file and password:
             # File Size Validation: Limit file size to 10MB
             if len(uploaded_file.read()) > 10 * 1024 * 1024:
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return jsonify({'success': False, 'message': 'File size exceeds the 10MB limit!'})
                 flash("File size exceeds the 10MB limit!")
                 return redirect(request.url)
             uploaded_file.seek(0)  # Reset file pointer after size check
@@ -72,6 +74,8 @@ def upload_file():
             # Input Validation and Sanitization
             filename = secure_filename(uploaded_file.filename)
             if filename == '':
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return jsonify({'success': False, 'message': 'Invalid file name!'})
                 flash("Invalid file name!")
                 return redirect(request.url)
 
@@ -88,6 +92,8 @@ def upload_file():
 
             # Check if password_hash is valid
             if not password_hash:
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return jsonify({'success': False, 'message': 'Password hashing failed!'})
                 flash("Password hashing failed!")
                 return redirect(request.url)
 
@@ -109,14 +115,26 @@ def upload_file():
                 db.session.commit()
             except Exception as e:
                 print(f"Error committing to database: {e}")  # Debug statement
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return jsonify({'success': False, 'message': 'An error occurred while saving the file.'})
                 flash("An error occurred while saving the file.")
                 return redirect(request.url)
 
             # Return the download URL to the user
             file_url = url_for('get_file', file_uuid=file_uuid, _external=True)
             success_message = f"File uploaded successfully! Access it at: <a href='{file_url}'>{file_url}</a>"
+            
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return jsonify({
+                    'success': True,
+                    'message': success_message,
+                    'file_url': file_url
+                })
+            
             return render_template('index.html', success_message=success_message)
         else:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return jsonify({'success': False, 'message': 'File and password are required!'})
             flash("File and password are required!")
     return render_template('index.html')
 

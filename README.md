@@ -1,6 +1,6 @@
 # Dockerized Flask File Upload App
 
-HEROKU-DOCKER DEMO: https://uploadfile-47843913ee68.herokuapp.com/
+HEROKU-DOCKER LIVE DEMO: https://uploadfile-47843913ee68.herokuapp.com/
 
 ## Task
 Create a web application that on the homepage allows users to upload a file and enter a password. The application should store the file, the file name, the password, and the UUID4 of the file which will be used for accessing the file.
