@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    environment:
+      # PostgreSQL connection string: "postgresql://user:password@host:port/database"
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/fileupload_db
+    volumes:
+      - .:/app
+      # Persist uploaded files using a named volume
+      - uploads_data:/app/uploads
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: fileupload_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+  uploads_data:

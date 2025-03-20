@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Download File</title>
+  </head>
+  <body>
+    <h1>Enter Password to Download File</h1>
+    <form method="post">
+      <label for="password">Password:</label>
+      <input type="password" name="password" required>
+      <button type="submit">Download</button>
+    </form>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+  </body>
+</html>
