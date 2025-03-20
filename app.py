@@ -1,5 +1,6 @@
 import os
 import uuid
+import re
 from flask import Flask, request, redirect, url_for, render_template, send_from_directory, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
@@ -11,8 +12,16 @@ app.secret_key = 'your-secret-key'  # Change this in production
 # Initialize Flask-Bcrypt
 bcrypt = Bcrypt(app)
 
-# Database configuration: use environment variable for flexibility.
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql://postgres:postgres@db:5432/fileupload_db')
+# Modify your database configuration
+database_url = os.environ.get('DATABASE_URL')
+if database_url:
+    # Fix for Heroku PostgreSQL URL format (if needed)
+    database_url = re.sub(r'^postgres:', 'postgresql:', database_url)
+else:
+    # Fallback for local development
+    database_url = 'postgresql://postgres:postgres@db:5432/fileupload_db'
+
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Define upload folder – using an absolute path within the container.
@@ -32,7 +41,11 @@ class UploadedFile(db.Model):
 
 # Create database tables (if they don't exist)
 with app.app_context():
-    db.create_all()
+    try:
+        db.create_all()
+        print("Database tables created successfully")
+    except Exception as e:
+        print(f"Error creating database tables: {e}")
 
 
 
@@ -125,4 +138,4 @@ def get_file(file_uuid):
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=port, debug=False)  # Set debug=False for production
