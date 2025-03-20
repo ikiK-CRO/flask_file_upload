@@ -34,6 +34,12 @@ class UploadedFile(db.Model):
 with app.app_context():
     db.create_all()
 
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return '', 204  # No content
+
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
