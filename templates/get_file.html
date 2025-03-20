@@ -11,7 +11,10 @@
     <div class="container my-5">
       <!-- Navigation Menu -->
       <nav class="mb-4">
-        <a href="{{ url_for('upload_file') }}" class="btn btn-primary">Back to Home</a>
+        <div class="d-flex">
+          <a href="{{ url_for('upload_file') }}" class="btn btn-primary me-2">Home</a>
+          <a href="{{ url_for('view_logs') }}" class="btn btn-secondary">View Logs</a>
+        </div>
       </nav>
       <div class="card shadow-sm">
         <div class="card-header bg-success text-white">

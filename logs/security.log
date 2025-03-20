@@ -1,0 +1,146 @@
+2025-03-20 19:47:13,451 - ERROR - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Exception on /logs [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.9/site-packages/sqlalchemy/engine/base.py", line 1964, in _exec_single_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.9/site-packages/sqlalchemy/engine/default.py", line 942, in do_execute
+    cursor.execute(statement, parameters)
+psycopg2.errors.UndefinedColumn: column uploaded_file.upload_date does not exist
+LINE 1: ...uploaded_file.password AS uploaded_file_password, uploaded_f...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.9/site-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.9/site-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.9/site-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.9/site-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/app/app.py", line 374, in view_logs
+    files = UploadedFile.query.order_by(UploadedFile.upload_date.desc()).all()
+  File "/usr/local/lib/python3.9/site-packages/sqlalchemy/orm/query.py", line 2704, in all
+    return self._iter().all()  # type: ignore
+  File "/usr/local/lib/python3.9/site-packages/sqlalchemy/orm/query.py", line 2858, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+  File "/usr/local/lib/python3.9/site-packages/sqlalchemy/orm/session.py", line 2365, in execute
+    return self._execute_internal(
+  File "/usr/local/lib/python3.9/site-packages/sqlalchemy/orm/session.py", line 2251, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+  File "/usr/local/lib/python3.9/site-packages/sqlalchemy/orm/context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+  File "/usr/local/lib/python3.9/site-packages/sqlalchemy/engine/base.py", line 1416, in execute
+    return meth(
+  File "/usr/local/lib/python3.9/site-packages/sqlalchemy/sql/elements.py", line 523, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.9/site-packages/sqlalchemy/engine/base.py", line 1638, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.9/site-packages/sqlalchemy/engine/base.py", line 1843, in _execute_context
+    return self._exec_single_context(
+  File "/usr/local/lib/python3.9/site-packages/sqlalchemy/engine/base.py", line 1983, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.9/site-packages/sqlalchemy/engine/base.py", line 2352, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/usr/local/lib/python3.9/site-packages/sqlalchemy/engine/base.py", line 1964, in _exec_single_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.9/site-packages/sqlalchemy/engine/default.py", line 942, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.UndefinedColumn) column uploaded_file.upload_date does not exist
+LINE 1: ...uploaded_file.password AS uploaded_file_password, uploaded_f...
+                                                             ^
+
+[SQL: SELECT uploaded_file.id AS uploaded_file_id, uploaded_file.file_name AS uploaded_file_file_name, uploaded_file.file_path AS uploaded_file_file_path, uploaded_file.password_hash AS uploaded_file_password_hash, uploaded_file.password AS uploaded_file_password, uploaded_file.upload_date AS uploaded_file_upload_date, uploaded_file.download_count AS uploaded_file_download_count 
+FROM uploaded_file ORDER BY uploaded_file.upload_date DESC]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-03-20 19:47:13,466 - ERROR - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - 500 error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.
+2025-03-20 19:47:25,316 - ERROR - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Database error: (psycopg2.errors.UndefinedColumn) column "upload_date" of relation "uploaded_file" does not exist
+LINE 1: ...d, file_name, file_path, password_hash, password, upload_dat...
+                                                             ^
+
+[SQL: INSERT INTO uploaded_file (id, file_name, file_path, password_hash, password, upload_date, download_count) VALUES (%(id)s, %(file_name)s, %(file_path)s, %(password_hash)s, %(password)s, %(upload_date)s, %(download_count)s)]
+[parameters: {'id': '1bf2b8dd-118b-4819-a286-5a4fb722efeb', 'file_name': 'bus_trst.png', 'file_path': '/app/uploads/1bf2b8dd-118b-4819-a286-5a4fb722efeb_bus_trst.png', 'password_hash': '$2b$12$F7XgSflVeeOC1u4O3sKnjuvMXKbLK3g9QMRsYr5REe6JOU1JDl3fW', 'password': '2', 'upload_date': datetime.datetime(2025, 3, 20, 19, 47, 25, 314471), 'download_count': 0}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-03-20 19:47:40,802 - ERROR - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Exception on /logs [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.9/site-packages/sqlalchemy/engine/base.py", line 1964, in _exec_single_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.9/site-packages/sqlalchemy/engine/default.py", line 942, in do_execute
+    cursor.execute(statement, parameters)
+psycopg2.errors.UndefinedColumn: column uploaded_file.upload_date does not exist
+LINE 1: ...uploaded_file.password AS uploaded_file_password, uploaded_f...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.9/site-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.9/site-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.9/site-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.9/site-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/app/app.py", line 374, in view_logs
+    files = UploadedFile.query.order_by(UploadedFile.upload_date.desc()).all()
+  File "/usr/local/lib/python3.9/site-packages/sqlalchemy/orm/query.py", line 2704, in all
+    return self._iter().all()  # type: ignore
+  File "/usr/local/lib/python3.9/site-packages/sqlalchemy/orm/query.py", line 2858, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+  File "/usr/local/lib/python3.9/site-packages/sqlalchemy/orm/session.py", line 2365, in execute
+    return self._execute_internal(
+  File "/usr/local/lib/python3.9/site-packages/sqlalchemy/orm/session.py", line 2251, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+  File "/usr/local/lib/python3.9/site-packages/sqlalchemy/orm/context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+  File "/usr/local/lib/python3.9/site-packages/sqlalchemy/engine/base.py", line 1416, in execute
+    return meth(
+  File "/usr/local/lib/python3.9/site-packages/sqlalchemy/sql/elements.py", line 523, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.9/site-packages/sqlalchemy/engine/base.py", line 1638, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.9/site-packages/sqlalchemy/engine/base.py", line 1843, in _execute_context
+    return self._exec_single_context(
+  File "/usr/local/lib/python3.9/site-packages/sqlalchemy/engine/base.py", line 1983, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.9/site-packages/sqlalchemy/engine/base.py", line 2352, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/usr/local/lib/python3.9/site-packages/sqlalchemy/engine/base.py", line 1964, in _exec_single_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.9/site-packages/sqlalchemy/engine/default.py", line 942, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.UndefinedColumn) column uploaded_file.upload_date does not exist
+LINE 1: ...uploaded_file.password AS uploaded_file_password, uploaded_f...
+                                                             ^
+
+[SQL: SELECT uploaded_file.id AS uploaded_file_id, uploaded_file.file_name AS uploaded_file_file_name, uploaded_file.file_path AS uploaded_file_file_path, uploaded_file.password_hash AS uploaded_file_password_hash, uploaded_file.password AS uploaded_file_password, uploaded_file.upload_date AS uploaded_file_upload_date, uploaded_file.download_count AS uploaded_file_download_count 
+FROM uploaded_file ORDER BY uploaded_file.upload_date DESC]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-03-20 19:47:40,806 - ERROR - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - 500 error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.
+2025-03-20 19:53:04,133 - ERROR - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Error in logs view: (psycopg2.errors.UndefinedColumn) column uploaded_file.upload_date does not exist
+LINE 1: ...uploaded_file.password AS uploaded_file_password, uploaded_f...
+                                                             ^
+
+[SQL: SELECT uploaded_file.id AS uploaded_file_id, uploaded_file.file_name AS uploaded_file_file_name, uploaded_file.file_path AS uploaded_file_file_path, uploaded_file.password_hash AS uploaded_file_password_hash, uploaded_file.password AS uploaded_file_password, uploaded_file.upload_date AS uploaded_file_upload_date, uploaded_file.download_count AS uploaded_file_download_count 
+FROM uploaded_file ORDER BY uploaded_file.upload_date DESC]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-03-20 19:53:47,039 - ERROR - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Database error: (psycopg2.errors.UndefinedColumn) column "upload_date" of relation "uploaded_file" does not exist
+LINE 1: ...d, file_name, file_path, password_hash, password, upload_dat...
+                                                             ^
+
+[SQL: INSERT INTO uploaded_file (id, file_name, file_path, password_hash, password, upload_date, download_count) VALUES (%(id)s, %(file_name)s, %(file_path)s, %(password_hash)s, %(password)s, %(upload_date)s, %(download_count)s)]
+[parameters: {'id': '696cde68-d252-4e08-98c8-1c3a5c2c6d99', 'file_name': 'helpers.txt', 'file_path': '/app/uploads/696cde68-d252-4e08-98c8-1c3a5c2c6d99_helpers.txt', 'password_hash': '$2b$12$pNPBbjblKJ4Ry92sn5eI2e1TDGzufd/EPx31KZwrLXY5vwXDyH5TW', 'password': '2', 'upload_date': datetime.datetime(2025, 3, 20, 19, 53, 47, 37852), 'download_count': 0}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-03-20 19:54:02,315 - ERROR - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Error in logs view: (psycopg2.errors.UndefinedColumn) column uploaded_file.upload_date does not exist
+LINE 1: ...uploaded_file.password AS uploaded_file_password, uploaded_f...
+                                                             ^
+
+[SQL: SELECT uploaded_file.id AS uploaded_file_id, uploaded_file.file_name AS uploaded_file_file_name, uploaded_file.file_path AS uploaded_file_file_path, uploaded_file.password_hash AS uploaded_file_password_hash, uploaded_file.password AS uploaded_file_password, uploaded_file.upload_date AS uploaded_file_upload_date, uploaded_file.download_count AS uploaded_file_download_count 
+FROM uploaded_file ORDER BY uploaded_file.upload_date DESC]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-03-20 19:56:18,012 - WARNING - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Incorrect password attempt for file: 6d6fcb34-364a-41e3-b441-c9fe4eb552f4
+2025-03-20 19:56:43,631 - WARNING - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Incorrect password attempt for file: 6d6fcb34-364a-41e3-b441-c9fe4eb552f4
