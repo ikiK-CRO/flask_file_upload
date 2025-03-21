@@ -11,10 +11,16 @@ from flask_bcrypt import Bcrypt
 from werkzeug.utils import secure_filename
 import mimetypes
 from flask_babel import Babel, _
+from urllib.parse import quote
 
 from flask_cors import CORS
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+CORS(app, resources={r"/*": {
+    "origins": "*",
+    "methods": ["GET", "POST", "OPTIONS"],
+    "allow_headers": ["Content-Type", "Content-Disposition", "Authorization"],
+    "expose_headers": ["Content-Disposition", "Content-Type", "Content-Length"]
+}})  # Enable CORS for all routes
 app.secret_key = 'your-secret-key'  # Change this in production
 
 # Configure logging
@@ -257,7 +263,20 @@ def get_file(file_uuid):
             app.logger.info(f"File download successful: {file_uuid} - {file_record.file_name}")
             
             try:
-                return send_from_directory(directory, stored_file, as_attachment=True, download_name=file_record.file_name)
+                response = send_from_directory(directory, stored_file, as_attachment=True, download_name=file_record.file_name)
+                
+                # Add headers for cross-browser compatibility, especially for Chrome
+                response.headers["Content-Disposition"] = f"attachment; filename=\"{file_record.file_name}\"; filename*=UTF-8''{quote(file_record.file_name)}"
+                response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+                response.headers["Pragma"] = "no-cache"
+                response.headers["Expires"] = "0"
+                # Cross-origin headers
+                response.headers["Access-Control-Allow-Origin"] = "*"
+                response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+                response.headers["Access-Control-Allow-Headers"] = "Content-Type, Content-Disposition"
+                response.headers["Cross-Origin-Resource-Policy"] = "cross-origin"
+                
+                return response
             except Exception as e:
                 app.logger.error(f"File send error: {str(e)} - Path: {file_record.file_path}")
                 return jsonify({'success': False, 'message': _("Error downloading file")}), 500
@@ -446,7 +465,22 @@ def download_file_direct(file_uuid):
     try:
         directory, stored_file = os.path.split(file_record.file_path)
         app.logger.info(f"Direct file download: {file_uuid} - {file_record.file_name}")
-        return send_from_directory(directory, stored_file, as_attachment=True, download_name=file_record.file_name)
+        
+        # Get the file response
+        response = send_from_directory(directory, stored_file, as_attachment=True, download_name=file_record.file_name)
+        
+        # Add headers for cross-browser compatibility, especially for Chrome
+        response.headers["Content-Disposition"] = f"attachment; filename=\"{file_record.file_name}\"; filename*=UTF-8''{quote(file_record.file_name)}"
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+        # Cross-origin headers
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Methods"] = "GET, OPTIONS"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type, Content-Disposition"
+        response.headers["Cross-Origin-Resource-Policy"] = "cross-origin"
+        
+        return response
     except Exception as e:
         app.logger.error(f"Error during direct file download: {str(e)} for file {file_uuid}")
         return "Error downloading file", 500
