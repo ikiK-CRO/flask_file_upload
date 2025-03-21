@@ -13,6 +13,7 @@
 - **Jinja2**: Sustav predložaka za generiranje HTML-a
 - **SQLAlchemy**: ORM (Object-Relational Mapping) za rad s bazom podataka
 - **Flask-Bcrypt**: Hashiranje i validacija lozinki
+- **Flask-Babel**: Podrška za internacionalizaciju i lokalizaciju
 - **Bootstrap**: Frontend framework za responzivni dizajn
 - **AJAX**: Asinkrono uploadanje datoteka bez ponovnog učitavanja stranice
 
@@ -171,6 +172,40 @@ Implementirana je posebna stranica `/logs` koja omogućava pregled:
 - Logova uspješnih uploada
 - Logova uspješnih downloada
 
+### Podrška za višejezičnost
+
+Aplikacija implementira internacionalizaciju i lokalizaciju koristeći Flask-Babel za pružanje višejezičnog korisničkog sučelja:
+
+#### Podržani jezici
+- **Hrvatski (hr)**: Primarni jezik
+- **Engleski (en)**: Sekundarni jezik s potpunim prijevodom
+
+#### Detalji implementacije
+1. **Integracija Flask-Babel**:
+   - Konfiguracija u `babel.cfg` za izvlačenje dijelova teksta za prijevod
+   - Detekcija jezika iz postavki preglednika i korisničkog odabira
+   - Trajno pamćenje odabranog jezika korištenjem kolačića preglednika
+
+2. **Datoteke prijevoda**:
+   - Strukturirane kao `translations/<jezični_kod>/LC_MESSAGES/messages.po` 
+   - Kompilirane `.mo` datoteke za učinkovito prevođenje tijekom izvršavanja
+   - Potpuna pokrivenost svih korisničkih tekstova
+
+3. **Promjena jezika**:
+   - Izbornik za odabir jezika u gornjem desnom kutu svake stranice
+   - Trenutna promjena jezika bez ponovnog učitavanja stranice
+   - Vizualna indikacija trenutno odabranog jezika
+
+4. **Mehanizam rezervnog jezika**:
+   - Vraćanje na zadani jezik (hrvatski) kada prijevod nije dostupan
+   - Robusno upravljanje rubnim slučajevima prijevoda
+
+#### Proces prevođenja
+1. Izvlačenje tekstova za prijevod pomoću `pybabel extract -F babel.cfg -o messages.pot .`
+2. Inicijalizacija datoteke prijevoda pomoću `pybabel init -i messages.pot -d translations -l <jezični_kod>`
+3. Ažuriranje datoteke prijevoda pomoću `pybabel update -i messages.pot -d translations`
+4. Kompilacija prijevoda pomoću `pybabel compile -d translations`
+
 ### Shema baze podataka
 
 Za pohranu metapodataka o datotekama koristi se SQLAlchemy ORM s modelom `UploadedFile`:
@@ -216,6 +251,13 @@ Za pohranu metapodataka o datotekama koristi se SQLAlchemy ORM s modelom `Upload
     - Čitanje i parsiranje log datoteka
     - Prikaz tablice s podacima i logovima
 
+#### Promjena jezika
+
+1. U gornjem desnom kutu svake stranice nalaze se dugmad za odabir jezika (HR, EN)
+2. Kliknite na željeni jezik kako biste promijenili jezik sučelja
+3. Odabrani jezik bit će zapamćen za buduće posjete aplikaciji
+4. Svi elementi korisničkog sučelja bit će prikazani na odabranom jeziku
+
 ### Upravljanje pogreškama
 
 Aplikacija ima implementirano sveobuhvatno upravljanje greškama:
@@ -237,6 +279,14 @@ Aplikacija ima implementirano sveobuhvatno upravljanje greškama:
    - Upravljanje greškama baze podataka
    - Upravljanje greškama datotečnog sustava
    - Logiranje detalja grešaka
+
+#### Greška pri promjeni jezika
+
+- **Problem**: "Jezik se ne mijenja kada kliknem na dugme za odabir jezika."
+- **Rješenje**: 
+  - Provjerite jesu li kolačići (cookies) omogućeni u vašem pregledniku.
+  - Pokušajte očistiti cache i kolačiće preglednika.
+  - Osigurajte da se stranica u potpunosti ponovno učitava nakon promjene jezika.
 
 ### Tehnički zahtjevi
 

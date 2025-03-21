@@ -13,6 +13,7 @@
 - **Jinja2**: Template system for generating HTML
 - **SQLAlchemy**: ORM (Object-Relational Mapping) for database operations
 - **Flask-Bcrypt**: Password hashing and validation
+- **Flask-Babel**: Internationalization and localization support
 - **Bootstrap**: Frontend framework for responsive design
 - **AJAX**: Asynchronous file uploads without page reload
 
@@ -166,10 +167,44 @@ The logging system is implemented using Python's `logging` module with the goal 
 
 #### Log Viewing
 
-A dedicated `/logs` page is implemented to allow viewing of:
-- Table of all uploaded files
-- Successful upload logs
-- Successful download logs
+1. Open the logs page (`/logs`)
+2. View the table with data about uploaded files
+3. Use tabs to view upload and download logs
+4. Use the search field to filter logs
+
+### Multilingual Support
+
+The application implements internationalization and localization using Flask-Babel to provide a multilingual user interface:
+
+#### Supported Languages
+- **English (en)**: Default language
+- **Croatian (hr)**: Complete translation of all user interface elements
+
+#### Implementation Details
+1. **Flask-Babel Integration**:
+   - Configuration in `babel.cfg` for extracting translatable strings
+   - Language detection from browser preferences and user selection
+   - Persistence of language preference using browser cookies
+
+2. **Translation Files**:
+   - Structured as `translations/<language_code>/LC_MESSAGES/messages.po` 
+   - Compiled `.mo` files for efficient runtime translation
+   - Full coverage of all user-facing strings
+
+3. **Language Switching**:
+   - Language selector in the top-right corner of every page
+   - Immediate language change without page refresh
+   - Visual indication of currently selected language
+
+4. **Fallback Mechanism**:
+   - Falls back to default language (English) when translation is unavailable
+   - Robust handling of translation edge cases
+
+#### Translation Workflow
+1. String extraction via `pybabel extract -F babel.cfg -o messages.pot .`
+2. Translation initialization via `pybabel init -i messages.pot -d translations -l <language_code>`
+3. Translation file updates via `pybabel update -i messages.pot -d translations`
+4. Compilation via `pybabel compile -d translations`
 
 ### Database Schema
 
@@ -360,4 +395,12 @@ The application has comprehensive error handling implemented:
 - **Problem**: "File not found" when trying to download
 - **Solution**: 
   - Check if you've entered the correct download URL.
-  - If the file has been deleted, it will no longer be available for download. 
+  - If the file has been deleted, it will no longer be available for download.
+
+#### Language Selection Not Working
+
+- **Problem**: "Language isn't changing when I click on the language button."
+- **Solution**: 
+  - Check if cookies are enabled in your browser.
+  - Try clearing your browser cache and cookies.
+  - Ensure the page is fully reloaded after language selection. 
