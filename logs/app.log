@@ -3418,3 +3418,26 @@ jinja2.exceptions.TemplateNotFound: 404.html
 2025-03-21 20:30:51,292 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /favicon.ico - Referrer: http://localhost:5001/
 2025-03-21 20:30:54,901 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/css/main.e25d5915.css.map - Referrer: None
 2025-03-21 20:31:00,307 - INFO - 192.168.65.1 - Mozilla/5.0 (iPad; CPU OS 14_7_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Mobile/15E148 Safari/604.1 - Request: GET /api/logs - Referrer: http://localhost:5001/
+2025-03-21 20:40:20,717 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-21 20:40:27,273 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/
+2025-03-21 20:40:27,346 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/css/main.ba46e2b0.css - Referrer: http://localhost:5001/
+2025-03-21 20:40:27,349 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/js/main.96902db5.js - Referrer: http://localhost:5001/
+2025-03-21 20:40:27,351 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/js/453.79ab6d77.chunk.js - Referrer: http://localhost:5001/
+2025-03-21 20:40:27,684 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /favicon.ico - Referrer: http://localhost:5001/
+2025-03-21 20:40:38,868 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /api/logs - Referrer: http://localhost:5001/
+2025-03-21 20:40:46,602 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /api/logs - Referrer: http://localhost:5001/
+2025-03-21 20:40:49,260 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /api/logs - Referrer: http://localhost:5001/
+2025-03-21 20:45:35,280 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-21 20:46:16,471 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/
+2025-03-21 20:46:16,578 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/css/main.8b45dd37.css - Referrer: http://localhost:5001/
+2025-03-21 20:46:16,581 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/js/main.402d4177.js - Referrer: http://localhost:5001/
+2025-03-21 20:46:16,584 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/js/453.79ab6d77.chunk.js - Referrer: http://localhost:5001/
+2025-03-21 20:46:16,962 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /favicon.ico - Referrer: http://localhost:5001/
+2025-03-21 20:46:22,821 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /api/logs - Referrer: http://localhost:5001/
+2025-03-21 20:46:34,113 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /api/logs - Referrer: http://localhost:5001/
+2025-03-21 20:48:33,730 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-21 20:48:42,294 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/
+2025-03-21 20:48:42,349 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/css/main.8b45dd37.css - Referrer: http://localhost:5001/
+2025-03-21 20:48:42,356 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/js/main.cc63b99f.js - Referrer: http://localhost:5001/
+2025-03-21 20:48:42,357 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/js/453.79ab6d77.chunk.js - Referrer: http://localhost:5001/
+2025-03-21 20:48:42,609 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /favicon.ico - Referrer: http://localhost:5001/

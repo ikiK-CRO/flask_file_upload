@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { ThemeContext } from '../ThemeContext';
 
 const Navbar = ({ navigateWithoutFileParam }) => {
   const { t, i18n } = useTranslation();
   const location = useLocation();
+  const { theme, toggleTheme } = useContext(ThemeContext);
   
   const changeLanguage = (lang) => {
     i18n.changeLanguage(lang);
@@ -62,7 +64,26 @@ const Navbar = ({ navigateWithoutFileParam }) => {
               </a>
             </li>
           </ul>
-          <div className="d-flex">
+          <div className="d-flex align-items-center">
+            {/* Theme Toggle */}
+            <div className="me-3">
+              <label className="theme-toggle">
+                <input 
+                  type="checkbox" 
+                  onChange={toggleTheme} 
+                  checked={theme === 'dark'}
+                />
+                <span className="slider">
+                  {theme === 'dark' ? (
+                    <span className="d-none">{t('Light Mode')}</span>
+                  ) : (
+                    <span className="d-none">{t('Dark Mode')}</span>
+                  )}
+                </span>
+              </label>
+            </div>
+            
+            {/* Language Switchers */}
             <button 
               className={`btn ${i18n.language === 'hr' ? 'btn-light' : 'btn-outline-light'} me-2 fw-bold`}
               onClick={() => changeLanguage('hr')}

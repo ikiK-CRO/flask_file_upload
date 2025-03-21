@@ -3,6 +3,7 @@ import { HashRouter as Router, Routes, Route, useLocation, useNavigate } from 'r
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import './i18n';
+import { ThemeProvider } from './ThemeContext';
 
 // Components
 import Navbar from './components/Navbar';
@@ -71,13 +72,15 @@ function MainContent() {
 
 function App() {
   return (
-    <Router>
-      <div className="container py-4 main-container">
-        <Routes>
-          <Route path="*" element={<MainContent />} />
-        </Routes>
-      </div>
-    </Router>
+    <ThemeProvider>
+      <Router>
+        <div className="container py-4 main-container">
+          <Routes>
+            <Route path="*" element={<MainContent />} />
+          </Routes>
+        </div>
+      </Router>
+    </ThemeProvider>
   );
 }
 
