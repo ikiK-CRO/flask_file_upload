@@ -18,9 +18,11 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {
     "origins": "*",
     "methods": ["GET", "POST", "OPTIONS"],
-    "allow_headers": ["Content-Type", "Content-Disposition", "Authorization"],
-    "expose_headers": ["Content-Disposition", "Content-Type", "Content-Length"]
-}})  # Enable CORS for all routes
+    "allow_headers": ["Content-Type", "Content-Disposition", "Authorization", "X-Requested-With"],
+    "expose_headers": ["Content-Disposition", "Content-Type", "Content-Length", "X-Content-Transfer-Id"],
+    "supports_credentials": True,
+    "max_age": 86400
+}})  # Enhanced CORS for all routes
 app.secret_key = 'your-secret-key'  # Change this in production
 
 # Configure logging
@@ -232,8 +234,16 @@ def index():
         # Serve React app for GET requests
         return render_template('minimal_react.html')
 
-@app.route('/get-file/<file_uuid>', methods=['GET', 'POST'])
+@app.route('/get-file/<file_uuid>', methods=['GET', 'POST', 'OPTIONS'])
 def get_file(file_uuid):
+    # Add support for preflight OPTIONS requests
+    if request.method == 'OPTIONS':
+        resp = jsonify({'success': True})
+        resp.headers['Access-Control-Allow-Origin'] = '*'
+        resp.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+        resp.headers['Access-Control-Allow-Headers'] = 'Content-Type, Content-Disposition, X-Requested-With'
+        return resp
+        
     app.logger.info(f"File download page accessed: {file_uuid}")
     
     file_record = UploadedFile.query.filter_by(id=file_uuid).first()
@@ -270,11 +280,15 @@ def get_file(file_uuid):
                 response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
                 response.headers["Pragma"] = "no-cache"
                 response.headers["Expires"] = "0"
-                # Cross-origin headers
+                
+                # Enhanced cross-origin headers for Chrome on HTTPS
                 response.headers["Access-Control-Allow-Origin"] = "*"
                 response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
-                response.headers["Access-Control-Allow-Headers"] = "Content-Type, Content-Disposition"
+                response.headers["Access-Control-Allow-Headers"] = "Content-Type, Content-Disposition, X-Requested-With"
+                response.headers["Access-Control-Expose-Headers"] = "Content-Disposition, Content-Length, X-Content-Transfer-Id"
                 response.headers["Cross-Origin-Resource-Policy"] = "cross-origin"
+                response.headers["Cross-Origin-Embedder-Policy"] = "unsafe-none"
+                response.headers["Feature-Policy"] = "downloads *"
                 
                 return response
             except Exception as e:
@@ -454,8 +468,16 @@ def api_get_file(file_uuid):
         app.logger.warning(f"API: Incorrect password attempt for file: {file_uuid}")
         return jsonify({'success': False, 'message': _("Incorrect password!")}), 403
 
-@app.route('/api/download/<file_uuid>', methods=['GET'])
+@app.route('/api/download/<file_uuid>', methods=['GET', 'OPTIONS'])
 def download_file_direct(file_uuid):
+    # Add support for preflight OPTIONS requests
+    if request.method == 'OPTIONS':
+        resp = jsonify({'success': True})
+        resp.headers['Access-Control-Allow-Origin'] = '*'
+        resp.headers['Access-Control-Allow-Methods'] = 'GET, OPTIONS'
+        resp.headers['Access-Control-Allow-Headers'] = 'Content-Type, Content-Disposition, X-Requested-With'
+        return resp
+        
     # This route would handle the actual file download after auth is completed
     file_record = UploadedFile.query.filter_by(id=file_uuid).first()
     if not file_record:
@@ -474,11 +496,15 @@ def download_file_direct(file_uuid):
         response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
         response.headers["Pragma"] = "no-cache"
         response.headers["Expires"] = "0"
-        # Cross-origin headers
+        
+        # Enhanced cross-origin headers for Chrome on HTTPS
         response.headers["Access-Control-Allow-Origin"] = "*"
         response.headers["Access-Control-Allow-Methods"] = "GET, OPTIONS"
-        response.headers["Access-Control-Allow-Headers"] = "Content-Type, Content-Disposition"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type, Content-Disposition, X-Requested-With"
+        response.headers["Access-Control-Expose-Headers"] = "Content-Disposition, Content-Length, X-Content-Transfer-Id"
         response.headers["Cross-Origin-Resource-Policy"] = "cross-origin"
+        response.headers["Cross-Origin-Embedder-Policy"] = "unsafe-none"
+        response.headers["Feature-Policy"] = "downloads *"
         
         return response
     except Exception as e:
