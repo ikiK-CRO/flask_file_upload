@@ -4,24 +4,29 @@
 
 ### Programski jezici
 - **Python**: Glavni backend jezik za serversku logiku i obradu podataka
-- **JavaScript**: Klijentska validacija, AJAX uploadanje datoteka i interaktivnost sučelja
+- **JavaScript (ES6+)**: Frontend React aplikacija, AJAX za API komunikaciju
+- **JSX**: React komponente templating
 - **HTML**: Struktura web stranica
 - **CSS**: Stiliziranje web stranica
 
 ### Web tehnologije
-- **Flask**: Python web framework za izradu aplikacije
-- **Jinja2**: Sustav predložaka za generiranje HTML-a
+- **Flask**: Python web framework za izradu backend API-ja
+- **React**: JavaScript biblioteka za izgradnju korisničkih sučelja
+- **React Router**: Usmjeravanje i navigacija za React aplikacije
+- **Axios**: HTTP klijent za API zahtjeve
+- **React Dropzone**: Funkcionalnost povuci-i-ispusti za prijenos datoteka
+- **i18next**: Framework za internacionalizaciju u React-u
 - **SQLAlchemy**: ORM (Object-Relational Mapping) za rad s bazom podataka
 - **Flask-Bcrypt**: Hashiranje i validacija lozinki
 - **Flask-Babel**: Podrška za internacionalizaciju i lokalizaciju
 - **Bootstrap**: Frontend framework za responzivni dizajn
-- **AJAX**: Asinkrono uploadanje datoteka bez ponovnog učitavanja stranice
 
 ### Baze podataka
 - **PostgreSQL**: Primarna baza podataka koja se koristi u svim okruženjima (lokalni Docker, razvoj i produkcija)
 
 ### Infrastruktura i deployment
 - **Docker**: Kontejnerizacija aplikacije za jednostavno pokretanje i deployment
+- **npm**: Upravitelj paketa za JavaScript ovisnosti
 - **Heroku**: Cloud platforma za hosting aplikacije (LIVE DEMO: https://uploadfile-47843913ee68.herokuapp.com/)
 
 ### Sigurnost i validacija
@@ -54,25 +59,27 @@
 
 ### Arhitektura sustava
 
-Sustav za sigurno dijeljenje datoteka implementiran je kao web aplikacija bazirana na Flask framework-u, koristeći MVC (Model-View-Controller) arhitekturu:
+Sustav za sigurno dijeljenje datoteka implementiran je kao moderna web aplikacija s React frontend-om i Flask backend API-jem:
 
-- **Model**: SQLAlchemy ORM za interakciju s bazom podataka
-- **View**: Jinja2 predlošci za renderiranje HTML stranica
-- **Controller**: Flask rute i funkcije koje obrađuju zahtjeve
+- **Backend**: Flask-baziran RESTful API koji upravlja operacijama podataka i datoteka
+- **Frontend**: React SPA (Single Page Application) koji pruža responzivno i interaktivno korisničko sučelje
+- **Komunikacija**: JSON-bazirana API komunikacija između frontend-a i backend-a
 
 Glavne komponente sustava su:
 
-1. **Web poslužitelj**: Flask aplikacija koja upravlja HTTP zahtjevima
-2. **Baza podataka**: SQLite za pohranu metapodataka o uploadanim datotekama
-3. **Sustav za datoteke**: Lokalni datotečni sustav za pohranu uploadanih datoteka
-4. **Sustav za logiranje**: Strukturirano logiranje aktivnosti korisnika i sustava
+1. **Backend API**: Flask aplikacija koja upravlja HTTP zahtjevima i API odgovorima
+2. **Frontend SPA**: React aplikacija za korisničko sučelje i interakciju
+3. **Baza podataka**: PostgreSQL za pohranu metapodataka o uploadanim datotekama
+4. **Sustav za datoteke**: Lokalni datotečni sustav za pohranu uploadanih datoteka
+5. **Sustav za logiranje**: Strukturirano logiranje aktivnosti korisnika i sustava
 
 Aplikacija implementira slijedeće funkcionalne cjeline:
 
-- Sigurno uploadanje datoteka s validacijom
+- Sigurno uploadanje datoteka s podrškom za povuci-i-ispusti
 - Sigurno preuzimanje datoteka zaštićeno lozinkom
 - Strukturirano logiranje svih aktivnosti
-- Pregledavanje logova aktivnosti
+- Pregledavanje logova aktivnosti s tabovima
+- Internacionalizacija s promjenom jezika
 
 ### Sigurnosne implementacije
 
@@ -409,4 +416,34 @@ Aplikacija ima implementirano sveobuhvatno upravljanje greškama:
 - **Problem**: "File not found" pri pokušaju preuzimanja
 - **Rješenje**: 
   - Provjerite jeste li unijeli ispravan URL za preuzimanje.
-  - Ako je datoteka obrisana, više neće biti dostupna za preuzimanje. 
+  - Ako je datoteka obrisana, više neće biti dostupna za preuzimanje.
+
+## Frontend arhitektura
+
+Frontend je izgrađen koristeći React sa sljedećom strukturom komponenti:
+
+### Komponente
+- **App**: Glavna aplikacijska komponenta i usmjeravanje
+- **Navbar**: Navigacijska traka s odabirom jezika
+- **FileUpload**: Funkcionalnost povuci-i-ispusti za prijenos datoteka
+- **FileDownload**: Preuzimanje datoteka zaštićeno lozinkom
+- **ActivityLog**: Sučelje s tabovima za pregledavanje logova uploada/downloada
+
+### Upravljanje stanjem
+- Stanje na razini komponente koristeći React hooks (useState, useEffect)
+- Context API za globalno stanje (postavke jezika)
+
+### Internacionalizacija
+- i18next integracija za višejezičnu podršku
+- Detekcija jezika iz postavki preglednika i kolačića
+- Promjena jezika s trajnim odabirom
+
+### API integracija
+- Axios za HTTP zahtjeve prema Flask backend-u
+- JSON-bazirana razmjena podataka
+- Rukovanje podacima forme za prijenos datoteka
+
+### Stiliziranje
+- Bootstrap 5 za responzivni layout
+- Prilagođeni CSS za temu i stiliziranje komponenti
+- Responzivni dizajn za mobilne i desktop prikaze 

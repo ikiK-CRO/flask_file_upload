@@ -4,24 +4,29 @@
 
 ### Programming Languages
 - **Python**: Main backend language for server logic and data processing
-- **JavaScript**: Client-side validation, AJAX file uploads, and interface interactivity
+- **JavaScript (ES6+)**: Frontend React application, AJAX for API communication
+- **JSX**: React component templating
 - **HTML**: Web page structure
 - **CSS**: Web page styling
 
 ### Web Technologies
-- **Flask**: Python web framework for application development
-- **Jinja2**: Template system for generating HTML
+- **Flask**: Python web framework for backend API development
+- **React**: Frontend JavaScript library for building user interfaces
+- **React Router**: Routing and navigation for React applications
+- **Axios**: HTTP client for API requests
+- **React Dropzone**: Drag-and-drop file upload functionality
+- **i18next**: Internationalization framework for React
 - **SQLAlchemy**: ORM (Object-Relational Mapping) for database operations
 - **Flask-Bcrypt**: Password hashing and validation
 - **Flask-Babel**: Internationalization and localization support
 - **Bootstrap**: Frontend framework for responsive design
-- **AJAX**: Asynchronous file uploads without page reload
 
 ### Databases
 - **PostgreSQL**: Primary database used across all environments (local Docker, development, and production)
 
 ### Infrastructure and Deployment
 - **Docker**: Application containerization for easy setup and deployment
+- **npm**: Package manager for JavaScript dependencies
 - **Heroku**: Cloud platform for application hosting (LIVE DEMO: https://uploadfile-47843913ee68.herokuapp.com/)
 
 ### Security and Validation
@@ -54,25 +59,27 @@
 
 ### System Architecture
 
-The secure file sharing system is implemented as a web application based on the Flask framework, using MVC (Model-View-Controller) architecture:
+The secure file sharing system is implemented as a modern web application with a React frontend and Flask backend API:
 
-- **Model**: SQLAlchemy ORM for database interaction
-- **View**: Jinja2 templates for HTML rendering
-- **Controller**: Flask routes and functions that handle requests
+- **Backend**: Flask-based RESTful API handling data operations and file management
+- **Frontend**: React SPA (Single Page Application) providing a responsive and interactive user interface
+- **Communication**: JSON-based API communication between frontend and backend
 
 The main components of the system are:
 
-1. **Web Server**: Flask application handling HTTP requests
-2. **Database**: SQLite for storing metadata about uploaded files
-3. **File System**: Local file system for storing uploaded files
-4. **Logging System**: Structured logging of user and system activities
+1. **Backend API**: Flask application handling HTTP requests and API responses
+2. **Frontend SPA**: React application for user interface and interaction
+3. **Database**: PostgreSQL for storing metadata about uploaded files
+4. **File System**: Local file system for storing uploaded files
+5. **Logging System**: Structured logging of user and system activities
 
 The application implements the following functional units:
 
-- Secure file uploading with validation
+- Secure file uploading with drag-and-drop support
 - Password-protected file downloading
 - Structured logging of all activities
-- Activity log viewing
+- Activity log viewing with tabbed interface
+- Internationalization with language switching
 
 ### Security Implementations
 
@@ -402,4 +409,34 @@ The application has comprehensive error handling implemented:
 - **Solution**: 
   - Check if cookies are enabled in your browser.
   - Try clearing your browser cache and cookies.
-  - Ensure the page is fully reloaded after language selection. 
+  - Ensure the page is fully reloaded after language selection.
+
+## Frontend Architecture
+
+The frontend is built using React with the following component structure:
+
+### Components
+- **App**: Main application component and routing
+- **Navbar**: Navigation bar with language selection
+- **FileUpload**: Drag-and-drop file upload functionality
+- **FileDownload**: Password-protected file download
+- **ActivityLog**: Tabbed interface for viewing upload/download logs
+
+### State Management
+- Component-level state using React hooks (useState, useEffect)
+- Context API for global state (language settings)
+
+### Internationalization
+- i18next integration for multilingual support
+- Language detection from browser settings and cookies
+- Language switching with persistent selection
+
+### API Integration
+- Axios for HTTP requests to the Flask backend
+- JSON-based data exchange
+- Form data handling for file uploads
+
+### Styling
+- Bootstrap 5 for responsive layout
+- Custom CSS for theming and component styling
+- Responsive design for mobile and desktop views 

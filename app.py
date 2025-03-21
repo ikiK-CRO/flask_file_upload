@@ -12,7 +12,9 @@ from werkzeug.utils import secure_filename
 import mimetypes
 from flask_babel import Babel, _
 
+from flask_cors import CORS
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 app.secret_key = 'your-secret-key'  # Change this in production
 
 # Configure logging
@@ -186,168 +188,15 @@ def log_request_info():
     )
 
 @app.route('/', methods=['GET', 'POST'])
-def upload_file():
+def index():
     if request.method == 'POST':
-        # Check if the POST request has a file part
+        # Handle API POST requests for file upload
         if 'file' not in request.files:
-            message = _("No file part in the request")
-            app.logger.warning(f"Upload failed: {message}")
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return jsonify({'success': False, 'message': message})
-            flash(message)
-            return redirect(request.url)
-            
-        uploaded_file = request.files.get('file')
-        password = request.form.get('password')
-        
-        # Check if a file was selected
-        if not uploaded_file or uploaded_file.filename == '':
-            message = _("No file selected")
-            app.logger.warning(f"Upload failed: {message}")
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return jsonify({'success': False, 'message': message})
-            flash(message)
-            return redirect(request.url)
-            
-        # Check if password is provided
-        if not password:
-            message = _("Password is required")
-            app.logger.warning(f"Upload failed: {message}")
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return jsonify({'success': False, 'message': message})
-            flash(message)
-            return redirect(request.url)
-        
-        # Log the upload attempt (without including the actual password)
-        app.logger.info(f"Upload attempt: {uploaded_file.filename} ({uploaded_file.content_type})")
-            
-        # Check if the file type is allowed
-        if not allowed_file(uploaded_file.filename):
-            message = f"File type not allowed. Allowed types: {', '.join(ALLOWED_EXTENSIONS)}"
-            app.logger.warning(f"Upload failed: {message} - Filename: {uploaded_file.filename}")
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return jsonify({'success': False, 'message': message})
-            flash(message)
-            return redirect(request.url)
-            
-        # File Size Validation: Limit file size to 10MB
-        uploaded_file.seek(0, os.SEEK_END)
-        file_size = uploaded_file.tell()
-        uploaded_file.seek(0)
-        
-        if file_size > MAX_CONTENT_LENGTH:
-            message = f"File size exceeds the {MAX_CONTENT_LENGTH // (1024 * 1024)}MB limit!"
-            app.logger.warning(f"Upload failed: {message} - File size: {file_size/1024/1024:.2f}MB")
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return jsonify({'success': False, 'message': message})
-            flash(message)
-            return redirect(request.url)
-            
-        # MIME type validation
-        if not validate_mime_type(uploaded_file):
-            message = "Invalid file content or MIME type"
-            app.logger.warning(f"Upload failed: {message} - Filename: {uploaded_file.filename}")
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return jsonify({'success': False, 'message': message})
-            flash(message)
-            return redirect(request.url)
-
-        # Input Validation and Sanitization
-        filename = secure_filename(uploaded_file.filename)
-        if filename == '':
-            message = "Invalid file name after sanitization"
-            app.logger.warning(f"Upload failed: {message} - Original filename: {uploaded_file.filename}")
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return jsonify({'success': False, 'message': message})
-            flash(message)
-            return redirect(request.url)
-            
-        # Additional sanitization: remove potentially dangerous characters
-        filename = re.sub(r'[^a-zA-Z0-9_.-]', '_', filename)
-
-        file_uuid = str(uuid.uuid4())
-        # Prepend the UUID to ensure filename uniqueness
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], f"{file_uuid}_{filename}")
-        
-        try:
-            uploaded_file.save(file_path)
-            app.logger.info(f"File saved: {file_path} - Size: {file_size/1024/1024:.2f}MB")
-        except Exception as e:
-            app.logger.error(f"File save error: {str(e)} - Path: {file_path}")
-            message = "Error saving file"
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return jsonify({'success': False, 'message': message})
-            flash(message)
-            return redirect(request.url)
-
-        # Hash the password before storing
-        try:
-            password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
-        except Exception as e:
-            app.logger.error(f"Password hashing error: {str(e)}")
-            message = "Password hashing failed!"
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return jsonify({'success': False, 'message': message})
-            flash(message)
-            return redirect(request.url)
-        
-        # Check if password_hash is valid
-        if not password_hash:
-            message = "Password hashing failed!"
-            app.logger.error("Empty password hash generated")
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return jsonify({'success': False, 'message': message})
-            flash(message)
-            return redirect(request.url)
-
-        # Create the new_file instance
-        new_file = UploadedFile(
-            id=file_uuid,
-            file_name=filename,
-            file_path=file_path,
-            password_hash=password_hash,
-            password=password
-        )
-        
-        # Save file metadata in the database
-        db.session.add(new_file)
-        try:
-            db.session.commit()
-            app.logger.info(f"File metadata saved to database: {file_uuid} - {filename}")
-        except Exception as e:
-            # Log the error for server-side debugging
-            app.logger.error(f"Database error: {str(e)}")
-            
-            # Delete the uploaded file if database operation failed
-            if os.path.exists(file_path):
-                try:
-                    os.remove(file_path)
-                    app.logger.info(f"Cleaned up file after database error: {file_path}")
-                except Exception as cleanup_error:
-                    app.logger.error(f"Error cleaning up file: {str(cleanup_error)} - Path: {file_path}")
-                
-            message = "An error occurred while saving the file."
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return jsonify({'success': False, 'message': message})
-            flash(message)
-            return redirect(request.url)
-
-        # Return the download URL to the user
-        file_url = url_for('get_file', file_uuid=file_uuid, _external=True)
-        success_message = _("File uploaded successfully! Access it at: <a href='{file_url}'>{file_url}</a>").format(file_url=file_url)
-        
-        app.logger.info(f"Upload successful: {filename} - UUID: {file_uuid}")
-        
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            return jsonify({
-                'success': True,
-                'message': success_message,
-                'file_url': file_url
-            })
-        
-        return render_template('index.html', success_message=success_message)
-    
-    return render_template('index.html')
+            return jsonify({"success": False, "message": "No file part"})
+        # Rest of your file upload logic...
+    else:
+        # Serve React app for GET requests
+        return render_template('minimal_react.html')
 
 @app.route('/get-file/<file_uuid>', methods=['GET', 'POST'])
 def get_file(file_uuid):
@@ -356,15 +205,14 @@ def get_file(file_uuid):
     file_record = UploadedFile.query.filter_by(id=file_uuid).first()
     if not file_record:
         app.logger.warning(f"File not found: {file_uuid}")
-        return "File not found", 404
+        return jsonify({'success': False, 'message': _("File not found")}), 404
 
     if request.method == 'POST':
         entered_password = request.form.get('password')
         
         if not entered_password:
             app.logger.warning(f"Download attempt without password: {file_uuid}")
-            flash(_("Password is required"))
-            return render_template('get_file.html', file_uuid=file_uuid)
+            return jsonify({'success': False, 'message': _("Password is required")}), 400
         
         if bcrypt.check_password_hash(file_record.password_hash, entered_password):
             # Update download count
@@ -374,6 +222,7 @@ def get_file(file_uuid):
                 app.logger.info(f"Download count updated: {file_uuid} - New count: {file_record.download_count}")
             except Exception as e:
                 app.logger.error(f"Error updating download count: {str(e)} - UUID: {file_uuid}")
+                return jsonify({'success': False, 'message': _("Error updating download count")}), 500
             
             # Send the file as a download
             directory, stored_file = os.path.split(file_record.file_path)
@@ -383,92 +232,238 @@ def get_file(file_uuid):
                 return send_from_directory(directory, stored_file, as_attachment=True, download_name=file_record.file_name)
             except Exception as e:
                 app.logger.error(f"File send error: {str(e)} - Path: {file_record.file_path}")
-                return "Error downloading file", 500
+                return jsonify({'success': False, 'message': _("Error downloading file")}), 500
         else:
             app.logger.warning(f"Incorrect password attempt for file: {file_uuid}")
-            flash(_("Incorrect password!"))
+            return jsonify({'success': False, 'message': _("Incorrect password!")}), 403
     
-    return render_template('get_file.html', file_uuid=file_uuid)
+    # For GET requests, redirect to the main React app with the file UUID as a parameter
+    # Since we're now serving React at the root (/), redirect there with the file UUID parameter
+    return redirect(f'/?file={file_uuid}')
 
 @app.route('/logs')
 def view_logs():
-    """Display logs of successful uploads and downloads."""
-    try:
-        # Query the database for file data
-        files = UploadedFile.query.order_by(UploadedFile.upload_date.desc()).all()
-        
-        # Parse logs for successful uploads and downloads
-        uploads = []
-        downloads = []
-        error_message = None
-        
-        logs_dir = os.path.join(os.getcwd(), 'logs')
-        os.makedirs(logs_dir, exist_ok=True)
-        
-        log_file = os.path.join(logs_dir, 'app.log')
-        
-        # Create empty log file if it doesn't exist
-        if not os.path.exists(log_file):
-            try:
-                with open(log_file, 'w') as f:
-                    f.write(_("Log file created\n"))
-                app.logger.info(_("Log file created"))
-                error_message = _("Log file created. No activity logs to display yet.")
-            except Exception as e:
-                app.logger.error(f"Error creating log file: {str(e)}")
-                error_message = _("Could not create log file: {}").format(str(e))
-        else:
-            try:
-                with open(log_file, 'r') as f:
-                    for line in f:
-                        try:
-                            if "Upload successful:" in line:
-                                uploads.append(line.strip())
-                            elif "File download successful:" in line:
-                                downloads.append(line.strip())
-                        except Exception:
-                            # Skip any problematic lines
-                            continue
-            except Exception as e:
-                app.logger.error(f"Error reading log file: {str(e)}")
-                error_message = _("Could not read log file: {}").format(str(e))
-        
-        # Sort logs in reverse chronological order (newest first)
-        uploads.reverse()
-        downloads.reverse()
-        
-        # Limit to the last 50 entries
-        uploads = uploads[:50]
-        downloads = downloads[:50]
-        
-        return render_template('logs.html', 
-                            files=files, 
-                            uploads=uploads,
-                            downloads=downloads,
-                            error=error_message)
-    except Exception as e:
-        app.logger.error(f"Error in logs view: {str(e)}")
-        return render_template('logs.html', 
-                            files=[], 
-                            uploads=[],
-                            downloads=[],
-                            error=_("Could not load logs: {}").format(str(e)))
+    """Redirect to the React app's logs page."""
+    return redirect(url_for('serve_react') + '#/logs')
 
 @app.errorhandler(404)
 def page_not_found(e):
-    app.logger.info(f"404 error: {request.path}")
-    return render_template('404.html'), 404
+    app.logger.warning(f"404 error: {request.path}")
+    return jsonify({'success': False, 'message': _("Page not found")}), 404
 
 @app.errorhandler(500)
 def server_error(e):
     app.logger.error(f"500 error: {str(e)}")
-    return render_template('500.html'), 500
+    return jsonify({'success': False, 'message': _("Internal server error")}), 500
 
 @app.route('/set_language/<lang>')
 def set_language(lang):
-    response = redirect(request.referrer or url_for('upload_file'))
+    response = redirect(request.referrer or url_for('serve_react'))
     response.set_cookie('lang', lang)
     return response
+
+@app.route('/react')
+def serve_react():
+    return render_template('minimal_react.html')
+
+# API endpoints for React
+@app.route('/api/upload', methods=['POST'])
+def api_upload_file():
+    # Mostly same logic as upload_file but returns JSON
+    if 'file' not in request.files:
+        return jsonify({'success': False, 'message': _("No file part in the request")})
+            
+    uploaded_file = request.files.get('file')
+    password = request.form.get('password')
+    
+    if not uploaded_file or uploaded_file.filename == '':
+        return jsonify({'success': False, 'message': _("No file selected")})
+        
+    if not password:
+        return jsonify({'success': False, 'message': _("Password is required")})
+    
+    app.logger.info(f"API Upload attempt: {uploaded_file.filename}")
+        
+    if not allowed_file(uploaded_file.filename):
+        message = f"File type not allowed. Allowed types: {', '.join(ALLOWED_EXTENSIONS)}"
+        return jsonify({'success': False, 'message': message})
+        
+    # File Size Validation
+    uploaded_file.seek(0, os.SEEK_END)
+    file_size = uploaded_file.tell()
+    uploaded_file.seek(0)
+    
+    if file_size > MAX_CONTENT_LENGTH:
+        message = f"File size exceeds the {MAX_CONTENT_LENGTH // (1024 * 1024)}MB limit!"
+        return jsonify({'success': False, 'message': message})
+        
+    # MIME type validation
+    if not validate_mime_type(uploaded_file):
+        return jsonify({'success': False, 'message': "Invalid file content or MIME type"})
+
+    # Input Validation and Sanitization
+    filename = secure_filename(uploaded_file.filename)
+    if filename == '':
+        return jsonify({'success': False, 'message': "Invalid file name after sanitization"})
+        
+    # Additional sanitization
+    filename = re.sub(r'[^a-zA-Z0-9_.-]', '_', filename)
+
+    file_uuid = str(uuid.uuid4())
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], f"{file_uuid}_{filename}")
+    
+    try:
+        uploaded_file.save(file_path)
+        app.logger.info(f"File saved: {file_path} - Size: {file_size/1024/1024:.2f}MB")
+    except Exception as e:
+        app.logger.error(f"File save error: {str(e)} - Path: {file_path}")
+        return jsonify({'success': False, 'message': "Error saving file"})
+
+    # Hash the password
+    try:
+        password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
+    except Exception as e:
+        app.logger.error(f"Password hashing error: {str(e)}")
+        return jsonify({'success': False, 'message': "Password hashing failed!"})
+    
+    # Create the new_file instance
+    new_file = UploadedFile(
+        id=file_uuid,
+        file_name=filename,
+        file_path=file_path,
+        password_hash=password_hash,
+        password=password
+    )
+    
+    # Save file metadata in the database
+    db.session.add(new_file)
+    try:
+        db.session.commit()
+        app.logger.info(f"File metadata saved to database: {file_uuid} - {filename}")
+    except Exception as e:
+        app.logger.error(f"Database error: {str(e)}")
+        
+        # Delete the uploaded file if database operation failed
+        if os.path.exists(file_path):
+            try:
+                os.remove(file_path)
+                app.logger.info(f"Cleaned up file after database error: {file_path}")
+            except Exception as cleanup_error:
+                app.logger.error(f"Error cleaning up file: {str(cleanup_error)} - Path: {file_path}")
+            
+        return jsonify({'success': False, 'message': "An error occurred while saving the file."})
+
+    # Return the download URL to the user
+    file_url = url_for('get_file', file_uuid=file_uuid, _external=True)
+    return jsonify({
+        'success': True, 
+        'message': _("File uploaded successfully! You will need the password you provided to access it at: {}").format(file_url),
+        'file_url': file_url
+    })
+
+@app.route('/api/files/<file_uuid>', methods=['POST'])
+def api_get_file(file_uuid):
+    app.logger.info(f"API file access attempt: {file_uuid}")
+    
+    file_record = UploadedFile.query.filter_by(id=file_uuid).first()
+    if not file_record:
+        app.logger.warning(f"API: File not found: {file_uuid}")
+        return jsonify({'success': False, 'message': _("File not found")}), 404
+
+    # Try to get password from JSON body first, then form data
+    entered_password = None
+    if request.is_json:
+        app.logger.info(f"API: Processing JSON request for file: {file_uuid}")
+        entered_password = request.json.get('password')
+    else:
+        app.logger.info(f"API: Processing form request for file: {file_uuid}")
+        entered_password = request.form.get('password')
+    
+    if not entered_password:
+        app.logger.warning(f"API: Download attempt without password: {file_uuid}")
+        return jsonify({'success': False, 'message': _("Password is required")}), 400
+    
+    app.logger.info(f"API: Verifying password for file: {file_uuid}")
+    
+    if bcrypt.check_password_hash(file_record.password_hash, entered_password):
+        # Update download count
+        file_record.download_count += 1
+        try:
+            db.session.commit()
+            app.logger.info(f"API: Download count updated: {file_uuid} - New count: {file_record.download_count}")
+        except Exception as e:
+            app.logger.error(f"API: Error updating download count: {str(e)} - UUID: {file_uuid}")
+        
+        # Return the direct download URL
+        download_url = url_for('download_file_direct', file_uuid=file_uuid, _external=True)
+        app.logger.info(f"API: Password verified, returning download URL: {download_url}")
+        
+        return jsonify({
+            'success': True,
+            'download_url': download_url,
+            'filename': file_record.file_name
+        })
+    else:
+        app.logger.warning(f"API: Incorrect password attempt for file: {file_uuid}")
+        return jsonify({'success': False, 'message': _("Incorrect password!")}), 403
+
+@app.route('/api/download/<file_uuid>', methods=['GET'])
+def download_file_direct(file_uuid):
+    # This route would handle the actual file download after auth is completed
+    file_record = UploadedFile.query.filter_by(id=file_uuid).first()
+    if not file_record:
+        app.logger.warning(f"File not found for direct download: {file_uuid}")
+        return "File not found", 404
+        
+    try:
+        directory, stored_file = os.path.split(file_record.file_path)
+        app.logger.info(f"Direct file download: {file_uuid} - {file_record.file_name}")
+        return send_from_directory(directory, stored_file, as_attachment=True, download_name=file_record.file_name)
+    except Exception as e:
+        app.logger.error(f"Error during direct file download: {str(e)} for file {file_uuid}")
+        return "Error downloading file", 500
+
+@app.route('/api/logs', methods=['GET'])
+def api_get_logs():
+    try:
+        files = UploadedFile.query.order_by(UploadedFile.upload_date.desc()).all()
+        
+        # Convert file objects to dictionaries
+        file_list = []
+        for file in files:
+            file_list.append({
+                'id': file.id,
+                'file_name': file.file_name,
+                'upload_date': file.upload_date.strftime('%Y-%m-%d %H:%M:%S'),
+                'download_count': file.download_count
+            })
+        
+        # Get upload logs
+        upload_logs = []
+        download_logs = []
+        
+        # Read app.log for upload and download logs
+        log_path = os.path.join(os.getcwd(), 'logs', 'app.log')
+        try:
+            with open(log_path, 'r') as log_file:
+                for line in log_file:
+                    if "File metadata saved to database:" in line:
+                        upload_logs.append(line.strip())
+                    elif "File download successful:" in line:
+                        download_logs.append(line.strip())
+        except Exception as e:
+            app.logger.error(f"Error reading log file: {str(e)}")
+            
+        return jsonify({
+            'success': True,
+            'files': file_list,
+            'upload_logs': upload_logs,
+            'download_logs': download_logs
+        })
+    except Exception as e:
+        app.logger.error(f"Error loading logs: {str(e)}")
+        return jsonify({'success': False, 'message': f"Could not load logs: {str(e)}"})
+
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))

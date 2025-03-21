@@ -1,0 +1,317 @@
+/* Custom color palette - Minimalistic */
+:root {
+  --primary-color: #3a6ea5;      /* Blue */
+  --primary-dark: #2c5282;       /* Darker blue for hover states */
+  --secondary-color: #48bb78;    /* Green for success/download */
+  --secondary-dark: #38a169;     /* Darker green for hover states */
+  --danger-color: #e53e3e;       /* Red for errors */
+  --warning-color: #ecc94b;      /* Yellow for warnings */
+  --light-color: #f7fafc;        /* Very light background */
+  --dark-color: #2d3748;         /* Dark text */
+  --gray-100: #f7fafc;
+  --gray-200: #edf2f7;
+  --gray-300: #e2e8f0;
+  --gray-400: #cbd5e0;
+  --gray-500: #a0aec0;
+  --gray-600: #718096;
+  --gray-700: #4a5568;
+  --gray-800: #2d3748;
+  --white: #ffffff;
+}
+
+/* Global styles */
+body {
+  background-color: var(--gray-200);
+  color: var(--gray-800);
+}
+
+.main-container {
+  background-color: var(--white);
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-top: 20px;
+}
+
+/* Heading Elements */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.bg-primary-custom {
+  background-color: var(--primary-color) !important;
+  color: var(--white) !important;
+}
+
+/* Navbar styling */
+.navbar {
+  background-color: var(--primary-color) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar .navbar-brand {
+  color: var(--white) !important;
+  font-weight: bold;
+}
+
+.navbar .nav-link {
+  color: var(--white) !important;
+  transition: color 0.2s ease;
+}
+
+.navbar .nav-link:hover {
+  color: var(--gray-300) !important;
+}
+
+.navbar .active {
+  font-weight: bold;
+  border-bottom: 2px solid var(--white);
+}
+
+/* Card styling */
+.card {
+  border: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.card-header {
+  background-color: var(--primary-color) !important;
+  color: var(--white) !important;
+  font-weight: 600;
+  padding: 12px 16px;
+}
+
+.card-header h1, 
+.card-header h2, 
+.card-header h3, 
+.card-header h4, 
+.card-header h5, 
+.card-header h6 {
+  color: var(--white) !important;
+  margin-bottom: 0;
+}
+
+.card-header.bg-success {
+  background-color: var(--secondary-color) !important;
+}
+
+.card-body {
+  background-color: var(--white);
+  padding: 20px;
+}
+
+/* Form elements */
+.form-control {
+  border-color: var(--gray-300);
+  color: var(--gray-800);
+}
+
+.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(58, 110, 165, 0.25);
+}
+
+.form-label {
+  color: var(--gray-700);
+  font-weight: 500;
+}
+
+/* Buttons */
+.btn-primary {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--primary-dark) !important;
+  border-color: var(--primary-dark) !important;
+}
+
+.btn-success {
+  background-color: var(--secondary-color) !important;
+  border-color: var(--secondary-color) !important;
+}
+
+.btn-success:hover,
+.btn-success:focus {
+  background-color: var(--secondary-dark) !important;
+  border-color: var(--secondary-dark) !important;
+}
+
+/* Alerts */
+.alert-success {
+  background-color: #f0fff4;
+  border-color: #c6f6d5;
+  color: #276749;
+}
+
+.alert-danger {
+  background-color: #fff5f5;
+  border-color: #fed7d7;
+  color: #c53030;
+}
+
+.alert-warning {
+  background-color: #fffaf0;
+  border-color: #feebc8;
+  color: #744210;
+}
+
+.alert-info {
+  background-color: #ebf8ff;
+  border-color: #bee3f8;
+  color: #2a4365;
+}
+
+/* Dropzone styling - Improved visibility */
+.dropzone {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px dashed var(--gray-400);
+  background-color: var(--gray-100);
+  padding: 2rem;
+  text-align: center;
+}
+
+.dropzone:hover {
+  border-color: var(--primary-color) !important;
+  background-color: var(--gray-200);
+}
+
+.dropzone p {
+  color: var(--gray-700) !important; /* Ensure text is visible */
+  font-weight: 500;
+  margin-bottom: 0;
+}
+
+/* Tabs */
+.nav-tabs {
+  border-bottom-color: var(--gray-300);
+}
+
+.nav-tabs .nav-link {
+  color: var(--gray-600);
+  font-weight: 500;
+  cursor: pointer;
+  padding: 8px 16px;
+}
+
+.nav-tabs .nav-link:hover {
+  color: var(--primary-color);
+  border-color: transparent;
+}
+
+.nav-tabs .nav-link.active {
+  color: var(--primary-color);
+  font-weight: 600;
+  border-color: var(--gray-300) var(--gray-300) var(--white);
+  border-bottom-width: 2px;
+}
+
+/* Log container */
+.log-container {
+  max-height: 500px;
+  overflow-y: auto;
+  background-color: var(--white);
+  border: 1px solid var(--gray-300);
+  border-radius: 4px;
+  padding: 12px;
+}
+
+.list-group-item {
+  border-color: var(--gray-300);
+  color: var(--gray-700);
+}
+
+/* Tables */
+.table {
+  color: var(--gray-700);
+}
+
+.table th {
+  font-weight: 600;
+  color: var(--gray-800);
+  background-color: var(--primary-color);
+  color: var(--white);
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: var(--gray-100);
+}
+
+/* Progress bar */
+.progress {
+  background-color: var(--gray-300);
+}
+
+.progress-bar {
+  background-color: var(--primary-color);
+}
+
+/* Modal */
+.modal-header {
+  background-color: var(--primary-color);
+  color: var(--white);
+}
+
+.modal-title {
+  font-weight: 600;
+  color: var(--white);
+}
+
+/* Text formatting */
+.text-light {
+  color: var(--gray-600) !important;
+}
+
+.text-primary {
+  color: var(--primary-color) !important;
+}
+
+/* Border utilities */
+.border-dashed {
+  border-style: dashed !important;
+}
+
+/* Original CSS below - keeping for reference */
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -4,3 +4,5 @@ Werkzeug==2.2.3
 Flask-SQLAlchemy==3.0.2
 psycopg2-binary==2.9.5
 Flask-Babel==2.0.0
+Flask-CORS==4.0.0
+Flask-CORS==4.0.0
