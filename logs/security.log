@@ -2645,3 +2645,4 @@ jinja2.exceptions.TemplateNotFound: 404.html
 2025-03-21 20:59:46,704 - WARNING - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - API: Incorrect password attempt for file: d65caf41-a341-4a17-bb5b-aa0c5c0282e8
 2025-03-21 20:59:50,760 - WARNING - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - API: Incorrect password attempt for file: d65caf41-a341-4a17-bb5b-aa0c5c0282e8
 2025-03-21 21:00:05,511 - WARNING - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - API: Incorrect password attempt for file: d65caf41-a341-4a17-bb5b-aa0c5c0282e8
+2025-03-21 22:12:50,810 - WARNING - 127.0.0.1 - werkzeug/2.3.0 - 404 error: /nonexistent-route

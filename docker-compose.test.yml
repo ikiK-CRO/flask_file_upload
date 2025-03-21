@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  test-flask:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    command: pytest -v tests/
+    environment:
+      - FLASK_ENV=testing
+      - TESTING=True
+      
+  test-react:
+    build:
+      context: ./react-src
+      dockerfile: Dockerfile.test
+    volumes:
+      - ./react-src:/app
+    command: npm test -- --watchAll=false 

@@ -3531,3 +3531,41 @@ jinja2.exceptions.TemplateNotFound: 404.html
 2025-03-21 21:00:09,331 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /api/download/d65caf41-a341-4a17-bb5b-aa0c5c0282e8 - Referrer: http://localhost:5001/
 2025-03-21 21:00:09,335 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Direct file download: d65caf41-a341-4a17-bb5b-aa0c5c0282e8 - Screenshot_2025-03-19_at_16.22.12.png
 2025-03-21 21:00:24,690 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /api/logs - Referrer: http://localhost:5001/
+2025-03-21 22:10:41,660 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-21 22:11:03,238 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-21 22:11:03,299 - INFO - 127.0.0.1 - werkzeug/2.3.0 - Request: POST /api/upload - Referrer: None
+2025-03-21 22:11:03,301 - INFO - 127.0.0.1 - werkzeug/2.3.0 - API Upload attempt: test.txt
+2025-03-21 22:11:03,302 - INFO - 127.0.0.1 - werkzeug/2.3.0 - File saved: /var/folders/j1/mjygfnq14v1crt1wg2sc50xh0000gn/T/tmpyujglyyu/155e3d73-3bbf-4f72-83cf-d50a78029520_test.txt - Size: 0.00MB
+2025-03-21 22:11:03,659 - INFO - 127.0.0.1 - werkzeug/2.3.0 - File metadata saved to database: 155e3d73-3bbf-4f72-83cf-d50a78029520 - test.txt
+2025-03-21 22:11:03,665 - INFO - 127.0.0.1 - werkzeug/2.3.0 - Request: POST /api/upload - Referrer: None
+2025-03-21 22:11:03,724 - INFO - 127.0.0.1 - werkzeug/2.3.0 - Request: POST /api/upload - Referrer: None
+2025-03-21 22:11:42,605 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-21 22:11:42,676 - INFO - 127.0.0.1 - werkzeug/2.3.0 - Request: POST /api/upload - Referrer: None
+2025-03-21 22:11:42,678 - INFO - 127.0.0.1 - werkzeug/2.3.0 - API Upload attempt: test.txt
+2025-03-21 22:11:42,679 - INFO - 127.0.0.1 - werkzeug/2.3.0 - File saved: /var/folders/j1/mjygfnq14v1crt1wg2sc50xh0000gn/T/tmplad8ru0y/d373761f-87ce-4813-a96c-8537e07d6804_test.txt - Size: 0.00MB
+2025-03-21 22:11:43,038 - INFO - 127.0.0.1 - werkzeug/2.3.0 - File metadata saved to database: d373761f-87ce-4813-a96c-8537e07d6804 - test.txt
+2025-03-21 22:11:43,046 - INFO - 127.0.0.1 - werkzeug/2.3.0 - Request: POST /api/upload - Referrer: None
+2025-03-21 22:11:43,109 - INFO - 127.0.0.1 - werkzeug/2.3.0 - Request: POST /api/upload - Referrer: None
+2025-03-21 22:12:23,264 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-21 22:12:23,332 - INFO - 127.0.0.1 - werkzeug/2.3.0 - Request: POST /api/upload - Referrer: None
+2025-03-21 22:12:23,334 - INFO - 127.0.0.1 - werkzeug/2.3.0 - API Upload attempt: test.txt
+2025-03-21 22:12:23,334 - INFO - 127.0.0.1 - werkzeug/2.3.0 - File saved: /var/folders/j1/mjygfnq14v1crt1wg2sc50xh0000gn/T/tmpqsnqg9_r/e7e57344-6fc9-4964-bb1a-ef76acb4e125_test.txt - Size: 0.00MB
+2025-03-21 22:12:23,691 - INFO - 127.0.0.1 - werkzeug/2.3.0 - File metadata saved to database: e7e57344-6fc9-4964-bb1a-ef76acb4e125 - test.txt
+2025-03-21 22:12:23,700 - INFO - 127.0.0.1 - werkzeug/2.3.0 - Request: POST /api/upload - Referrer: None
+2025-03-21 22:12:23,705 - INFO - 127.0.0.1 - werkzeug/2.3.0 - Request: POST /api/upload - Referrer: None
+2025-03-21 22:12:50,719 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-21 22:12:50,790 - INFO - 127.0.0.1 - werkzeug/2.3.0 - Request: GET / - Referrer: None
+2025-03-21 22:12:50,797 - INFO - 127.0.0.1 - werkzeug/2.3.0 - Request: GET /api/logs - Referrer: None
+2025-03-21 22:12:50,809 - INFO - 127.0.0.1 - werkzeug/2.3.0 - Request: GET /nonexistent-route - Referrer: None
+2025-03-21 22:12:50,810 - WARNING - 127.0.0.1 - werkzeug/2.3.0 - 404 error: /nonexistent-route
+2025-03-21 22:12:50,819 - INFO - 127.0.0.1 - werkzeug/2.3.0 - Request: POST /api/upload - Referrer: None
+2025-03-21 22:12:50,820 - INFO - 127.0.0.1 - werkzeug/2.3.0 - API Upload attempt: test.txt
+2025-03-21 22:12:50,821 - INFO - 127.0.0.1 - werkzeug/2.3.0 - File saved: /var/folders/j1/mjygfnq14v1crt1wg2sc50xh0000gn/T/tmpwu9iptlu/956726dd-2fc8-4353-8753-2df8a5a9c403_test.txt - Size: 0.00MB
+2025-03-21 22:12:51,319 - INFO - 127.0.0.1 - werkzeug/2.3.0 - File metadata saved to database: 956726dd-2fc8-4353-8753-2df8a5a9c403 - test.txt
+2025-03-21 22:12:51,327 - INFO - 127.0.0.1 - werkzeug/2.3.0 - Request: POST /api/upload - Referrer: None
+2025-03-21 22:12:51,332 - INFO - 127.0.0.1 - werkzeug/2.3.0 - Request: POST /api/upload - Referrer: None
+2025-03-21 21:13:44,894 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/
+2025-03-21 21:13:44,968 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/css/main.d9ff70d7.css - Referrer: http://localhost:5001/
+2025-03-21 21:13:44,971 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/js/453.79ab6d77.chunk.js - Referrer: http://localhost:5001/
+2025-03-21 21:13:44,972 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/js/main.cc63b99f.js - Referrer: http://localhost:5001/
+2025-03-21 21:13:45,295 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /favicon.ico - Referrer: http://localhost:5001/

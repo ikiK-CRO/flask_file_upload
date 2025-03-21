@@ -20,6 +20,12 @@
 - **Flask-Bcrypt**: Hashiranje i validacija lozinki
 - **Flask-Babel**: Podrška za internacionalizaciju i lokalizaciju
 - **Bootstrap**: Frontend framework za responzivni dizajn
+- **Jest**: JavaScript testing framework za React komponente
+- **pytest**: Python testing framework za backend kod
+- **CORS Support**: Cross-Origin Resource Sharing za API pristup
+- **Docker Compose**: Definicija više-kontejnerskog okruženja
+- **GitHub Actions**: CI/CD automatizacija
+- **Makefile**: Automatizacija izgradnje i orkestracije testova
 
 ### Baze podataka
 - **PostgreSQL**: Primarna baza podataka koja se koristi u svim okruženjima (lokalni Docker, razvoj i produkcija)
@@ -303,6 +309,118 @@ Aplikacija ima implementirano sveobuhvatno upravljanje greškama:
 - Werkzeug
 - SQLite (za demonstraciju) ili PostgreSQL (za produkciju)
 
+## Okvir za testiranje
+
+Aplikacija uključuje sveobuhvatan okvir za testiranje koji osigurava pouzdanost, sigurnost i funkcionalnost backend i frontend komponenti.
+
+### Tehnologije za testiranje
+
+- **Backend testiranje**: 
+  - pytest: Python framework za testiranje
+  - Flask Test Client: Za testiranje Flask ruta i API krajnjih točaka
+  - Privremena SQLite baza podataka za izolaciju testova
+  
+- **Frontend testiranje**:
+  - Jest: JavaScript framework za testiranje
+  - React Testing Library: Za testiranje React komponenti
+  - Mock implementacije za API pozive i internacionalizaciju
+
+- **Integracijsko testiranje**:
+  - Docker Compose konfiguracija za testiranje u izoliranim kontejnerima
+  - End-to-end test workflow putem GitHub Actions
+
+### Struktura testova
+
+#### Backend testovi
+
+1. **Testovi osnovnih ruta** (`tests/test_basic.py`):
+   - Testovi za početnu stranicu
+   - Testovi za API rutu logova
+   - Testovi za rukovanje 404 pogreškama
+
+2. **Testovi operacija s datotekama** (`tests/test_file_operations.py`):
+   - Funkcionalnost uploada datoteka
+   - Validacija uploada datoteka bez datoteka
+   - Validacija uploada datoteka bez lozinki
+   
+3. **Test fixtures** (`tests/conftest.py`):
+   - Postavljanje Flask aplikacije s test konfiguracijom
+   - Kreiranje test klijenta
+   - Inicijalizacija i čišćenje baze podataka
+
+#### Frontend testovi
+
+1. **Testovi komponenti**:
+   - Testovi komponente za upload datoteka
+   - Testovi navigacijske komponente
+   - Testovi App komponente
+   
+2. **Mock implementacije**:
+   - Mock i18n za testiranje internacionalizacije
+   - Mock API fetch pozivi za simuliranje odgovora servera
+
+### Pokretanje testova
+
+Različite naredbe za testiranje dostupne su putem Makefile-a za jednostavnije izvršavanje testova:
+
+1. **Pokretanje svih testova**:
+   ```bash
+   make test
+   ```
+
+2. **Pokretanje samo Flask backend testova**:
+   ```bash
+   make test-flask
+   ```
+
+3. **Pokretanje samo React frontend testova**:
+   ```bash
+   make test-react
+   ```
+
+4. **Pokretanje testova u Docker-u**:
+   ```bash
+   make test-docker
+   ```
+
+5. **Čišćenje test okruženja**:
+   ```bash
+   make clean
+   ```
+
+### Pokrivenost testovima
+
+Testovi pokrivaju nekoliko kritičnih aspekata aplikacije:
+
+1. **Sigurnosni testovi**:
+   - Rukovanje i zaštita lozinki
+   - Validacija i sanitizacija datoteka
+   - Rukovanje pogreškama za nevažeće unose
+
+2. **Funkcionalni testovi**:
+   - Workflow uploada i downloada datoteka
+   - Odgovori API krajnjih točaka
+   - Renderiranje komponenti i interakcije
+
+3. **Testovi korisničkog sučelja**:
+   - Renderiranje komponenti
+   - Korisničke interakcije (klik događaji, podnošenje formi)
+   - Internacionalizacija
+
+### Dodavanje novih testova
+
+Prilikom proširenja aplikacije novim značajkama, slijedite ove smjernice za dodavanje testova:
+
+1. **Backend testovi**:
+   - Dodajte nove test funkcije u odgovarajuću test datoteku ili kreirajte novu test datoteku
+   - Koristite postojeće fixtures iz conftest.py
+   - Slijedite konvenciju imenovanja `test_<naziv_funkcionalnosti>`
+
+2. **Frontend testovi**:
+   - Kreirajte nove test datoteke uz datoteke komponenti
+   - Koristite konvenciju imenovanja `<NazivKomponente>.test.js`
+   - Koristite React Testing Library-ove utilitije za renderiranje i interakciju
+
 ## Korisnička dokumentacija
 
 ### Instalacija i postavljanje
@@ -352,6 +470,37 @@ Aplikacija ima implementirano sveobuhvatno upravljanje greškama:
    ```bash
    docker run -p 5000:5000 flask_file_upload
    ```
+
+#### Testiranje aplikacije
+
+Da biste osigurali da aplikacija radi ispravno, možete pokrenuti automatizirane testove:
+
+1. **Instalacija ovisnosti za testiranje**
+   ```bash
+   pip install -r requirements-dev.txt
+   ```
+
+2. **Pokretanje svih testova**
+   ```bash
+   make test
+   ```
+
+3. **Pokretanje samo backend testova**
+   ```bash
+   make test-flask
+   ```
+
+4. **Pokretanje samo frontend testova**
+   ```bash
+   make test-react
+   ```
+
+5. **Pokretanje testova u Docker okruženju**
+   ```bash
+   make test-docker
+   ```
+
+Izlaz testova pokazat će vam rade li sve komponente ispravno. Ako neki test ne uspije, poruke o pogreškama pomoći će vam identificirati problem.
 
 ### Korištenje aplikacije
 

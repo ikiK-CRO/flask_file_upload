@@ -20,6 +20,12 @@
 - **Flask-Bcrypt**: Password hashing and validation
 - **Flask-Babel**: Internationalization and localization support
 - **Bootstrap**: Frontend framework for responsive design
+- **Jest**: JavaScript testing framework for React components
+- **pytest**: Python testing framework for backend code
+- **CORS Support**: Cross-Origin Resource Sharing for API access
+- **Docker Compose**: Multi-container environment definition
+- **GitHub Actions**: CI/CD pipeline automation
+- **Makefile**: Build automation and test orchestration
 
 ### Databases
 - **PostgreSQL**: Primary database used across all environments (local Docker, development, and production)
@@ -288,6 +294,118 @@ The application has comprehensive error handling implemented:
 - Werkzeug
 - SQLite (for demonstration) or PostgreSQL (for production)
 
+## Testing Framework
+
+The application includes a comprehensive testing framework to ensure reliability, security, and functionality of both frontend and backend components.
+
+### Testing Technologies
+
+- **Backend Testing**: 
+  - pytest: Python testing framework
+  - Flask Test Client: For testing Flask routes and API endpoints
+  - Temporary SQLite database for test isolation
+  
+- **Frontend Testing**:
+  - Jest: JavaScript testing framework
+  - React Testing Library: For testing React components
+  - Mock implementations for API calls and internationalization
+
+- **Integration Testing**:
+  - Docker Compose configuration for testing in isolated containers
+  - End-to-end test workflow via GitHub Actions
+
+### Test Structure
+
+#### Backend Tests
+
+1. **Basic Route Tests** (`tests/test_basic.py`):
+   - Tests for the index route
+   - Tests for the logs API route
+   - Tests for 404 error handling
+
+2. **File Operation Tests** (`tests/test_file_operations.py`):
+   - Upload file functionality
+   - Validation of file uploads without files
+   - Validation of file uploads without passwords
+   
+3. **Test Fixtures** (`tests/conftest.py`):
+   - Flask application setup with test configuration
+   - Test client creation
+   - Database initialization and teardown
+
+#### Frontend Tests
+
+1. **Component Tests**:
+   - File upload component tests
+   - Navbar component tests
+   - App component tests
+   
+2. **Mock Implementations**:
+   - Mock i18n for internationalization testing
+   - Mock API fetch calls for simulating server responses
+
+### Running Tests
+
+Different test commands are available via the Makefile to simplify test execution:
+
+1. **Run All Tests**:
+   ```bash
+   make test
+   ```
+
+2. **Run Flask Backend Tests Only**:
+   ```bash
+   make test-flask
+   ```
+
+3. **Run React Frontend Tests Only**:
+   ```bash
+   make test-react
+   ```
+
+4. **Run Tests in Docker**:
+   ```bash
+   make test-docker
+   ```
+
+5. **Clean Test Environment**:
+   ```bash
+   make clean
+   ```
+
+### Test Coverage
+
+The tests cover several critical aspects of the application:
+
+1. **Security Tests**:
+   - Password handling and protection
+   - File validation and sanitization
+   - Error handling for invalid inputs
+
+2. **Functionality Tests**:
+   - File upload and download workflows
+   - API endpoint responses
+   - Component rendering and interactions
+
+3. **User Interface Tests**:
+   - Component rendering
+   - User interactions (click events, form submissions)
+   - Internationalization
+
+### Adding New Tests
+
+When extending the application with new features, follow these guidelines for adding tests:
+
+1. **Backend Tests**:
+   - Add new test functions to the appropriate test file or create a new test file
+   - Use the existing fixtures from conftest.py
+   - Follow the naming convention `test_<feature_name>`
+
+2. **Frontend Tests**:
+   - Create new test files alongside component files
+   - Use the naming convention `<ComponentName>.test.js`
+   - Use React Testing Library's render and interaction utilities
+
 ## User Documentation
 
 ### Installation and Setup
@@ -337,6 +455,37 @@ The application has comprehensive error handling implemented:
    ```bash
    docker run -p 5000:5000 flask_file_upload
    ```
+
+#### Testing the Application
+
+To ensure the application works correctly, you can run the automated tests:
+
+1. **Install Test Dependencies**
+   ```bash
+   pip install -r requirements-dev.txt
+   ```
+
+2. **Run All Tests**
+   ```bash
+   make test
+   ```
+
+3. **Run Only Backend Tests**
+   ```bash
+   make test-flask
+   ```
+
+4. **Run Only Frontend Tests**
+   ```bash
+   make test-react
+   ```
+
+5. **Run Tests in Docker Environment**
+   ```bash
+   make test-docker
+   ```
+
+The test output will show you if all components are functioning correctly. If any tests fail, the error messages can help you identify the issue.
 
 ### Using the Application
 
