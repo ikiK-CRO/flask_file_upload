@@ -1,38 +1,45 @@
 <!doctype html>
-<html lang="en">
+<html lang="{{ request.cookies.get('lang', 'hr') }}">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Download File</title>
+    <title>{{ _("Download File") }}</title>
     <!-- Bootstrap CSS from CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   </head>
   <body class="bg-light">
-    <div class="container my-5">
+    <div class="container my-5 position-relative">
+      <!-- Language Switcher -->
+      <div class="position-absolute top-0 end-0 m-3">
+        <div class="btn-group" role="group" aria-label="Language Switcher">
+          <a href="{{ url_for('set_language', lang='hr') }}" class="btn btn-sm {{ 'btn-primary' if request.cookies.get('lang') == 'hr' else 'btn-outline-primary' }}">HR</a>
+          <a href="{{ url_for('set_language', lang='en') }}" class="btn btn-sm {{ 'btn-primary' if request.cookies.get('lang') == 'en' else 'btn-outline-primary' }}">EN</a>
+        </div>
+      </div>
       <!-- Navigation Menu -->
       <nav class="mb-4">
         <div class="d-flex">
-          <a href="{{ url_for('upload_file') }}" class="btn btn-primary me-2">Home</a>
-          <a href="{{ url_for('view_logs') }}" class="btn btn-secondary">View Logs</a>
+          <a href="{{ url_for('upload_file') }}" class="btn btn-primary me-2">{{ _("Home") }}</a>
+          <a href="{{ url_for('view_logs') }}" class="btn btn-secondary">{{ _("View Logs") }}</a>
         </div>
       </nav>
       <div class="card shadow-sm">
         <div class="card-header bg-success text-white">
-          <h2 class="mb-0">Download File</h2>
+          <h2 class="mb-0">{{ _("Download File") }}</h2>
         </div>
         <div class="card-body">
           <form method="post">
             <div class="mb-3">
-              <label for="password" class="form-label">Enter password:</label>
+              <label for="password" class="form-label">{{ _("Enter password:") }}</label>
               <input type="password" name="password" id="password" class="form-control" required>
             </div>
-            <button type="submit" class="btn btn-success">Download</button>
+            <button type="submit" class="btn btn-success">{{ _("Download") }}</button>
           </form>
           {% with messages = get_flashed_messages() %}
             {% if messages %}
               <div class="mt-3">
                 {% for message in messages %}
-                  <div class="alert alert-danger">{{ message }}</div>
+                  <div class="alert alert-danger">{{ _(message) }}</div>
                 {% endfor %}
               </div>
             {% endif %}

@@ -1,25 +1,32 @@
 <!doctype html>
-<html lang="en">
+<html lang="{{ request.cookies.get('lang', 'hr') }}">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Upload File</title>
+    <title>{{ _("Upload File") }}</title>
     <!-- Bootstrap CSS from CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   </head>
   <body class="bg-light">
-    <div class="container my-5">
+    <div class="container my-5 position-relative">
+      <!-- Language Switcher -->
+      <div class="position-absolute top-0 end-0 m-3">
+        <div class="btn-group" role="group" aria-label="Language Switcher">
+          <a href="{{ url_for('set_language', lang='hr') }}" class="btn btn-sm {{ 'btn-primary' if request.cookies.get('lang') == 'hr' else 'btn-outline-primary' }}">HR</a>
+          <a href="{{ url_for('set_language', lang='en') }}" class="btn btn-sm {{ 'btn-primary' if request.cookies.get('lang') == 'en' else 'btn-outline-primary' }}">EN</a>
+        </div>
+      </div>
       <!-- Navigation Menu -->
       <nav class="mb-4">
         <div class="d-flex">
-          <a href="{{ url_for('upload_file') }}" class="btn btn-primary me-2">Home</a>
-          <a href="{{ url_for('view_logs') }}" class="btn btn-secondary">View Logs</a>
+          <a href="{{ url_for('upload_file') }}" class="btn btn-primary me-2">{{ _("Home") }}</a>
+          <a href="{{ url_for('view_logs') }}" class="btn btn-secondary">{{ _("View Logs") }}</a>
         </div>
       </nav>
       
       <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
-          <h2 class="mb-0">Upload File</h2>
+          <h2 class="mb-0">{{ _("Upload File") }}</h2>
         </div>
         <div class="card-body">
           {% if success_message %}
@@ -29,15 +36,15 @@
           {% endif %}
           <form id="uploadForm" method="post" enctype="multipart/form-data">
             <div class="mb-3">
-              <label for="file" class="form-label">Choose file:</label>
+              <label for="file" class="form-label">{{ _("Choose file:") }}</label>
               <input type="file" name="file" id="file" class="form-control" required>
-              <small class="text-muted">Allowed file types: txt, pdf, png, jpg, jpeg, gif, doc, docx, xls, xlsx, zip (Max 10MB)</small>
+              <small class="text-muted">{{ _("Allowed file types: txt, pdf, png, jpg, jpeg, gif, doc, docx, xls, xlsx, zip (Max 10MB)") }}</small>
             </div>
             <div class="mb-3">
-              <label for="password" class="form-label">Enter password:</label>
+              <label for="password" class="form-label">{{ _("Enter password:") }}</label>
               <input type="password" name="password" id="password" class="form-control" required>
             </div>
-            <button type="submit" class="btn btn-primary">Upload</button>
+            <button type="submit" class="btn btn-primary">{{ _("Upload") }}</button>
           </form>
           <!-- Add a div to display the success message -->
           <div id="successMessage" class="alert alert-success mt-3" style="display: none;"></div>
@@ -71,12 +78,12 @@
       function validateFile(file) {
         // Check if file is selected
         if (!file) {
-          return { valid: false, message: "Please select a file." };
+          return { valid: false, message: "{{ _('Please select a file.') }}" };
         }
         
         // Check file size
         if (file.size > maxFileSize) {
-          return { valid: false, message: `File size exceeds the 10MB limit. Your file is ${(file.size / (1024 * 1024)).toFixed(2)}MB.` };
+          return { valid: false, message: "{{ _('File size exceeds the 10MB limit. Your file is') }} " + (file.size / (1024 * 1024)).toFixed(2) + "MB." };
         }
         
         // Check file extension
@@ -84,7 +91,7 @@
         const fileExt = fileName.split('.').pop().toLowerCase();
         
         if (!allowedExtensions.includes(fileExt)) {
-          return { valid: false, message: `File type "${fileExt}" is not allowed. Allowed types: ${allowedExtensions.join(', ')}` };
+          return { valid: false, message: "{{ _('File type') }} \"" + fileExt + "\" {{ _('is not allowed. Allowed types:') }} " + allowedExtensions.join(', ') };
         }
         
         return { valid: true };
@@ -105,7 +112,7 @@
         
         // Validate password
         if (!password) {
-          document.getElementById('validationErrors').textContent = 'Please enter a password.';
+          document.getElementById('validationErrors').textContent = "{{ _('Please enter a password.') }}";
           document.getElementById('validationErrors').style.display = 'block';
           return;
         }
@@ -162,7 +169,7 @@
                 }, 3000);
               } else {
                 // Display error message
-                document.getElementById('validationErrors').textContent = response.message || 'An error occurred during upload.';
+                document.getElementById('validationErrors').textContent = response.message || "{{ _('An error occurred during upload.') }}";
                 document.getElementById('validationErrors').style.display = 'block';
                 document.getElementById('progressContainer').style.display = 'none';
               }
@@ -174,7 +181,7 @@
             }
           } else {
             // Handle error
-            document.getElementById('validationErrors').textContent = 'An error occurred during upload. Please try again.';
+            document.getElementById('validationErrors').textContent = "{{ _('An error occurred during upload. Please try again.') }}";
             document.getElementById('validationErrors').style.display = 'block';
             document.getElementById('progressContainer').style.display = 'none';
           }
@@ -182,7 +189,7 @@
         
         // Setup error event
         xhr.addEventListener('error', function() {
-          document.getElementById('validationErrors').textContent = 'Network error occurred during upload. Please try again.';
+          document.getElementById('validationErrors').textContent = "{{ _('Network error occurred during upload. Please try again.') }}";
           document.getElementById('validationErrors').style.display = 'block';
           document.getElementById('progressContainer').style.display = 'none';
         });

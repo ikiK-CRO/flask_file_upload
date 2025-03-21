@@ -203,3 +203,153 @@ FROM uploaded_file ORDER BY uploaded_file.upload_date DESC]
 2025-03-20 19:56:48,733 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/get-file/6d6fcb34-364a-41e3-b441-c9fe4eb552f4
 2025-03-20 19:56:50,808 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /logs - Referrer: http://localhost:5001/
 2025-03-20 19:56:56,760 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/logs
+2025-03-21 00:41:43,552 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-21 00:42:05,009 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: None
+2025-03-21 00:42:05,313 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /favicon.ico - Referrer: http://localhost:5001/
+2025-03-21 00:42:11,074 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /logs - Referrer: http://localhost:5001/
+2025-03-21 00:42:15,937 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/logs
+2025-03-21 00:42:24,177 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: POST / - Referrer: http://localhost:5001/
+2025-03-21 00:42:24,182 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Upload attempt: esta.pdf (application/pdf)
+2025-03-21 00:42:24,185 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File saved: /app/uploads/5d616bbd-448f-4bba-878a-2eeda6be107b_esta.pdf - Size: 0.16MB
+2025-03-21 00:42:24,555 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File metadata saved to database: 5d616bbd-448f-4bba-878a-2eeda6be107b - esta.pdf
+2025-03-21 00:42:24,556 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Upload successful: esta.pdf - UUID: 5d616bbd-448f-4bba-878a-2eeda6be107b
+2025-03-21 00:42:26,080 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /get-file/5d616bbd-448f-4bba-878a-2eeda6be107b - Referrer: http://localhost:5001/
+2025-03-21 00:42:26,081 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File download page accessed: 5d616bbd-448f-4bba-878a-2eeda6be107b
+2025-03-21 00:42:28,800 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: POST /get-file/5d616bbd-448f-4bba-878a-2eeda6be107b - Referrer: http://localhost:5001/get-file/5d616bbd-448f-4bba-878a-2eeda6be107b
+2025-03-21 00:42:28,801 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File download page accessed: 5d616bbd-448f-4bba-878a-2eeda6be107b
+2025-03-21 00:42:29,170 - WARNING - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Incorrect password attempt for file: 5d616bbd-448f-4bba-878a-2eeda6be107b
+2025-03-21 00:42:31,467 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: POST /get-file/5d616bbd-448f-4bba-878a-2eeda6be107b - Referrer: http://localhost:5001/get-file/5d616bbd-448f-4bba-878a-2eeda6be107b
+2025-03-21 00:42:31,468 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File download page accessed: 5d616bbd-448f-4bba-878a-2eeda6be107b
+2025-03-21 00:42:31,846 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Download count updated: 5d616bbd-448f-4bba-878a-2eeda6be107b - New count: 1
+2025-03-21 00:42:31,847 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File download successful: 5d616bbd-448f-4bba-878a-2eeda6be107b - esta.pdf
+2025-03-21 00:42:33,389 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /logs - Referrer: http://localhost:5001/get-file/5d616bbd-448f-4bba-878a-2eeda6be107b
+2025-03-21 00:42:35,239 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /get-file/5d616bbd-448f-4bba-878a-2eeda6be107b - Referrer: http://localhost:5001/logs
+2025-03-21 00:42:35,240 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File download page accessed: 5d616bbd-448f-4bba-878a-2eeda6be107b
+2025-03-21 00:42:37,785 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /logs - Referrer: http://localhost:5001/get-file/5d616bbd-448f-4bba-878a-2eeda6be107b
+2025-03-21 00:42:49,313 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /get-file/5d616bbd-448f-4bba-878a-2eeda6be107b - Referrer: http://localhost:5001/logs
+2025-03-21 00:42:49,314 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File download page accessed: 5d616bbd-448f-4bba-878a-2eeda6be107b
+2025-03-21 00:42:52,017 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: POST /get-file/5d616bbd-448f-4bba-878a-2eeda6be107b - Referrer: http://localhost:5001/get-file/5d616bbd-448f-4bba-878a-2eeda6be107b
+2025-03-21 00:42:52,018 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File download page accessed: 5d616bbd-448f-4bba-878a-2eeda6be107b
+2025-03-21 00:42:52,389 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Download count updated: 5d616bbd-448f-4bba-878a-2eeda6be107b - New count: 2
+2025-03-21 00:42:52,390 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File download successful: 5d616bbd-448f-4bba-878a-2eeda6be107b - esta.pdf
+2025-03-21 00:42:54,652 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/get-file/5d616bbd-448f-4bba-878a-2eeda6be107b
+2025-03-21 01:01:41,017 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /logs - Referrer: http://localhost:5001/
+2025-03-21 01:01:41,360 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /favicon.ico - Referrer: http://localhost:5001/logs
+2025-03-21 14:36:49,693 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-21 14:37:02,095 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: None
+2025-03-21 14:37:02,416 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /favicon.ico - Referrer: http://localhost:5001/
+2025-03-21 14:50:35,503 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: None
+2025-03-21 14:50:39,601 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: None
+2025-03-21 15:25:37,134 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-21 15:25:43,844 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: None
+2025-03-21 15:25:44,341 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /favicon.ico - Referrer: http://localhost:5001/
+2025-03-21 15:25:55,637 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /set_language/en - Referrer: http://localhost:5001/
+2025-03-21 15:25:55,653 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/
+2025-03-21 15:25:57,335 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /set_language/hr - Referrer: http://localhost:5001/
+2025-03-21 15:25:57,349 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/
+2025-03-21 15:25:59,552 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /set_language/en - Referrer: http://localhost:5001/
+2025-03-21 15:25:59,567 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/
+2025-03-21 15:26:06,627 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /logs - Referrer: http://localhost:5001/
+2025-03-21 15:26:12,004 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/logs
+2025-03-21 15:26:13,023 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /set_language/hr - Referrer: http://localhost:5001/
+2025-03-21 15:26:13,039 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/
+2025-03-21 15:26:14,407 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /logs - Referrer: http://localhost:5001/
+2025-03-21 15:26:16,885 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/logs
+2025-03-21 15:26:21,737 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /set_language/en - Referrer: http://localhost:5001/
+2025-03-21 15:26:21,753 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/
+2025-03-21 15:31:23,071 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/
+2025-03-21 15:31:23,580 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /favicon.ico - Referrer: http://localhost:5001/
+2025-03-21 15:32:19,357 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-21 15:32:22,834 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/
+2025-03-21 15:32:23,126 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /favicon.ico - Referrer: http://localhost:5001/
+2025-03-21 15:32:29,204 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /logs - Referrer: http://localhost:5001/
+2025-03-21 15:32:48,658 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/logs
+2025-03-21 15:32:51,700 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /set_language/hr - Referrer: http://localhost:5001/
+2025-03-21 15:32:51,715 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/
+2025-03-21 15:33:00,562 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /logs - Referrer: http://localhost:5001/
+2025-03-21 15:33:07,084 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/logs
+2025-03-21 15:33:20,393 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: POST / - Referrer: http://localhost:5001/
+2025-03-21 15:33:20,396 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Upload attempt: source.txt (text/plain)
+2025-03-21 15:33:20,397 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File saved: /app/uploads/eb397311-2893-4ad6-bea6-ac057495af2e_source.txt - Size: 0.01MB
+2025-03-21 15:33:20,657 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File metadata saved to database: eb397311-2893-4ad6-bea6-ac057495af2e - source.txt
+2025-03-21 15:33:20,658 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Upload successful: source.txt - UUID: eb397311-2893-4ad6-bea6-ac057495af2e
+2025-03-21 15:33:25,656 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /{file_url} - Referrer: http://localhost:5001/
+2025-03-21 15:33:25,657 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - 404 error: /{file_url}
+2025-03-21 15:40:57,511 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-21 15:41:02,291 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/logs
+2025-03-21 15:41:02,785 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /favicon.ico - Referrer: http://localhost:5001/
+2025-03-21 15:41:10,652 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /logs - Referrer: http://localhost:5001/
+2025-03-21 15:41:12,586 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/logs
+2025-03-21 15:41:13,594 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /set_language/en - Referrer: http://localhost:5001/
+2025-03-21 15:41:13,611 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/
+2025-03-21 15:41:15,059 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /logs - Referrer: http://localhost:5001/
+2025-03-21 15:41:16,933 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/logs
+2025-03-21 15:41:20,154 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /set_language/hr - Referrer: http://localhost:5001/
+2025-03-21 15:41:20,171 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/
+2025-03-21 15:41:28,929 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: POST / - Referrer: http://localhost:5001/
+2025-03-21 15:41:28,932 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Upload attempt: covver.txt (text/plain)
+2025-03-21 15:41:28,934 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File saved: /app/uploads/b081c3f1-3855-49a9-a5fa-0a12d6380998_covver.txt - Size: 0.00MB
+2025-03-21 15:41:29,304 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File metadata saved to database: b081c3f1-3855-49a9-a5fa-0a12d6380998 - covver.txt
+2025-03-21 15:41:29,305 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Upload successful: covver.txt - UUID: b081c3f1-3855-49a9-a5fa-0a12d6380998
+2025-03-21 15:41:34,852 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /get-file/b081c3f1-3855-49a9-a5fa-0a12d6380998 - Referrer: http://localhost:5001/
+2025-03-21 15:41:34,852 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File download page accessed: b081c3f1-3855-49a9-a5fa-0a12d6380998
+2025-03-21 15:41:37,977 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: POST /get-file/b081c3f1-3855-49a9-a5fa-0a12d6380998 - Referrer: http://localhost:5001/get-file/b081c3f1-3855-49a9-a5fa-0a12d6380998
+2025-03-21 15:41:37,979 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File download page accessed: b081c3f1-3855-49a9-a5fa-0a12d6380998
+2025-03-21 15:41:38,353 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Download count updated: b081c3f1-3855-49a9-a5fa-0a12d6380998 - New count: 1
+2025-03-21 15:41:38,354 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File download successful: b081c3f1-3855-49a9-a5fa-0a12d6380998 - covver.txt
+2025-03-21 15:41:40,333 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/get-file/b081c3f1-3855-49a9-a5fa-0a12d6380998
+2025-03-21 15:41:47,813 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: POST / - Referrer: http://localhost:5001/
+2025-03-21 15:41:47,817 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Upload attempt: tvlinks.txt (text/plain)
+2025-03-21 15:41:47,818 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File saved: /app/uploads/2b726997-2535-45bc-b328-4afc9a22a5f6_tvlinks.txt - Size: 0.03MB
+2025-03-21 15:41:48,183 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File metadata saved to database: 2b726997-2535-45bc-b328-4afc9a22a5f6 - tvlinks.txt
+2025-03-21 15:41:48,184 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Upload successful: tvlinks.txt - UUID: 2b726997-2535-45bc-b328-4afc9a22a5f6
+2025-03-21 15:50:35,584 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-21 15:50:39,905 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/get-file/b081c3f1-3855-49a9-a5fa-0a12d6380998
+2025-03-21 15:50:40,317 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /favicon.ico - Referrer: http://localhost:5001/
+2025-03-21 15:50:50,506 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /set_language/en - Referrer: http://localhost:5001/
+2025-03-21 15:50:50,526 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/
+2025-03-21 15:50:54,287 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /logs - Referrer: http://localhost:5001/
+2025-03-21 15:50:56,244 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/logs
+2025-03-21 15:50:57,540 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /set_language/hr - Referrer: http://localhost:5001/
+2025-03-21 15:50:57,562 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/
+2025-03-21 15:50:59,287 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /logs - Referrer: http://localhost:5001/
+2025-03-21 15:51:11,297 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/logs
+2025-03-21 15:51:27,691 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: POST / - Referrer: http://localhost:5001/
+2025-03-21 15:51:27,719 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Upload attempt: pass.png (image/png)
+2025-03-21 15:51:27,729 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File saved: /app/uploads/ef070b00-b60e-49aa-9f56-33068d753263_pass.png - Size: 2.14MB
+2025-03-21 15:51:28,094 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File metadata saved to database: ef070b00-b60e-49aa-9f56-33068d753263 - pass.png
+2025-03-21 15:51:28,095 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Upload successful: pass.png - UUID: ef070b00-b60e-49aa-9f56-33068d753263
+2025-03-21 15:51:31,908 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /get-file/ef070b00-b60e-49aa-9f56-33068d753263 - Referrer: http://localhost:5001/
+2025-03-21 15:51:31,909 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File download page accessed: ef070b00-b60e-49aa-9f56-33068d753263
+2025-03-21 15:51:35,710 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: POST /get-file/ef070b00-b60e-49aa-9f56-33068d753263 - Referrer: http://localhost:5001/get-file/ef070b00-b60e-49aa-9f56-33068d753263
+2025-03-21 15:51:35,711 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File download page accessed: ef070b00-b60e-49aa-9f56-33068d753263
+2025-03-21 15:51:36,076 - WARNING - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Incorrect password attempt for file: ef070b00-b60e-49aa-9f56-33068d753263
+2025-03-21 15:51:38,748 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: POST /get-file/ef070b00-b60e-49aa-9f56-33068d753263 - Referrer: http://localhost:5001/get-file/ef070b00-b60e-49aa-9f56-33068d753263
+2025-03-21 15:51:38,750 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File download page accessed: ef070b00-b60e-49aa-9f56-33068d753263
+2025-03-21 15:51:39,217 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Download count updated: ef070b00-b60e-49aa-9f56-33068d753263 - New count: 1
+2025-03-21 15:51:39,218 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File download successful: ef070b00-b60e-49aa-9f56-33068d753263 - pass.png
+2025-03-21 15:51:41,238 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /logs - Referrer: http://localhost:5001/get-file/ef070b00-b60e-49aa-9f56-33068d753263
+2025-03-21 15:51:45,494 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /get-file/ef070b00-b60e-49aa-9f56-33068d753263 - Referrer: http://localhost:5001/logs
+2025-03-21 15:51:45,515 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File download page accessed: ef070b00-b60e-49aa-9f56-33068d753263
+2025-03-21 15:51:47,023 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /logs - Referrer: http://localhost:5001/get-file/ef070b00-b60e-49aa-9f56-33068d753263
+2025-03-21 15:51:52,163 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/logs
+2025-03-21 15:51:53,597 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/
+2025-03-21 15:51:55,139 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /set_language/en - Referrer: http://localhost:5001/
+2025-03-21 15:51:55,155 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/
+2025-03-21 15:51:56,647 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /logs - Referrer: http://localhost:5001/
+2025-03-21 15:52:02,027 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /get-file/ef070b00-b60e-49aa-9f56-33068d753263 - Referrer: http://localhost:5001/logs
+2025-03-21 15:52:02,027 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File download page accessed: ef070b00-b60e-49aa-9f56-33068d753263
+2025-03-21 15:52:05,158 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/get-file/ef070b00-b60e-49aa-9f56-33068d753263
+2025-03-21 15:52:12,904 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: POST / - Referrer: http://localhost:5001/
+2025-03-21 15:52:12,912 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Upload attempt: pass.pdf (application/pdf)
+2025-03-21 15:52:12,914 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File saved: /app/uploads/509a90f4-fd87-4f6b-b61a-c08403520394_pass.pdf - Size: 0.35MB
+2025-03-21 15:52:13,279 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File metadata saved to database: 509a90f4-fd87-4f6b-b61a-c08403520394 - pass.pdf
+2025-03-21 15:52:13,281 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Upload successful: pass.pdf - UUID: 509a90f4-fd87-4f6b-b61a-c08403520394
+2025-03-21 15:52:14,910 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /get-file/509a90f4-fd87-4f6b-b61a-c08403520394 - Referrer: http://localhost:5001/
+2025-03-21 15:52:14,912 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File download page accessed: 509a90f4-fd87-4f6b-b61a-c08403520394
+2025-03-21 15:52:17,841 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: POST /get-file/509a90f4-fd87-4f6b-b61a-c08403520394 - Referrer: http://localhost:5001/get-file/509a90f4-fd87-4f6b-b61a-c08403520394
+2025-03-21 15:52:17,842 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File download page accessed: 509a90f4-fd87-4f6b-b61a-c08403520394
+2025-03-21 15:52:18,211 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Download count updated: 509a90f4-fd87-4f6b-b61a-c08403520394 - New count: 1
+2025-03-21 15:52:18,212 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File download successful: 509a90f4-fd87-4f6b-b61a-c08403520394 - pass.pdf
+2025-03-21 15:52:20,110 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/get-file/509a90f4-fd87-4f6b-b61a-c08403520394
+2025-03-21 15:52:26,595 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/

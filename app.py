@@ -10,6 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from werkzeug.utils import secure_filename
 import mimetypes
+from flask_babel import Babel, _
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key'  # Change this in production
@@ -75,6 +76,18 @@ def setup_logging():
 
 # Initialize Flask-Bcrypt
 bcrypt = Bcrypt(app)
+
+# Initialize Flask-Babel
+babel = Babel(app)
+
+# Define the default locale
+@babel.localeselector
+def get_locale():
+    # Make sure we prioritize the cookie language
+    lang = request.cookies.get('lang')
+    if lang in ['hr', 'en']:
+        return lang
+    return request.accept_languages.best_match(['hr', 'en'], default='hr')
 
 # Modify your database configuration
 database_url = os.environ.get('DATABASE_URL')
@@ -177,7 +190,7 @@ def upload_file():
     if request.method == 'POST':
         # Check if the POST request has a file part
         if 'file' not in request.files:
-            message = "No file part in the request"
+            message = _("No file part in the request")
             app.logger.warning(f"Upload failed: {message}")
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return jsonify({'success': False, 'message': message})
@@ -189,7 +202,7 @@ def upload_file():
         
         # Check if a file was selected
         if not uploaded_file or uploaded_file.filename == '':
-            message = "No file selected"
+            message = _("No file selected")
             app.logger.warning(f"Upload failed: {message}")
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return jsonify({'success': False, 'message': message})
@@ -198,7 +211,7 @@ def upload_file():
             
         # Check if password is provided
         if not password:
-            message = "Password is required"
+            message = _("Password is required")
             app.logger.warning(f"Upload failed: {message}")
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return jsonify({'success': False, 'message': message})
@@ -321,7 +334,7 @@ def upload_file():
 
         # Return the download URL to the user
         file_url = url_for('get_file', file_uuid=file_uuid, _external=True)
-        success_message = f"File uploaded successfully! Access it at: <a href='{file_url}'>{file_url}</a>"
+        success_message = _("File uploaded successfully! Access it at: <a href='{file_url}'>{file_url}</a>").format(file_url=file_url)
         
         app.logger.info(f"Upload successful: {filename} - UUID: {file_uuid}")
         
@@ -350,7 +363,7 @@ def get_file(file_uuid):
         
         if not entered_password:
             app.logger.warning(f"Download attempt without password: {file_uuid}")
-            flash("Password is required")
+            flash(_("Password is required"))
             return render_template('get_file.html', file_uuid=file_uuid)
         
         if bcrypt.check_password_hash(file_record.password_hash, entered_password):
@@ -373,7 +386,7 @@ def get_file(file_uuid):
                 return "Error downloading file", 500
         else:
             app.logger.warning(f"Incorrect password attempt for file: {file_uuid}")
-            flash("Incorrect password!")
+            flash(_("Incorrect password!"))
     
     return render_template('get_file.html', file_uuid=file_uuid)
 
@@ -398,12 +411,12 @@ def view_logs():
         if not os.path.exists(log_file):
             try:
                 with open(log_file, 'w') as f:
-                    f.write("Log file created\n")
-                app.logger.info("Log file created")
-                error_message = "Log file created. No activity logs to display yet."
+                    f.write(_("Log file created\n"))
+                app.logger.info(_("Log file created"))
+                error_message = _("Log file created. No activity logs to display yet.")
             except Exception as e:
                 app.logger.error(f"Error creating log file: {str(e)}")
-                error_message = f"Could not create log file: {str(e)}"
+                error_message = _("Could not create log file: {}").format(str(e))
         else:
             try:
                 with open(log_file, 'r') as f:
@@ -418,7 +431,7 @@ def view_logs():
                             continue
             except Exception as e:
                 app.logger.error(f"Error reading log file: {str(e)}")
-                error_message = f"Could not read log file: {str(e)}"
+                error_message = _("Could not read log file: {}").format(str(e))
         
         # Sort logs in reverse chronological order (newest first)
         uploads.reverse()
@@ -439,7 +452,7 @@ def view_logs():
                             files=[], 
                             uploads=[],
                             downloads=[],
-                            error=f"Could not load logs: {str(e)}")
+                            error=_("Could not load logs: {}").format(str(e)))
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -450,6 +463,12 @@ def page_not_found(e):
 def server_error(e):
     app.logger.error(f"500 error: {str(e)}")
     return render_template('500.html'), 500
+
+@app.route('/set_language/<lang>')
+def set_language(lang):
+    response = redirect(request.referrer or url_for('upload_file'))
+    response.set_cookie('lang', lang)
+    return response
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
