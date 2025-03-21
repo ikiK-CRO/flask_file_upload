@@ -17,9 +17,8 @@ RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the application code into the container
 COPY . /app/
 
-# Copy React build files into the container
-COPY react-src/build/static /app/static/react
-COPY react-src/build/index.html /app/templates/react_index.html
+# The React build files are already in the static/react directory
+# No need to copy from react-src/build
 
 # Expose port 5000 for Flask (container-side)
 EXPOSE 5000
