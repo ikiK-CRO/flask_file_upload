@@ -353,3 +353,14 @@ FROM uploaded_file ORDER BY uploaded_file.upload_date DESC]
 2025-03-21 15:52:18,212 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File download successful: 509a90f4-fd87-4f6b-b61a-c08403520394 - pass.pdf
 2025-03-21 15:52:20,110 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/get-file/509a90f4-fd87-4f6b-b61a-c08403520394
 2025-03-21 15:52:26,595 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/
+2025-03-21 15:57:45,078 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-21 15:57:47,498 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/
+2025-03-21 15:57:48,038 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /favicon.ico - Referrer: http://localhost:5001/
+2025-03-21 15:57:50,195 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /set_language/en - Referrer: http://localhost:5001/
+2025-03-21 15:57:50,211 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/
+2025-03-21 15:57:51,347 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /logs - Referrer: http://localhost:5001/
+2025-03-21 15:57:52,838 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/logs
+2025-03-21 15:57:54,179 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /set_language/hr - Referrer: http://localhost:5001/
+2025-03-21 15:57:54,197 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/
+2025-03-21 15:57:55,641 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /logs - Referrer: http://localhost:5001/
+2025-03-21 15:57:57,894 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/logs
