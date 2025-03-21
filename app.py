@@ -96,6 +96,18 @@ database_url = os.environ.get('DATABASE_URL')
 if database_url:
     # Fix for Heroku PostgreSQL URL format (if needed)
     database_url = re.sub(r'^postgres:', 'postgresql:', database_url)
+    
+    # Check if psycopg2 is available
+    try:
+        import psycopg2
+        app.logger.info("PostgreSQL support available, using PostgreSQL database")
+    except ImportError:
+        app.logger.warning("PostgreSQL support not available, falling back to SQLite")
+        # Use SQLite for fallback
+        database_path = os.path.join(os.getcwd(), 'fileupload.db')
+        # Ensure parent directory exists
+        os.makedirs(os.path.dirname(os.path.abspath(database_path)), exist_ok=True)
+        database_url = f'sqlite:///{database_path}'
 else:
     # Use SQLite for demonstration
     database_path = os.path.join(os.getcwd(), 'fileupload.db')
@@ -144,6 +156,22 @@ with app.app_context():
         app.logger.info("Database tables dropped and recreated successfully")
     except Exception as e:
         app.logger.error(f"Error recreating database tables: {e}")
+        # If we're using PostgreSQL and it fails, try to fall back to SQLite
+        if 'postgresql' in app.config['SQLALCHEMY_DATABASE_URI'].lower():
+            try:
+                app.logger.warning("Attempting to fall back to SQLite database")
+                # Switch to SQLite
+                database_path = os.path.join(os.getcwd(), 'fileupload.db')
+                app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{database_path}'
+                # Recreate the engine with the new connection string
+                db.engine.dispose()
+                db.get_engine(app, bind=None)
+                # Try again with SQLite
+                db.drop_all()
+                db.create_all()
+                app.logger.info("Database tables created successfully with SQLite fallback")
+            except Exception as inner_e:
+                app.logger.error(f"Error creating SQLite fallback database: {inner_e}")
 
 # Helper function to check if a file has an allowed extension
 def allowed_file(filename):
