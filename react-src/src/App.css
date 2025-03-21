@@ -31,6 +31,8 @@
   --card-body-bg: var(--white);
   --table-bg: var(--white);
   --table-text: var(--gray-700);
+  --table-row-bg: var(--white);
+  --table-row-alt-bg: var(--gray-100);
   --link-color: var(--primary-color);
   --alert-bg: var(--white);
   --alert-success-text: #276749;
@@ -57,6 +59,8 @@
   --card-body-bg: #2d3748;
   --table-bg: #2d3748;
   --table-text: #e2e8f0;
+  --table-row-bg: #2d3748;
+  --table-row-alt-bg: #3a4a63;
   --link-color: #63b3ed;
   --alert-bg: #2d3748;
   --alert-success-text: #9ae6b4;
@@ -360,7 +364,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Tables */
 .table {
-  color: var(--table-text);
+  color: var(--table-text) !important;
 }
 
 .table th {
@@ -369,12 +373,32 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--white);
 }
 
+/* Make sure table rows have appropriate backgrounds and text colors */
+.table tbody tr {
+  background-color: var(--table-row-bg);
+  color: var(--table-text) !important;
+}
+
 .table-striped tbody tr:nth-of-type(odd) {
-  background-color: var(--bg-secondary);
+  background-color: var(--table-row-alt-bg);
 }
 
 .table-striped tbody tr:nth-of-type(even) {
-  background-color: var(--bg-primary);
+  background-color: var(--table-row-bg);
+}
+
+/* Ensure better contrast for table cells */
+.table td {
+  color: var(--table-text) !important;
+}
+
+/* Add a more specific selector to make sure table data is visible */
+[data-theme='dark'] .table tbody td {
+  color: var(--text-primary) !important;
+}
+
+[data-theme='dark'] .table-striped tbody tr {
+  color: var(--text-primary) !important;
 }
 
 /* Progress bar */
