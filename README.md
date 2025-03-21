@@ -18,8 +18,7 @@
 - **AJAX**: Asynchronous file uploads without page reload
 
 ### Databases
-- **SQLite**: Local database for development and demonstration
-- **PostgreSQL**: Production database for Heroku deployment
+- **PostgreSQL**: Primary database used across all environments (local Docker, development, and production)
 
 ### Infrastructure and Deployment
 - **Docker**: Application containerization for easy setup and deployment

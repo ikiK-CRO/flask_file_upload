@@ -18,8 +18,7 @@
 - **AJAX**: Asinkrono uploadanje datoteka bez ponovnog učitavanja stranice
 
 ### Baze podataka
-- **SQLite**: Lokalna baza podataka za razvoj i demonstraciju
-- **PostgreSQL**: Produkcijska baza podataka za Heroku deployment
+- **PostgreSQL**: Primarna baza podataka koja se koristi u svim okruženjima (lokalni Docker, razvoj i produkcija)
 
 ### Infrastruktura i deployment
 - **Docker**: Kontejnerizacija aplikacije za jednostavno pokretanje i deployment
