@@ -25,18 +25,21 @@ CORS(app, resources={r"/*": {
 }})  # Enhanced CORS for all routes
 app.secret_key = 'your-secret-key'  # Change this in production
 
-# Force HTTPS middleware
+# Force HTTPS middleware - only on production
 @app.before_request
 def force_https():
-    if request.headers.get('X-Forwarded-Proto') == 'http':
+    # Only force HTTPS on Heroku or other production environments using X-Forwarded-Proto
+    if request.headers.get('X-Forwarded-Proto') == 'http' and 'herokuapp.com' in request.host:
         url = request.url.replace('http://', 'https://', 1)
         return redirect(url, code=301)
 
 # Add middleware to set security headers for all responses
 @app.after_request
 def add_security_headers(response):
-    response.headers['Content-Security-Policy'] = "upgrade-insecure-requests"
-    response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+    # Only add these headers in production
+    if 'herokuapp.com' in request.host:
+        response.headers['Content-Security-Policy'] = "upgrade-insecure-requests"
+        response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
     return response
 
 # Configure logging
@@ -301,8 +304,11 @@ def get_file(file_uuid):
                 response.headers["Access-Control-Allow-Headers"] = "Content-Type, Content-Disposition, X-Requested-With"
                 response.headers["Access-Control-Expose-Headers"] = "Content-Disposition, Content-Length, X-Content-Transfer-Id"
                 response.headers["Cross-Origin-Resource-Policy"] = "cross-origin"
-                response.headers["Cross-Origin-Embedder-Policy"] = "unsafe-none"
-                response.headers["Feature-Policy"] = "downloads *"
+                
+                # Only add these security headers in production
+                if 'herokuapp.com' in request.host:
+                    response.headers["Cross-Origin-Embedder-Policy"] = "unsafe-none"
+                    response.headers["Feature-Policy"] = "downloads *"
                 
                 return response
             except Exception as e:
@@ -313,8 +319,10 @@ def get_file(file_uuid):
             return jsonify({'success': False, 'message': _("Incorrect password!")}), 403
     
     # For GET requests, redirect to the main React app with the file UUID as a parameter
-    # Ensure we're using HTTPS for the redirect
-    scheme = 'https' if request.headers.get('X-Forwarded-Proto') == 'https' else request.scheme
+    scheme = request.scheme
+    # Force HTTPS only on Heroku
+    if 'herokuapp.com' in request.host and request.headers.get('X-Forwarded-Proto') == 'https':
+        scheme = 'https'
     host = request.host
     return redirect(f'{scheme}://{host}/?file={file_uuid}')
 
@@ -431,7 +439,10 @@ def api_upload_file():
         return jsonify({'success': False, 'message': "An error occurred while saving the file."})
 
     # Return the download URL to the user
-    scheme = 'https'
+    scheme = request.scheme
+    # Force HTTPS only on Heroku
+    if 'herokuapp.com' in request.host:
+        scheme = 'https'
     host = request.host
     file_url = f"{scheme}://{host}/get-file/{file_uuid}"
     return jsonify({
@@ -474,7 +485,10 @@ def api_get_file(file_uuid):
             app.logger.error(f"API: Error updating download count: {str(e)} - UUID: {file_uuid}")
         
         # Return the direct download URL with HTTPS always forced
-        scheme = 'https'
+        scheme = request.scheme
+        # Force HTTPS only on Heroku
+        if 'herokuapp.com' in request.host:
+            scheme = 'https'
         host = request.host
         download_url = f"{scheme}://{host}/api/download/{file_uuid}"
         app.logger.info(f"API: Password verified, returning download URL: {download_url}")
@@ -490,8 +504,8 @@ def api_get_file(file_uuid):
 
 @app.route('/api/download/<file_uuid>', methods=['GET', 'OPTIONS'])
 def download_file_direct(file_uuid):
-    # Ensure we're only serving over HTTPS
-    if request.headers.get('X-Forwarded-Proto') == 'http':
+    # Ensure we're only serving over HTTPS in production
+    if request.headers.get('X-Forwarded-Proto') == 'http' and 'herokuapp.com' in request.host:
         scheme = 'https'
         host = request.host
         return redirect(f'{scheme}://{host}/api/download/{file_uuid}', code=301)
@@ -502,7 +516,8 @@ def download_file_direct(file_uuid):
         resp.headers['Access-Control-Allow-Origin'] = '*'
         resp.headers['Access-Control-Allow-Methods'] = 'GET, OPTIONS'
         resp.headers['Access-Control-Allow-Headers'] = 'Content-Type, Content-Disposition, X-Requested-With'
-        resp.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+        if 'herokuapp.com' in request.host:
+            resp.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
         return resp
         
     # This route would handle the actual file download after auth is completed
@@ -530,10 +545,13 @@ def download_file_direct(file_uuid):
         response.headers["Access-Control-Allow-Headers"] = "Content-Type, Content-Disposition, X-Requested-With"
         response.headers["Access-Control-Expose-Headers"] = "Content-Disposition, Content-Length, X-Content-Transfer-Id"
         response.headers["Cross-Origin-Resource-Policy"] = "cross-origin"
-        response.headers["Cross-Origin-Embedder-Policy"] = "unsafe-none"
-        response.headers["Feature-Policy"] = "downloads *"
-        response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
-        response.headers["Content-Security-Policy"] = "upgrade-insecure-requests"
+        
+        # Only add these security headers in production
+        if 'herokuapp.com' in request.host:
+            response.headers["Cross-Origin-Embedder-Policy"] = "unsafe-none"
+            response.headers["Feature-Policy"] = "downloads *"
+            response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+            response.headers["Content-Security-Policy"] = "upgrade-insecure-requests"
         
         return response
     except Exception as e:
