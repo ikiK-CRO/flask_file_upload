@@ -29,15 +29,16 @@ app.secret_key = 'your-secret-key'  # Change this in production
 @app.before_request
 def force_https():
     # Only force HTTPS on Heroku or other production environments using X-Forwarded-Proto
-    if request.headers.get('X-Forwarded-Proto') == 'http' and 'herokuapp.com' in request.host:
+    # Skip this in Docker or local environments
+    if request.headers.get('X-Forwarded-Proto') == 'http' and not request.host.startswith('127.0.0.1') and not request.host.startswith('localhost') and 'herokuapp.com' in request.host:
         url = request.url.replace('http://', 'https://', 1)
         return redirect(url, code=301)
 
 # Add middleware to set security headers for all responses
 @app.after_request
 def add_security_headers(response):
-    # Only add these headers in production
-    if 'herokuapp.com' in request.host:
+    # Only add these headers in production, not in Docker or local dev
+    if not request.host.startswith('127.0.0.1') and not request.host.startswith('localhost') and 'herokuapp.com' in request.host:
         response.headers['Content-Security-Policy'] = "upgrade-insecure-requests"
         response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
     return response
