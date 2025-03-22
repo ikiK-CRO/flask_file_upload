@@ -1,34 +1,38 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import Navbar from './Navbar';
-import { BrowserRouter } from 'react-router-dom';
 import { ThemeContext } from '../ThemeContext';
 
-// Mock ThemeContext
-const mockThemeContext = {
-  theme: 'light',
-  toggleTheme: jest.fn()
-};
-
-// Mock for navigateWithoutFileParam
-const mockNavigateWithoutFileParam = jest.fn();
-
-// Wrap component with necessary providers
-const renderWithProviders = (ui) => {
-  return render(
-    <ThemeContext.Provider value={mockThemeContext}>
-      <BrowserRouter>
-        {ui}
-      </BrowserRouter>
-    </ThemeContext.Provider>
-  );
-};
+// Mock components and hooks used in Navbar to avoid routing issues
+jest.mock('react-router-dom', () => ({
+  useLocation: jest.fn().mockReturnValue({
+    pathname: '/',
+    hash: '',
+    search: '',
+    state: null
+  }),
+  Link: ({ children }) => <span>{children}</span>
+}));
 
 describe('Navbar component', () => {
   it('renders navigation links correctly', () => {
-    renderWithProviders(<Navbar navigateWithoutFileParam={mockNavigateWithoutFileParam} />);
+    // Create mock context value
+    const mockContext = {
+      theme: 'light',
+      toggleTheme: jest.fn()
+    };
     
-    // Using regex to make the test more flexible with translations
+    // Create mock prop
+    const mockNavigate = jest.fn();
+
+    // Render with context provider
+    render(
+      <ThemeContext.Provider value={mockContext}>
+        <Navbar navigateWithoutFileParam={mockNavigate} />
+      </ThemeContext.Provider>
+    );
+    
+    // Check if basic elements are rendered
     expect(screen.getByText(/home/i)).toBeInTheDocument();
     expect(screen.getByText(/activity log/i, { exact: false })).toBeInTheDocument();
   });

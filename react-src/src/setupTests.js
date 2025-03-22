@@ -3,6 +3,7 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom';
+import './silenceWarnings';
 
 // Mock for document.cookie
 Object.defineProperty(document, 'cookie', {
@@ -10,17 +11,20 @@ Object.defineProperty(document, 'cookie', {
   value: '',
 });
 
-// Mock react-router-dom
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useLocation: () => ({
-    pathname: '/',
-    hash: '',
-    search: '',
-    state: null
-  }),
-  Link: ({ children, to }) => <a href={to}>{children}</a>
-}));
+// Mock react-router-dom - use less intrusive mocking
+jest.mock('react-router-dom', () => {
+  const originalModule = jest.requireActual('react-router-dom');
+  return {
+    ...originalModule,
+    useLocation: jest.fn().mockReturnValue({
+      pathname: '/',
+      hash: '',
+      search: '',
+      state: null
+    }),
+    useNavigate: jest.fn().mockReturnValue(jest.fn())
+  };
+});
 
 // Mock i18next and react-i18next
 jest.mock('i18next', () => ({
