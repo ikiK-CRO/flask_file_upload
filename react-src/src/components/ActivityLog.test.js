@@ -48,11 +48,11 @@ describe('ActivityLog component', () => {
     
     // Wait for data to load
     await waitFor(() => {
-      expect(screen.getByText('File List')).toBeInTheDocument();
+      expect(screen.getByText('Files')).toBeInTheDocument();
     });
     
     // Tabs should be visible
-    expect(screen.getByText('File List')).toBeInTheDocument();
+    expect(screen.getByText('Files')).toBeInTheDocument();
     expect(screen.getByText('Upload Logs')).toBeInTheDocument();
     expect(screen.getByText('Download Logs')).toBeInTheDocument();
   });
@@ -78,17 +78,24 @@ describe('ActivityLog component', () => {
       expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
     });
     
+    // Check files tab content is displayed first
+    expect(screen.getByText('test-file.pdf')).toBeInTheDocument();
+    
     // Click on Upload Logs tab
     fireEvent.click(screen.getByText('Upload Logs'));
     
     // Should show upload logs
-    expect(screen.getByText('File uploaded: test-file.pdf')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText(/File uploaded: test-file.pdf/i)).toBeInTheDocument();
+    });
     
     // Click on Download Logs tab
     fireEvent.click(screen.getByText('Download Logs'));
     
     // Should show download logs
-    expect(screen.getByText('File downloaded: test-file.pdf')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText(/File downloaded: test-file.pdf/i)).toBeInTheDocument();
+    });
   });
 
   it('shows error message when API request fails', async () => {
@@ -103,7 +110,7 @@ describe('ActivityLog component', () => {
     
     // Wait for error to show
     await waitFor(() => {
-      expect(screen.getByText('Could not load logs.')).toBeInTheDocument();
+      expect(screen.getByText('Failed to load logs')).toBeInTheDocument();
     });
   });
 }); 

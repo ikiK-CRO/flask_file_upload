@@ -1,6 +1,10 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import App from './App';
+
+// Mock CSS imports to fix the bootstrap.min.css issue
+jest.mock('bootstrap/dist/css/bootstrap.min.css', () => ({}));
+jest.mock('./App.css', () => ({}));
 
 // Mock components used in App
 jest.mock('./components/Navbar', () => () => <div data-testid="navbar-mock">Navbar Mock</div>);
@@ -34,7 +38,7 @@ jest.mock('./i18n', () => ({
 
 describe('App component', () => {
   it('renders without crashing', () => {
-    const { container } = render(<App />);
-    expect(container).toBeInTheDocument();
+    render(<App />);
+    expect(screen.getByTestId('theme-provider-mock')).toBeInTheDocument();
   });
 });

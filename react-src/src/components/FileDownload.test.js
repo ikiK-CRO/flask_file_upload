@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import FileDownload from './FileDownload';
 import axios from 'axios';
+import { MemoryRouter, Routes, Route } from 'react-router-dom';
 
 // Mock axios
 jest.mock('axios', () => ({
@@ -11,12 +12,6 @@ jest.mock('axios', () => ({
       download_url: 'http://example.com/download' 
     }
   }))
-}));
-
-// Mock react-router-dom
-jest.mock('react-router-dom', () => ({
-  useParams: jest.fn(() => ({ fileUuid: 'test-uuid' })),
-  useLocation: jest.fn(() => ({ search: '?file=test-uuid' }))
 }));
 
 // Mock i18next
@@ -37,6 +32,18 @@ window.location = {
   replace: jest.fn()
 };
 
+// Helper function to render with router context
+const renderWithRouter = (ui, { route = '/file/test-uuid', fileUuid = 'test-uuid' } = {}) => {
+  return render(
+    <MemoryRouter initialEntries={[route]}>
+      <Routes>
+        <Route path="/file/:fileUuid" element={ui} />
+        <Route path="*" element={ui} />
+      </Routes>
+    </MemoryRouter>
+  );
+};
+
 describe('FileDownload component', () => {
   beforeEach(() => {
     // Clear mocks between tests
@@ -48,7 +55,7 @@ describe('FileDownload component', () => {
   });
 
   it('renders the file download form', () => {
-    render(<FileDownload fileUuid="test-uuid" />);
+    renderWithRouter(<FileDownload />);
     
     // Check for the header
     expect(screen.getByText('Download File')).toBeInTheDocument();
@@ -61,7 +68,7 @@ describe('FileDownload component', () => {
   });
 
   it('shows error when trying to download without a password', async () => {
-    render(<FileDownload fileUuid="test-uuid" />);
+    renderWithRouter(<FileDownload />);
     
     const downloadButton = screen.getByText('Download');
     fireEvent.click(downloadButton);
@@ -72,7 +79,7 @@ describe('FileDownload component', () => {
   });
 
   it('initiates download after correct password submission', async () => {
-    render(<FileDownload fileUuid="test-uuid" />);
+    renderWithRouter(<FileDownload />);
     
     // Enter password
     const passwordInput = screen.getByLabelText('Enter password:');
@@ -105,7 +112,7 @@ describe('FileDownload component', () => {
       }
     });
     
-    render(<FileDownload fileUuid="test-uuid" />);
+    renderWithRouter(<FileDownload />);
     
     // Enter password
     const passwordInput = screen.getByLabelText('Enter password:');

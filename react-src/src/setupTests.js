@@ -70,3 +70,28 @@ jest.mock('react-i18next', () => ({
   },
   I18nextProvider: ({ children }) => children
 }));
+
+// Mock the browser environment for testing
+global.MutationObserver = class {
+  constructor(callback) {}
+  disconnect() {}
+  observe(element, initObject) {}
+};
+
+// Mock for window.matchMedia
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: jest.fn().mockImplementation(query => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: jest.fn(), // Deprecated
+    removeListener: jest.fn(), // Deprecated
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  })),
+});
+
+// Mock for bootstrap
+jest.mock('bootstrap', () => ({}));
