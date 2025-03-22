@@ -53,10 +53,12 @@
    - [System Architecture](#system-architecture)
    - [Security Implementations](#security-implementations)
    - [Logging Implementation](#logging-implementation)
+   - [Multilingual Support](#multilingual-support)
    - [Database Schema](#database-schema)
    - [API Endpoints](#api-endpoints)
    - [Error Handling](#error-handling)
    - [Technical Requirements](#technical-requirements)
+   - [Testing Framework](#testing-framework)
    
 2. [User Documentation](#user-documentation)
    - [Installation and Setup](#installation-and-setup)
@@ -494,10 +496,12 @@ When extending the application with new features, follow these guidelines for ad
 ### Installation and Setup
 
 #### Prerequisites
-- Python 3.6 or newer
-- pip (Python package manager)
+- [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/) installed on your system
+- Git for cloning the repository
 
-#### Installation Steps
+#### Setup with Docker Compose (Recommended)
+
+Docker Compose provides the easiest way to set up and run the entire application stack with the correct configuration:
 
 1. **Clone Repository**
    ```bash
@@ -505,26 +509,149 @@ When extending the application with new features, follow these guidelines for ad
    cd flask_file_upload
    ```
 
-2. **Install Required Packages**
+2. **Configure Environment Variables (Optional)**
+   
+   The project includes default configuration in the `docker-compose.yml` file, but you can customize it by creating a `.env` file:
+   ```bash
+   # Example .env file contents
+   MASTER_ENCRYPTION_KEY=your_secure_base64_key  # Optional: For production use
+   ```
+
+3. **Build and Start the Application**
+   ```bash
+   docker-compose up -d
+   ```
+   
+   This command will:
+   - Build the application container
+   - Set up a PostgreSQL database container
+   - Configure networking between containers
+   - Mount necessary volumes
+   - Start the application on http://localhost:5001
+
+4. **Verify the Application is Running**
+   
+   Open your browser and navigate to:
+   ```
+   http://localhost:5001
+   ```
+
+5. **View Logs (Optional)**
+   ```bash
+   docker-compose logs -f
+   ```
+
+6. **Stop the Application**
+   ```bash
+   docker-compose down
+   ```
+
+#### Manual Setup (Without Docker)
+
+If you prefer to run the application without Docker:
+
+1. **Prerequisites**
+   - Python 3.6+ installed
+   - PostgreSQL database installed and running
+   - pip (Python package manager)
+
+2. **Clone Repository**
+   ```bash
+   git clone <repository-url>
+   cd flask_file_upload
+   ```
+
+3. **Install Required Packages**
    ```bash
    pip install -r requirements.txt
    ```
 
-3. **Environment Configuration**
-   ```bash
-   # Optional: Set environment variables
-   export FLASK_ENV=development # for development
-   # or
-   export FLASK_ENV=production # for production
+4. **Environment Configuration**
    
-   # For using PostgreSQL database
+   **For Linux/macOS:**
+   ```bash
+   # Required environment variables
    export DATABASE_URL=postgresql://username:password@localhost/database_name
    
-   # Optional: Set master encryption key (recommended for production)
-   export MASTER_ENCRYPTION_KEY=your_secure_base64_key
+   # Optional environment variables
+   export FLASK_ENV=development  # or production
+   export MASTER_ENCRYPTION_KEY=your_secure_base64_key  # For production use
+   ```
+   
+   **For Windows (Command Prompt):**
+   ```cmd
+   # Required environment variables
+   set DATABASE_URL=postgresql://username:password@localhost/database_name
+   
+   # Optional environment variables
+   set FLASK_ENV=development
+   set MASTER_ENCRYPTION_KEY=your_secure_base64_key
+   ```
+   
+   **For Windows (PowerShell):**
+   ```powershell
+   # Required environment variables
+   $env:DATABASE_URL="postgresql://username:password@localhost/database_name"
+   
+   # Optional environment variables
+   $env:FLASK_ENV="development"
+   $env:MASTER_ENCRYPTION_KEY="your_secure_base64_key"
    ```
 
-4. **Start the Application**
+5. **Start the Application**
    ```bash
    python app.py
    ```
+   The application will be available at `http://localhost:5000`
+
+#### Testing the Application
+
+The application includes automated tests that you can run to verify functionality:
+
+##### Testing with Docker Compose
+
+1. **Run All Tests in Docker Environment**
+   ```bash
+   docker-compose -f docker-compose.test.yml up --build
+   ```
+   This will build a test container and run both backend and frontend tests.
+
+2. **Run Only Backend Tests**
+   ```bash
+   docker-compose exec web python -m pytest tests/
+   ```
+
+3. **Run Specific Test Modules**
+   ```bash
+   docker-compose exec web python -m pytest tests/test_encryption.py -v
+   ```
+
+##### Testing Without Docker
+
+If you're using the manual setup:
+
+1. **Install Test Dependencies**
+   ```bash
+   pip install -r requirements-dev.txt
+   ```
+
+2. **Run All Tests**
+   ```bash
+   make test
+   ```
+
+3. **Run Only Backend Tests**
+   ```bash
+   make test-flask
+   ```
+
+4. **Run Only Frontend Tests**
+   ```bash
+   make test-react
+   ```
+
+The test output will show if all components are functioning correctly. If any tests fail, the error messages can help identify the issue.
+
+### Using the Application
+
+The application will be available at `http://localhost:5000`

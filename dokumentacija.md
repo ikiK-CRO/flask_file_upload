@@ -53,16 +53,19 @@
    - [Arhitektura sustava](#arhitektura-sustava)
    - [Sigurnosne implementacije](#sigurnosne-implementacije)
    - [Implementacija logiranja](#implementacija-logiranja)
+   - [Podrška za višejezičnost](#podrška-za-višejezičnost)
    - [Shema baze podataka](#shema-baze-podataka)
    - [API krajnje točke](#api-krajnje-točke)
    - [Upravljanje pogreškama](#upravljanje-pogreškama)
    - [Tehnički zahtjevi](#tehnički-zahtjevi)
+   - [Okvir za testiranje](#okvir-za-testiranje)
    
 2. [Korisnička dokumentacija](#korisnička-dokumentacija)
    - [Instalacija i postavljanje](#instalacija-i-postavljanje)
    - [Korištenje aplikacije](#korištenje-aplikacije)
    - [Sigurnosne preporuke](#sigurnosne-preporuke)
    - [Rješavanje problema](#rješavanje-problema)
+   - [Frontend arhitektura](#frontend-arhitektura)
 
 ## Tehnička dokumentacija
 
@@ -509,10 +512,12 @@ Prilikom proširenja aplikacije novim značajkama, slijedite ove smjernice za do
 ### Instalacija i postavljanje
 
 #### Preduvjeti
-- Python 3.6 ili noviji
-- pip (Python package manager)
+- [Docker](https://docs.docker.com/get-docker/) i [Docker Compose](https://docs.docker.com/compose/install/) instalirani na vašem sustavu
+- Git za kloniranje repozitorija
 
-#### Koraci za instalaciju
+#### Postavljanje s Docker Compose (Preporučeno)
+
+Docker Compose pruža najlakši način za postavljanje i pokretanje cijelog stack-a aplikacije s ispravnom konfiguracijom:
 
 1. **Kloniranje repozitorija**
    ```bash
@@ -520,48 +525,128 @@ Prilikom proširenja aplikacije novim značajkama, slijedite ove smjernice za do
    cd flask_file_upload
    ```
 
-2. **Instalacija potrebnih paketa**
+2. **Konfiguracija varijabli okruženja (Opcionalno)**
+   
+   Projekt uključuje zadanu konfiguraciju u `docker-compose.yml` datoteci, ali možete je prilagoditi stvaranjem `.env` datoteke:
+   ```bash
+   # Primjer sadržaja .env datoteke
+   MASTER_ENCRYPTION_KEY=vaš_sigurni_base64_ključ  # Opcionalno: Za produkcijsko korištenje
+   ```
+
+3. **Izgradnja i pokretanje aplikacije**
+   ```bash
+   docker-compose up -d
+   ```
+   
+   Ova naredba će:
+   - Izgraditi kontejner aplikacije
+   - Postaviti PostgreSQL kontejner baze podataka
+   - Konfigurirati mrežu između kontejnera
+   - Montirati potrebne volumene
+   - Pokrenuti aplikaciju na http://localhost:5001
+
+4. **Provjerite radi li aplikacija**
+   
+   Otvorite svoj preglednik i navigirajte do:
+   ```
+   http://localhost:5001
+   ```
+
+5. **Pregledavanje logova (Opcionalno)**
+   ```bash
+   docker-compose logs -f
+   ```
+
+6. **Zaustavljanje aplikacije**
+   ```bash
+   docker-compose down
+   ```
+
+#### Ručno postavljanje (Bez Docker-a)
+
+Ako preferirate pokretanje aplikacije bez Docker-a:
+
+1. **Preduvjeti**
+   - Python 3.6+ instaliran
+   - PostgreSQL baza podataka instalirana i pokrenuta
+   - pip (Python package manager)
+
+2. **Kloniranje repozitorija**
+   ```bash
+   git clone <url-repozitorija>
+   cd flask_file_upload
+   ```
+
+3. **Instalacija potrebnih paketa**
    ```bash
    pip install -r requirements.txt
    ```
 
-3. **Konfiguracija okruženja**
-   ```bash
-   # Opcijski: Postavite varijable okruženja
-   export FLASK_ENV=development # za razvoj
-   # ili
-   export FLASK_ENV=production # za produkciju
+4. **Konfiguracija okruženja**
    
-   # Za korištenje PostgreSQL baze
+   **Za Linux/macOS:**
+   ```bash
+   # Obavezne varijable okruženja
    export DATABASE_URL=postgresql://korisnik:lozinka@localhost/baza_podataka
    
-   # Opcijski: Postavite glavni ključ za šifriranje (preporučeno za produkciju)
-   export MASTER_ENCRYPTION_KEY=vaš_sigurni_base64_ključ
+   # Opcionalne varijable okruženja
+   export FLASK_ENV=development  # ili production
+   export MASTER_ENCRYPTION_KEY=vaš_sigurni_base64_ključ  # Za produkcijsko korištenje
+   ```
+   
+   **Za Windows (Command Prompt):**
+   ```cmd
+   # Obavezne varijable okruženja
+   set DATABASE_URL=postgresql://korisnik:lozinka@localhost/baza_podataka
+   
+   # Opcionalne varijable okruženja
+   set FLASK_ENV=development
+   set MASTER_ENCRYPTION_KEY=vaš_sigurni_base64_ključ
+   ```
+   
+   **Za Windows (PowerShell):**
+   ```powershell
+   # Obavezne varijable okruženja
+   $env:DATABASE_URL="postgresql://korisnik:lozinka@localhost/baza_podataka"
+   
+   # Opcionalne varijable okruženja
+   $env:FLASK_ENV="development"
+   $env:MASTER_ENCRYPTION_KEY="vaš_sigurni_base64_ključ"
    ```
 
-4. **Pokretanje aplikacije**
+5. **Pokretanje aplikacije**
    ```bash
    python app.py
    ```
    Aplikacija će biti dostupna na `http://localhost:5000`
 
-#### Docker instalacija
-
-1. **Izgradnja Docker slike**
-   ```bash
-   docker build -t flask_file_upload .
-   ```
-
-2. **Pokretanje Docker kontejnera**
-   ```bash
-   docker run -p 5000:5000 flask_file_upload
-   ```
-
 #### Testiranje aplikacije
 
-Da biste osigurali da aplikacija radi ispravno, možete pokrenuti automatizirane testove:
+Aplikacija uključuje automatizirane testove koje možete pokrenuti kako biste provjerili funkcionalnosti:
 
-1. **Instalacija ovisnosti za testiranje**
+##### Testiranje s Docker Compose
+
+1. **Pokretanje svih testova u Docker okruženju**
+   ```bash
+   docker-compose -f docker-compose.test.yml up --build
+   ```
+   Ovo će izgraditi test kontejner i pokrenuti i backend i frontend testove.
+
+2. **Pokretanje samo backend testova**
+   ```bash
+   docker-compose exec web python -m pytest tests/
+   ```
+
+3. **Pokretanje specifičnih test modula**
+   ```bash
+   docker-compose exec web python -m pytest tests/test_encryption.py -v
+   ```
+
+##### Testiranje bez Docker-a
+
+Ako koristite ručno postavljanje:
+
+1. **Instalacija test ovisnosti**
    ```bash
    pip install -r requirements-dev.txt
    ```
@@ -581,17 +666,7 @@ Da biste osigurali da aplikacija radi ispravno, možete pokrenuti automatizirane
    make test-react
    ```
 
-5. **Pokretanje testova u Docker okruženju**
-   ```bash
-   make test-docker
-   ```
-   
-6. **Pokretanje testova enkripcije**
-   ```bash
-   python -m pytest tests/test_encryption.py -v
-   ```
-
-Izlaz testova pokazat će vam rade li sve komponente ispravno. Ako neki test ne uspije, poruke o pogreškama pomoći će vam identificirati problem.
+Rezultat testova pokazat će funkcioniraju li sve komponente ispravno. Ako neki testovi ne prođu, poruke o greškama mogu pomoći u identifikaciji problema.
 
 ### Korištenje aplikacije
 
