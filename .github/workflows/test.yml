@@ -24,6 +24,10 @@ jobs:
         pip install -r requirements.txt
         pip install pytest
     
+    - name: Run Encryption Tests
+      run: |
+        python -m pytest tests/test_encryption.py -v
+    
     - name: Run Flask tests
       run: |
         python -m pytest tests/ -v
@@ -41,4 +45,5 @@ jobs:
     - name: Run React tests
       run: |
         cd react-src
-        npm test -- --watchAll=false 
+        # Fix axios import issues with transformIgnorePatterns
+        npm test -- --watchAll=false --transformIgnorePatterns='node_modules/(?!(axios)/)' 
