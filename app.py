@@ -56,16 +56,16 @@ def setup_logging():
     # Create logs directory if it doesn't exist
     logs_dir = os.path.join(os.getcwd(), 'logs')
     os.makedirs(logs_dir, exist_ok=True)
-    
+
     # Set log level
     app.logger.setLevel(logging.INFO)
-    
+
     # Create a filter to add IP and user agent to log records
     class RequestFilter(logging.Filter):
         def filter(self, record):
             # Safely check for request context
             from flask import has_request_context
-            
+
             if has_request_context():
                 record.ip = request.remote_addr
                 record.user_agent = request.user_agent.string if hasattr(request, 'user_agent') else 'N/A'
@@ -73,12 +73,12 @@ def setup_logging():
                 record.ip = 'N/A'
                 record.user_agent = 'N/A'
             return True
-    
+
     # Log formatting
     log_formatter = logging.Formatter(
         '%(asctime)s - %(levelname)s - %(ip)s - %(user_agent)s - %(message)s'
     )
-    
+
     # File handler for general logs (rotating to keep file size manageable)
     file_handler = RotatingFileHandler(
         os.path.join(logs_dir, 'app.log'),
@@ -88,7 +88,7 @@ def setup_logging():
     file_handler.setFormatter(log_formatter)
     file_handler.addFilter(RequestFilter())
     file_handler.setLevel(logging.INFO)
-    
+
     # Security-specific file handler
     security_handler = RotatingFileHandler(
         os.path.join(logs_dir, 'security.log'),
@@ -98,11 +98,11 @@ def setup_logging():
     security_handler.setFormatter(log_formatter)
     security_handler.setLevel(logging.WARNING)
     security_handler.addFilter(RequestFilter())
-    
+
     # Add handlers to app.logger
     app.logger.addHandler(file_handler)
     app.logger.addHandler(security_handler)
-    
+
     # If in development, also log to console
     if os.environ.get('FLASK_ENV') == 'development':
         console_handler = logging.StreamHandler()
@@ -130,7 +130,7 @@ database_url = os.environ.get('DATABASE_URL')
 if database_url:
     # Fix for Heroku PostgreSQL URL format (if needed)
     database_url = re.sub(r'^postgres:', 'postgresql:', database_url)
-    
+
     # Check if psycopg2 is available
     try:
         import psycopg2
@@ -173,18 +173,18 @@ def cleanup_on_startup():
     """
     # Check if cleanup is enabled via environment variable (default to disabled)
     cleanup_enabled = os.environ.get('ENABLE_STARTUP_CLEANUP', 'false').lower() == 'true'
-    
+
     if not cleanup_enabled:
         app.logger.info("Startup cleanup is disabled. Set ENABLE_STARTUP_CLEANUP=true to enable.")
         return
-    
+
     app.logger.info("Starting application cleanup process...")
-    
+
     # Determine cleanup strategy from environment variable
     # Options: all, db, files, logs, or comma-separated combinations
     cleanup_strategy = os.environ.get('CLEANUP_STRATEGY', 'all').lower()
     strategies = [s.strip() for s in cleanup_strategy.split(',')]
-    
+
     # Clean database if specified
     if 'all' in strategies or 'db' in strategies:
         try:
@@ -192,18 +192,18 @@ def cleanup_on_startup():
             with app.app_context():
                 db.create_all()
                 app.logger.info("Ensured database tables exist")
-                
+
                 # Count existing records before deletion
                 file_count = UploadedFile.query.count()
-                
+
                 # Delete all records
                 UploadedFile.query.delete()
                 db.session.commit()
-                
+
                 # Verify deletion
                 remaining = UploadedFile.query.count()
                 app.logger.info(f"Cleaned up {file_count} records from database, {remaining} remaining")
-                
+
                 if remaining > 0:
                     app.logger.warning(f"Some records could not be deleted ({remaining} remaining)")
                     # Try more aggressive approach
@@ -222,18 +222,18 @@ def cleanup_on_startup():
                             app.logger.error(f"Error during raw DELETE: {str(delete_error)}")
         except Exception as e:
             app.logger.error(f"Error cleaning database: {str(e)}")
-    
+
     # Clean uploaded files if specified
     if 'all' in strategies or 'files' in strategies:
         try:
             # Ensure uploads directory exists
             os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-            
+
             # First approach: Use glob to find all files
             import glob
             file_paths = glob.glob(os.path.join(app.config['UPLOAD_FOLDER'], '*'))
             files_removed = 0
-            
+
             for file_path in file_paths:
                 try:
                     if os.path.isfile(file_path):
@@ -241,9 +241,9 @@ def cleanup_on_startup():
                         files_removed += 1
                 except Exception as e:
                     app.logger.error(f"Error removing file {file_path}: {str(e)}")
-            
+
             app.logger.info(f"Cleaned up {files_removed}/{len(file_paths)} files from uploads directory")
-            
+
             # Second approach: Check if files remain and use additional methods
             remaining_files = glob.glob(os.path.join(app.config['UPLOAD_FOLDER'], '*'))
             if remaining_files:
@@ -252,7 +252,7 @@ def cleanup_on_startup():
                 try:
                     import subprocess
                     # Use rm -f to force removal without confirmation
-                    result = subprocess.run(['rm', '-f', os.path.join(app.config['UPLOAD_FOLDER'], '*')], 
+                    result = subprocess.run(['rm', '-f', os.path.join(app.config['UPLOAD_FOLDER'], '*')],
                                           capture_output=True, text=True)
                     if result.returncode == 0:
                         app.logger.info("Used system command to clean uploads directory")
@@ -262,22 +262,22 @@ def cleanup_on_startup():
                     app.logger.error(f"Error using system command: {str(cmd_error)}")
         except Exception as e:
             app.logger.error(f"Error cleaning uploads directory: {str(e)}")
-    
+
     # Clean logs if specified
     if 'all' in strategies or 'logs' in strategies:
         try:
             logs_dir = os.path.join(os.getcwd(), 'logs')
             log_files = ['app.log', 'security.log']
-            
+
             for log_file in log_files:
                 log_path = os.path.join(logs_dir, log_file)
                 if os.path.exists(log_path):
                     # Option 1: Delete log files
                     # os.remove(log_path)
-                    
+
                     # Option 2: Empty log files but keep them (better)
                     open(log_path, 'w').close()
-            
+
             app.logger.info(f"Cleaned up log files in {logs_dir}")
         except Exception as e:
             app.logger.error(f"Error cleaning log files: {str(e)}")
@@ -313,7 +313,7 @@ class UploadedFile(db.Model):
     download_count = db.Column(db.Integer, default=0)
     is_encrypted = db.Column(db.Boolean, default=True)  # Flag to indicate if file is encrypted
     encryption_salt = db.Column(db.LargeBinary, nullable=True)  # Salt for encryption (if used)
-    
+
     @property
     def file_name(self):
         """Get decrypted file name"""
@@ -328,7 +328,7 @@ class UploadedFile(db.Model):
         except Exception as e:
             app.logger.error(f"Error in file_name getter: {str(e)} for file: {self.id}")
             return self._file_name or "unknown_file"
-        
+
     @file_name.setter
     def file_name(self, value):
         """Set encrypted file name"""
@@ -346,7 +346,7 @@ class UploadedFile(db.Model):
         except Exception as e:
             app.logger.error(f"Error in file_name setter: {str(e)}")
             self._file_name = value
-    
+
     @property
     def file_path(self):
         """Get decrypted file path"""
@@ -361,7 +361,7 @@ class UploadedFile(db.Model):
         except Exception as e:
             app.logger.error(f"Error in file_path getter: {str(e)} for file: {self.id}")
             return self._file_path
-        
+
     @file_path.setter
     def file_path(self, value):
         """Set encrypted file path"""
@@ -415,10 +415,10 @@ def validate_mime_type(file):
     # Read the first 2048 bytes to determine MIME type
     file_head = file.read(2048)
     file.seek(0)  # Reset file pointer
-    
+
     # Get MIME type from the file
     mime_type = mimetypes.guess_type(file.filename)[0]
-    
+
     # List of allowed MIME types
     allowed_mime_types = [
         'text/plain', 'application/pdf', 'image/png', 'image/jpeg', 'image/gif',
@@ -426,14 +426,14 @@ def validate_mime_type(file):
         'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         'application/zip'
     ]
-    
+
     if mime_type not in allowed_mime_types:
         return False
-    
+
     # Additional check for potential malicious content
     if b'<script' in file_head.lower():
         return False
-        
+
     return True
 
 @app.route('/favicon.ico')
@@ -468,9 +468,9 @@ def get_file(file_uuid):
         resp.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
         resp.headers['Access-Control-Allow-Headers'] = 'Content-Type, Content-Disposition, X-Requested-With'
         return resp
-        
+
     app.logger.info(f"File download page accessed: {file_uuid}")
-    
+
     file_record = UploadedFile.query.filter_by(id=file_uuid).first()
     if not file_record:
         app.logger.warning(f"File not found: {file_uuid}")
@@ -478,11 +478,11 @@ def get_file(file_uuid):
 
     if request.method == 'POST':
         entered_password = request.form.get('password')
-        
+
         if not entered_password:
             app.logger.warning(f"Download attempt without password: {file_uuid}")
             return jsonify({'success': False, 'message': _("Password is required")}), 400
-        
+
         if bcrypt.check_password_hash(file_record.password_hash, entered_password):
             # Update download count
             file_record.download_count += 1
@@ -492,32 +492,32 @@ def get_file(file_uuid):
             except Exception as e:
                 app.logger.error(f"Error updating download count: {str(e)} - UUID: {file_uuid}")
                 return jsonify({'success': False, 'message': _("Error updating download count")}), 500
-            
+
             # Send the file as a download
             directory, stored_file = os.path.split(file_record.file_path)
             app.logger.info(f"File download successful: {file_uuid} - {file_record.file_name}")
-            
+
             try:
                 response = send_from_directory(directory, stored_file, as_attachment=True, download_name=file_record.file_name)
-                
+
                 # Add headers for cross-browser compatibility, especially for Chrome
                 response.headers["Content-Disposition"] = f"attachment; filename=\"{file_record.file_name}\"; filename*=UTF-8''{quote(file_record.file_name)}"
                 response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
                 response.headers["Pragma"] = "no-cache"
                 response.headers["Expires"] = "0"
-                
+
                 # Enhanced cross-origin headers for Chrome on HTTPS
                 response.headers["Access-Control-Allow-Origin"] = "*"
                 response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
                 response.headers["Access-Control-Allow-Headers"] = "Content-Type, Content-Disposition, X-Requested-With"
                 response.headers["Access-Control-Expose-Headers"] = "Content-Disposition, Content-Length, X-Content-Transfer-Id"
                 response.headers["Cross-Origin-Resource-Policy"] = "cross-origin"
-                
+
                 # Only add these security headers in production
                 if 'herokuapp.com' in request.host:
                     response.headers["Cross-Origin-Embedder-Policy"] = "unsafe-none"
                     response.headers["Feature-Policy"] = "downloads *"
-                
+
                 # Ensure temp file is deleted after sending
                 @after_this_request
                 def cleanup_temp_file(response):
@@ -529,7 +529,7 @@ def get_file(file_uuid):
                         except Exception as e:
                             app.logger.error(f"Error removing temp file: {e}")
                     return response
-                
+
                 return response
             except Exception as e:
                 app.logger.error(f"File send error: {str(e)} - Path: {file_record.file_path}")
@@ -537,7 +537,7 @@ def get_file(file_uuid):
         else:
             app.logger.warning(f"Incorrect password attempt for file: {file_uuid}")
             return jsonify({'success': False, 'message': _("Incorrect password!")}), 403
-    
+
     # For GET requests, redirect to the main React app with the file UUID as a parameter
     scheme = request.scheme
     # Force HTTPS only on Heroku
@@ -582,22 +582,21 @@ def api_upload_endpoint():
         response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
         response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
         return response
-        
+
     # For GET, return instructions
     if request.method == 'GET':
-    return jsonify({
+        return jsonify({
             "success": True,
             "message": "Upload files via POST with multipart/form-data",
             "required_fields": ["file", "password"]
         })
-        
+
     # For POST, handle file upload
     return api_upload_file()
-
 @app.route('/api/files/<file_uuid>', methods=['POST'])
 def api_get_file(file_uuid):
     app.logger.info(f"API file access attempt: {file_uuid}")
-    
+
     file_record = UploadedFile.query.filter_by(id=file_uuid).first()
     if not file_record:
         app.logger.warning(f"API: File not found: {file_uuid}")
@@ -611,24 +610,24 @@ def api_get_file(file_uuid):
     else:
         app.logger.info(f"API: Processing form request for file: {file_uuid}")
         entered_password = request.form.get('password')
-    
+
     if not entered_password:
         app.logger.warning(f"API: Download attempt without password: {file_uuid}")
         return jsonify({'success': False, 'message': _("Password is required")}), 400
-    
+
     app.logger.info(f"API: Verifying password for file: {file_uuid}")
-    
+
     if bcrypt.check_password_hash(file_record.password_hash, entered_password):
         # Do not update download count here as it will be updated during the actual download
         app.logger.info(f"API: Password verified for file: {file_uuid}")
-        
+
         # Generate a download token with password verification
         download_token = token_manager.generate_download_token(
-            file_uuid=file_uuid, 
+            file_uuid=file_uuid,
             password_verified=True,
             file_type=mimetypes.guess_type(file_record.file_name)[0]
         )
-        
+
         # Return the direct download URL with the token
         scheme = request.scheme
         # Force HTTPS only on Heroku
@@ -637,7 +636,7 @@ def api_get_file(file_uuid):
         host = request.host
         download_url = f"{scheme}://{host}/api/download/{file_uuid}?token={download_token}"
         app.logger.info(f"API: Password verified, returning download URL with token: {download_url}")
-        
+
         return jsonify({
             'success': True,
             'download_url': download_url,
@@ -652,65 +651,65 @@ def api_get_file(file_uuid):
 @download_token_required(token_manager)
 def download_file_direct(file_uuid):
     app.logger.info(f"Direct download attempt for file: {file_uuid}")
-    
+
     # Token is already verified by the decorator
     # The decorator also ensures the file_uuid in the token matches the URL
-    
+
     # Get file from database
     file_record = UploadedFile.query.get(file_uuid)
     if not file_record:
         app.logger.warning(f"Download attempt for non-existent file: {file_uuid}")
-        
+
         # Check if file exists in uploads directory despite not being in database
         import glob
         matching_files = glob.glob(os.path.join(app.config['UPLOAD_FOLDER'], f"{file_uuid}_*"))
         if matching_files:
             app.logger.warning(f"Found orphaned file for {file_uuid} not in database: {matching_files}")
-        
+
         return jsonify({"success": False, "message": "File not found in database"}), 404
-    
+
     try:
         # Get the file path and create the response
         file_path = file_record.file_path  # This uses the decryption getter
         original_filename = file_record.file_name  # This uses the decryption getter
-        
+
         # Check if file_path is None or empty
         if not file_path:
             app.logger.error(f"File path is None or empty for UUID: {file_uuid}")
             return jsonify({"success": False, "message": "File path is missing or corrupted"}), 404
-            
+
         app.logger.info(f"Preparing to serve file: {original_filename} from path: {file_path}")
-        
+
         # Check if file exists
         if not os.path.exists(file_path):
             app.logger.error(f"File not found on disk: {file_path} for UUID: {file_uuid}")
-            
+
             # Check if there's an alternative file that matches
             import glob
             matching_files = glob.glob(os.path.join(app.config['UPLOAD_FOLDER'], f"{file_uuid}_*"))
-            
+
             if matching_files:
                 app.logger.warning(f"Found alternative file: {matching_files[0]} for {file_uuid}")
                 file_path = matching_files[0]
             else:
                 return jsonify({"success": False, "message": "File not available on disk"}), 404
-        
+
         # Determine if file needs decryption
         serve_path = None
         temp_path = None
-        
+
         if file_record.is_encrypted:
             app.logger.info(f"File is encrypted, decrypting: {file_uuid}")
             # Create a temporary file to hold the decrypted content
             import tempfile
             from crypto_utils import decrypt_file
-            
+
             # Create temp file with original extension
             _, file_ext = os.path.splitext(original_filename)
             with tempfile.NamedTemporaryFile(delete=False, suffix=file_ext) as temp_file:
                 temp_path = temp_file.name
             app.logger.info(f"Created temp file for decryption: {temp_path}")
-            
+
             # Decrypt the file to the temporary location
             decrypt_result = decrypt_file(file_path, temp_path)
             if decrypt_result:
@@ -724,19 +723,19 @@ def download_file_direct(file_uuid):
             # No decryption needed
             app.logger.info(f"File is not encrypted, serving directly: {file_uuid}")
             serve_path = file_path
-        
+
         # Update download count
         file_record.download_count += 1
         db.session.commit()
         app.logger.info(f"Download count updated for {file_uuid}, new count: {file_record.download_count}")
-        
+
         # Log the download
         app.logger.info(f"File downloaded: {original_filename} (UUID: {file_uuid})")
-        
+
         # Clear the logs cache to ensure fresh data on next log retrieval
         app.config.pop('upload_logs', None)
         app.config.pop('download_logs', None)
-        
+
         # If we have a temporary file, ensure it's deleted after sending
         if temp_path:
             @after_this_request
@@ -749,7 +748,7 @@ def download_file_direct(file_uuid):
                     except Exception as e:
                         app.logger.error(f"Error removing temp file: {e}")
         return response
-        
+
         # Send the file with original filename
         return send_from_directory(
             directory=os.path.dirname(serve_path),
@@ -758,7 +757,7 @@ def download_file_direct(file_uuid):
             download_name=original_filename,
             mimetype=mimetypes.guess_type(original_filename)[0]
         )
-        
+
     except Exception as e:
         app.logger.error(f"Error during file download: {str(e)} for UUID: {file_uuid}")
         return jsonify({"success": False, "message": f"Error processing file download: {str(e)}"}), 500
@@ -769,9 +768,9 @@ def api_get_logs():
         # Force a refresh of the cached logs
         app.config.pop('upload_logs', None)
         app.config.pop('download_logs', None)
-        
+
         files = UploadedFile.query.order_by(UploadedFile.upload_date.desc()).all()
-        
+
         # Filter files to only include those that exist on disk
         valid_files = []
         for file in files:
@@ -784,7 +783,7 @@ def api_get_logs():
                     app.logger.warning(f"File not found on disk for id {file.id}, excluding from logs")
             except Exception as e:
                 app.logger.error(f"Error checking file existence: {str(e)}")
-        
+
         # Convert file objects to dictionaries
         file_list = []
         for file in valid_files:
@@ -794,11 +793,11 @@ def api_get_logs():
                 'upload_date': file.upload_date.strftime('%Y-%m-%d %H:%M:%S'),
                 'download_count': file.download_count
             })
-        
+
         # Get upload logs from our stored cache or log file
         upload_logs = []
         download_logs = []
-        
+
         # Read app.log for upload and download logs
         log_path = os.path.join(os.getcwd(), 'logs', 'app.log')
         try:
@@ -808,22 +807,22 @@ def api_get_logs():
                         # Include log entries for all valid files
                         for file in valid_files:
                             if file.id in line:
-                        upload_logs.append(line.strip())
+                                upload_logs.append(line.strip())
                                 break
-                            
+
                     elif "File downloaded:" in line or "File download successful:" in line or "Download count updated" in line:
                         # Include log entries for all valid files
                         for file in valid_files:
                             if file.id in line:
-                        download_logs.append(line.strip())
+                                download_logs.append(line.strip())
                                 break
         except Exception as e:
             app.logger.error(f"Error reading log file: {str(e)}")
-            
+
         # Cache the logs we just read
         app.config['upload_logs'] = upload_logs
         app.config['download_logs'] = download_logs
-            
+
         return jsonify({
             'success': True,
             'files': file_list,
@@ -840,52 +839,52 @@ def api_upload_file():
     if 'file' not in request.files:
         app.logger.warning("Upload attempt with no file part")
         return jsonify({"success": False, "message": _("No file part")})
-    
+
     file = request.files['file']
     if file.filename == '':
         app.logger.warning("Upload attempt with empty filename")
         return jsonify({"success": False, "message": _("No file selected")})
-    
+
     password = request.form.get('password', '')
     if not password:
         app.logger.warning("Upload attempt with no password")
         return jsonify({"success": False, "message": _("No password provided")})
-    
+
     if file and allowed_file(file.filename):
         # Check file size
         file.seek(0, os.SEEK_END)
         file_size = file.tell()
         file.seek(0)
-        
+
         if file_size > MAX_CONTENT_LENGTH:
             app.logger.warning(f"Upload attempt with too large file: {file_size} bytes, max is {MAX_CONTENT_LENGTH}")
             return jsonify({
-                "success": False, 
+                "success": False,
                 "message": _("File too large, max 10MB allowed")
             })
-        
+
         # Validate MIME type
         if not validate_mime_type(file):
             app.logger.warning(f"Upload attempt with invalid MIME type for file: {file.filename}")
             return jsonify({
-                "success": False, 
+                "success": False,
                 "message": _("Invalid file type")
             })
-        
+
         # Create a secure filename
         original_filename = secure_filename(file.filename)
         file_uuid = str(uuid.uuid4())
-        
+
         # Create unique filename with UUID
         secure_filename_with_uuid = f"{file_uuid}_{original_filename}"
         temp_file_path = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename_with_uuid)
-        
+
         # Save the file temporarily
         try:
             app.logger.info(f"Attempting to save file to {temp_file_path}")
             file.save(temp_file_path)
             app.logger.info(f"File temporarily saved at: {temp_file_path}")
-            
+
             # Verify the file was saved correctly
             if not os.path.exists(temp_file_path):
                 app.logger.error(f"Failed to save file at: {temp_file_path}")
@@ -893,14 +892,14 @@ def api_upload_file():
                     "success": False,
                     "message": _("Failed to save uploaded file")
                 })
-            
+
             # Encrypt the file
             app.logger.info(f"Attempting to encrypt file: {temp_file_path}")
             try:
                 from crypto_utils import encrypt_file
                 encrypted_file_path = encrypt_file(temp_file_path)
                 app.logger.info(f"File encrypted: {encrypted_file_path}")
-                
+
                 # Delete the original unencrypted file if encryption was successful
                 if encrypted_file_path != temp_file_path and os.path.exists(temp_file_path):
                     os.remove(temp_file_path)
@@ -910,10 +909,10 @@ def api_upload_file():
                 # If encryption fails, continue with the unencrypted file
                 encrypted_file_path = temp_file_path
                 app.logger.warning(f"Continuing with unencrypted file: {encrypted_file_path}")
-            
+
             # Generate password hash
             password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
-            
+
             try:
                 # Store file information in database
                 is_encrypted = encrypted_file_path != temp_file_path
@@ -927,20 +926,20 @@ def api_upload_file():
                 )
                 db.session.add(new_file)
                 db.session.commit()
-                
+
                 # Log the successful upload
                 app.logger.info(f"File uploaded successfully: {original_filename} (UUID: {file_uuid})")
-                
+
                 # Create file URL for download
                 file_url = url_for('get_file', file_uuid=file_uuid, _external=True)
-                
+
                 return jsonify({
-                    "success": True, 
+                    "success": True,
                     "message": _("File uploaded successfully!"),
                     "file_uuid": file_uuid,
                     "file_url": file_url
                 })
-                
+
             except Exception as e:
                 # If database error, delete the uploaded file to avoid orphaned files
                 if os.path.exists(encrypted_file_path):
@@ -949,26 +948,26 @@ def api_upload_file():
                         app.logger.info(f"Removed file after database error: {encrypted_file_path}")
                     except Exception as remove_error:
                         app.logger.error(f"Error removing file: {str(remove_error)}")
-                
+
                 app.logger.error(f"Database error during file upload: {str(e)}")
                 return jsonify({
-                    "success": False, 
+                    "success": False,
                     "message": _("An error occurred while saving the file information.")
                 })
-                
+
         except Exception as e:
             app.logger.error(f"File system error during upload: {str(e)}")
             return jsonify({
-                "success": False, 
+                "success": False,
                 "message": _("An error occurred while saving the file.")
             })
-    
+
     else:
         # Handle invalid file type
         allowed_extensions = ', '.join(ALLOWED_EXTENSIONS)
         app.logger.warning(f"Upload attempt with invalid file type: {file.filename}")
         return jsonify({
-            "success": False, 
+            "success": False,
             "message": _("Invalid file type. Allowed types: %(types)s", types=allowed_extensions)
         })
 
@@ -981,17 +980,17 @@ def check_files():
     # Check for the old style authentication (X-Admin-Key header)
     if not hasattr(request, 'token_payload') and request.headers.get('X-Admin-Key') != app.config.get('ADMIN_KEY'):
         return jsonify({"success": False, "message": "Unauthorized"}), 401
-    
+
     try:
         # Get all files in the uploads directory
         import glob
         all_files = glob.glob(os.path.join(app.config['UPLOAD_FOLDER'], '*'))
         app.logger.info(f"Found {len(all_files)} files in uploads directory: {app.config['UPLOAD_FOLDER']}")
-        
+
         # Log the database path
         db_path = app.config['SQLALCHEMY_DATABASE_URI']
         app.logger.info(f"Using database: {db_path}")
-        
+
         # Get all file UUIDs from the database
         try:
             db_files = UploadedFile.query.all()
@@ -1001,39 +1000,39 @@ def check_files():
             app.logger.error(f"Database query error: {str(e)}")
             db_files = []
             db_uuids = []
-        
+
         orphaned_files = []
         missing_files = []
         repaired_files = []
-        
+
         # Check for orphaned files (files in directory but not in database)
         for file_path in all_files:
             file_name = os.path.basename(file_path)
             app.logger.info(f"Checking file: {file_name}")
-            
+
             # Extract UUID from filename
             uuid_match = file_name.split('_')[0] if '_' in file_name else None
-            
+
             if uuid_match and uuid_match not in db_uuids:
                 app.logger.info(f"Found orphaned file: {file_path} with UUID: {uuid_match}")
                 orphaned_files.append({
                     "file_path": file_path,
                     "uuid": uuid_match
                 })
-                
+
                 # Try to repair by adding to database
                 try:
                     # Extract original filename from the path
                     original_filename = file_name.split('_', 1)[1] if '_' in file_name else file_name
-                    
+
                     # Remove .encrypted extension for display
                     if original_filename.endswith('.encrypted'):
                         display_filename = original_filename[:-10]  # Remove '.encrypted'
                     else:
                         display_filename = original_filename
-                        
+
                     app.logger.info(f"Creating database entry for {uuid_match} with name {display_filename}")
-                    
+
                     # Create a new database entry
                     new_file = UploadedFile(
                         id=uuid_match,
@@ -1049,12 +1048,12 @@ def check_files():
                     app.logger.info(f"Repaired orphaned file: {file_path}")
                 except Exception as e:
                     app.logger.error(f"Failed to repair orphaned file {file_path}: {str(e)}")
-        
+
         # Check for missing files (files in database but not in directory)
         for db_file in db_files:
             if not os.path.exists(db_file.file_path):
                 app.logger.warning(f"File in database but not on disk: {db_file.id} - {db_file.file_path}")
-                
+
                 # Try to find the file with .encrypted extension if it exists
                 encrypted_path = f"{db_file.file_path}.encrypted"
                 if os.path.exists(encrypted_path):
@@ -1070,7 +1069,7 @@ def check_files():
                         "file_name": db_file.file_name,
                         "expected_path": db_file.file_path
                     })
-        
+
         return jsonify({
             "success": True,
             "orphaned_files": len(orphaned_files),
@@ -1101,14 +1100,14 @@ def get_admin_token():
     if not admin_key or admin_key != app.config.get('ADMIN_KEY'):
         app.logger.warning(f"Invalid admin key used for token generation")
         return jsonify({"success": False, "message": "Invalid admin key"}), 401
-    
+
     # Generate admin token
     try:
         access_token = token_manager.generate_access_token(admin=True)
         refresh_token = token_manager.generate_refresh_token()
-        
+
         app.logger.info(f"Admin token generated successfully")
-        
+
         return jsonify({
             "success": True,
             "access_token": access_token,
@@ -1129,22 +1128,22 @@ def refresh_token():
     auth_header = request.headers.get('Authorization')
     if not auth_header or not auth_header.startswith('Bearer '):
         return jsonify({"success": False, "message": "Refresh token is missing"}), 401
-    
+
     refresh_token = auth_header.split(' ')[1]
-    
+
     # Verify refresh token
     payload = token_manager.verify_token(refresh_token, 'refresh')
     if not payload:
         app.logger.warning(f"Invalid refresh token used")
         return jsonify({"success": False, "message": "Invalid or expired refresh token"}), 401
-    
+
     # Generate new access token
     try:
         # Pass admin claim if it was in the original token
         new_access_token = token_manager.generate_access_token(admin=payload.get('admin', False))
-        
+
         app.logger.info(f"Access token refreshed successfully")
-        
+
         return jsonify({
             "success": True,
             "access_token": new_access_token,
