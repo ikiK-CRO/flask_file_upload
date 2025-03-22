@@ -346,7 +346,7 @@ class UploadedFile(db.Model):
         except Exception as e:
             app.logger.error(f"Error in file_name setter: {str(e)}")
             self._file_name = value
-    <p></p>
+    
     @property
     def file_path(self):
         """Get decrypted file path"""
@@ -369,7 +369,7 @@ class UploadedFile(db.Model):
             from crypto_utils import encrypt_db_field
             if value and self.is_encrypted:
                 encrypted = encrypt_db_field(value)
-                if encrypted:<p></p><p></p>
+                if encrypted:
                     self._file_path = encrypted
                 else:
                     app.logger.warning(f"Failed to encrypt file_path, using raw value for: {value}")
@@ -585,7 +585,7 @@ def api_upload_endpoint():
         
     # For GET, return instructions
     if request.method == 'GET':
-        return jsonify({
+    return jsonify({
             "success": True,
             "message": "Upload files via POST with multipart/form-data",
             "required_fields": ["file", "password"]
@@ -748,7 +748,7 @@ def download_file_direct(file_uuid):
                         app.logger.info(f"Temp file removed: {temp_path}")
                     except Exception as e:
                         app.logger.error(f"Error removing temp file: {e}")
-                return response
+        return response
         
         # Send the file with original filename
         return send_from_directory(
@@ -808,14 +808,14 @@ def api_get_logs():
                         # Include log entries for all valid files
                         for file in valid_files:
                             if file.id in line:
-                                upload_logs.append(line.strip())
+                        upload_logs.append(line.strip())
                                 break
                             
                     elif "File downloaded:" in line or "File download successful:" in line or "Download count updated" in line:
                         # Include log entries for all valid files
                         for file in valid_files:
                             if file.id in line:
-                                download_logs.append(line.strip())
+                        download_logs.append(line.strip())
                                 break
         except Exception as e:
             app.logger.error(f"Error reading log file: {str(e)}")
@@ -823,7 +823,7 @@ def api_get_logs():
         # Cache the logs we just read
         app.config['upload_logs'] = upload_logs
         app.config['download_logs'] = download_logs
-        
+            
         return jsonify({
             'success': True,
             'files': file_list,
