@@ -244,12 +244,12 @@ class UploadedFile(db.Model):
 # Create database tables (if they don't exist)
 with app.app_context():
     try:
-        # Drop all tables and recreate them to ensure schema is up to date
-        db.drop_all()
+        # Only create tables if they don't exist, don't drop tables
+        # db.drop_all()  # Removed to prevent data loss
         db.create_all()
-        app.logger.info("Database tables dropped and recreated successfully")
+        app.logger.info("Database tables created successfully (if they didn't exist)")
     except Exception as e:
-        app.logger.error(f"Error recreating database tables: {e}")
+        app.logger.error(f"Error creating database tables: {e}")
         # If we're using PostgreSQL and it fails, try to fall back to SQLite
         if 'postgresql' in app.config['SQLALCHEMY_DATABASE_URI'].lower():
             try:
@@ -261,7 +261,7 @@ with app.app_context():
                 db.engine.dispose()
                 db.get_engine(app, bind=None)
                 # Try again with SQLite
-                db.drop_all()
+                # db.drop_all()  # Removed to prevent data loss
                 db.create_all()
                 app.logger.info("Database tables created successfully with SQLite fallback")
             except Exception as inner_e:
@@ -511,7 +511,14 @@ def download_file_direct(file_uuid):
     file_record = UploadedFile.query.get(file_uuid)
     if not file_record:
         app.logger.warning(f"Download attempt for non-existent file: {file_uuid}")
-        return jsonify({"success": False, "message": "File not found"}), 404
+        
+        # Check if file exists in uploads directory despite not being in database
+        import glob
+        matching_files = glob.glob(os.path.join(app.config['UPLOAD_FOLDER'], f"{file_uuid}_*"))
+        if matching_files:
+            app.logger.warning(f"Found orphaned file for {file_uuid} not in database: {matching_files}")
+        
+        return jsonify({"success": False, "message": "File not found in database"}), 404
     
     # User must have authenticated first
     authenticated = request.args.get('authenticated') == 'true'
@@ -536,7 +543,20 @@ def download_file_direct(file_uuid):
         # Check if file exists
         if not os.path.exists(file_path):
             app.logger.error(f"File not found on disk: {file_path} for UUID: {file_uuid}")
-            return jsonify({"success": False, "message": "File not available"}), 404
+            
+            # Check if there's an alternative file that matches
+            base_dir = os.path.dirname(file_path)
+            base_name = os.path.basename(file_path)
+            
+            # Check for files with same UUID
+            import glob
+            matching_files = glob.glob(os.path.join(app.config['UPLOAD_FOLDER'], f"{file_uuid}_*"))
+            
+            if matching_files:
+                app.logger.warning(f"Found alternative file: {matching_files[0]} for {file_uuid}")
+                file_path = matching_files[0]
+            else:
+                return jsonify({"success": False, "message": "File not available on disk"}), 404
         
         # Determine if file needs decryption
         if file_record.is_encrypted:
@@ -776,6 +796,120 @@ def api_upload_file():
             "success": False, 
             "message": _("Invalid file type. Allowed types: %(types)s", types=allowed_extensions)
         })
+
+@app.route('/api/admin/check-files', methods=['GET'])
+def check_files():
+    """Admin endpoint to check and repair orphaned files"""
+    # This would ideally have authentication, but it's simplified for this example
+    
+    if request.headers.get('X-Admin-Key') != app.config.get('ADMIN_KEY', 'admin-key'):
+        return jsonify({"success": False, "message": "Unauthorized"}), 401
+    
+    try:
+        # Get all files in the uploads directory
+        import glob
+        all_files = glob.glob(os.path.join(app.config['UPLOAD_FOLDER'], '*'))
+        app.logger.info(f"Found {len(all_files)} files in uploads directory: {app.config['UPLOAD_FOLDER']}")
+        
+        # Log the database path
+        db_path = app.config['SQLALCHEMY_DATABASE_URI']
+        app.logger.info(f"Using database: {db_path}")
+        
+        # Get all file UUIDs from the database
+        try:
+            db_files = UploadedFile.query.all()
+            app.logger.info(f"Found {len(db_files)} files in database")
+            db_uuids = [f.id for f in db_files]
+        except Exception as e:
+            app.logger.error(f"Database query error: {str(e)}")
+            db_files = []
+            db_uuids = []
+        
+        orphaned_files = []
+        missing_files = []
+        repaired_files = []
+        
+        # Check for orphaned files (files in directory but not in database)
+        for file_path in all_files:
+            file_name = os.path.basename(file_path)
+            app.logger.info(f"Checking file: {file_name}")
+            
+            # Extract UUID from filename
+            uuid_match = file_name.split('_')[0] if '_' in file_name else None
+            
+            if uuid_match and uuid_match not in db_uuids:
+                app.logger.info(f"Found orphaned file: {file_path} with UUID: {uuid_match}")
+                orphaned_files.append({
+                    "file_path": file_path,
+                    "uuid": uuid_match
+                })
+                
+                # Try to repair by adding to database
+                try:
+                    # Extract original filename from the path
+                    original_filename = file_name.split('_', 1)[1] if '_' in file_name else file_name
+                    
+                    # Remove .encrypted extension for display
+                    if original_filename.endswith('.encrypted'):
+                        display_filename = original_filename[:-10]  # Remove '.encrypted'
+                    else:
+                        display_filename = original_filename
+                        
+                    app.logger.info(f"Creating database entry for {uuid_match} with name {display_filename}")
+                    
+                    # Create a new database entry
+                    new_file = UploadedFile(
+                        id=uuid_match,
+                        file_name=display_filename,
+                        file_path=file_path,
+                        password="recovered",  # Default password for recovered files
+                        password_hash=bcrypt.generate_password_hash("recovered").decode('utf-8'),
+                        is_encrypted=file_path.endswith('.encrypted')
+                    )
+                    db.session.add(new_file)
+                    db.session.commit()
+                    repaired_files.append(uuid_match)
+                    app.logger.info(f"Repaired orphaned file: {file_path}")
+                except Exception as e:
+                    app.logger.error(f"Failed to repair orphaned file {file_path}: {str(e)}")
+        
+        # Check for missing files (files in database but not in directory)
+        for db_file in db_files:
+            if not os.path.exists(db_file.file_path):
+                app.logger.warning(f"File in database but not on disk: {db_file.id} - {db_file.file_path}")
+                
+                # Try to find the file with .encrypted extension if it exists
+                encrypted_path = f"{db_file.file_path}.encrypted"
+                if os.path.exists(encrypted_path):
+                    app.logger.info(f"Found encrypted version of file: {encrypted_path}")
+                    # Update the database record
+                    db_file.file_path = encrypted_path
+                    db_file.is_encrypted = True
+                    db.session.commit()
+                    app.logger.info(f"Updated file path in database: {db_file.id}")
+                else:
+                    missing_files.append({
+                        "uuid": db_file.id,
+                        "file_name": db_file.file_name,
+                        "expected_path": db_file.file_path
+                    })
+        
+        return jsonify({
+            "success": True,
+            "orphaned_files": len(orphaned_files),
+            "missing_files": len(missing_files),
+            "repaired_files": len(repaired_files),
+            "uploads_dir": app.config['UPLOAD_FOLDER'],
+            "database_path": db_path,
+            "details": {
+                "orphaned": orphaned_files,
+                "missing": missing_files,
+                "repaired": repaired_files
+            }
+        })
+    except Exception as e:
+        app.logger.error(f"Error checking files: {str(e)}")
+        return jsonify({"success": False, "message": f"Error: {str(e)}"}), 500
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
