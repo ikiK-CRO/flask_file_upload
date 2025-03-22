@@ -12,6 +12,7 @@ from werkzeug.utils import secure_filename
 import mimetypes
 from flask_babel import Babel, _
 from urllib.parse import quote
+from auth_utils import TokenManager, token_required, admin_token_required, download_token_required
 
 from flask_cors import CORS
 app = Flask(__name__)
@@ -24,6 +25,13 @@ CORS(app, resources={r"/*": {
     "max_age": 86400
 }})  # Enhanced CORS for all routes
 app.secret_key = 'your-secret-key'  # Change this in production
+
+# Initialize our TokenManager
+token_manager = TokenManager(app)
+
+# Add JWT_SECRET_KEY to app config if not already set
+app.config.setdefault('JWT_SECRET_KEY', os.environ.get('JWT_SECRET_KEY', 'jwt-secret-key-change-in-production'))
+app.config.setdefault('ADMIN_KEY', os.environ.get('ADMIN_KEY', 'admin-key'))
 
 # Force HTTPS middleware - only on production
 @app.before_request
@@ -476,36 +484,39 @@ def api_get_file(file_uuid):
         except Exception as e:
             app.logger.error(f"API: Error updating download count: {str(e)} - UUID: {file_uuid}")
         
-        # Return the direct download URL with HTTPS always forced
+        # Generate a download token with password verification
+        download_token = token_manager.generate_download_token(
+            file_uuid=file_uuid, 
+            password_verified=True,
+            file_type=mimetypes.guess_type(file_record.file_name)[0]
+        )
+        
+        # Return the direct download URL with the token
         scheme = request.scheme
         # Force HTTPS only on Heroku
         if 'herokuapp.com' in request.host:
             scheme = 'https'
         host = request.host
-        download_url = f"{scheme}://{host}/api/download/{file_uuid}?authenticated=true"
-        app.logger.info(f"API: Password verified, returning download URL: {download_url}")
+        download_url = f"{scheme}://{host}/api/download/{file_uuid}?token={download_token}"
+        app.logger.info(f"API: Password verified, returning download URL with token: {download_url}")
         
         return jsonify({
             'success': True,
             'download_url': download_url,
-            'filename': file_record.file_name
+            'filename': file_record.file_name,
+            'download_token': download_token
         })
     else:
         app.logger.warning(f"API: Incorrect password attempt for file: {file_uuid}")
         return jsonify({'success': False, 'message': _("Incorrect password!")}), 403
 
 @app.route('/api/download/<file_uuid>', methods=['GET', 'OPTIONS'])
+@download_token_required(token_manager)
 def download_file_direct(file_uuid):
     app.logger.info(f"Direct download attempt for file: {file_uuid}")
     
-    # Ensure we're only serving over HTTPS in production
-    if request.headers.get('X-Forwarded-Proto') == 'http' and 'herokuapp.com' in request.host:
-        https_url = url_for('download_file_direct', file_uuid=file_uuid, _external=True).replace('http://', 'https://')
-        return redirect(https_url, code=301)
-        
-    # Add CORS headers for preflight requests
-    if request.method == 'OPTIONS':
-        return '', 200
+    # Token is already verified by the decorator
+    # The decorator also ensures the file_uuid in the token matches the URL
     
     # Get file from database
     file_record = UploadedFile.query.get(file_uuid)
@@ -519,14 +530,6 @@ def download_file_direct(file_uuid):
             app.logger.warning(f"Found orphaned file for {file_uuid} not in database: {matching_files}")
         
         return jsonify({"success": False, "message": "File not found in database"}), 404
-    
-    # User must have authenticated first
-    authenticated = request.args.get('authenticated') == 'true'
-    app.logger.info(f"Authentication parameter: {request.args.get('authenticated')} for file: {file_uuid}")
-    
-    if not authenticated:
-        app.logger.warning(f"Download attempt without authentication: {file_uuid}")
-        return jsonify({"success": False, "message": "Authentication required"}), 401
     
     try:
         # Get the file path and create the response
@@ -798,11 +801,13 @@ def api_upload_file():
         })
 
 @app.route('/api/admin/check-files', methods=['GET'])
+@admin_token_required(token_manager)
 def check_files():
     """Admin endpoint to check and repair orphaned files"""
-    # This would ideally have authentication, but it's simplified for this example
-    
-    if request.headers.get('X-Admin-Key') != app.config.get('ADMIN_KEY', 'admin-key'):
+    # This is now protected by the admin_token_required decorator
+    # The old key-based authentication is kept for backward compatibility
+    # Check for the old style authentication (X-Admin-Key header)
+    if not hasattr(request, 'token_payload') and request.headers.get('X-Admin-Key') != app.config.get('ADMIN_KEY'):
         return jsonify({"success": False, "message": "Unauthorized"}), 401
     
     try:
@@ -910,6 +915,73 @@ def check_files():
     except Exception as e:
         app.logger.error(f"Error checking files: {str(e)}")
         return jsonify({"success": False, "message": f"Error: {str(e)}"}), 500
+
+# New routes for token management
+
+@app.route('/api/auth/admin-token', methods=['POST'])
+def get_admin_token():
+    """
+    Generate an admin access token for API access
+    Requires admin key for authentication
+    """
+    # Get admin key from request
+    admin_key = request.headers.get('X-Admin-Key')
+    if not admin_key or admin_key != app.config.get('ADMIN_KEY'):
+        app.logger.warning(f"Invalid admin key used for token generation")
+        return jsonify({"success": False, "message": "Invalid admin key"}), 401
+    
+    # Generate admin token
+    try:
+        access_token = token_manager.generate_access_token(admin=True)
+        refresh_token = token_manager.generate_refresh_token()
+        
+        app.logger.info(f"Admin token generated successfully")
+        
+        return jsonify({
+            "success": True,
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+            "token_type": "Bearer",
+            "expires_in": app.config.get('JWT_ACCESS_TOKEN_EXPIRES', 1800)
+        })
+    except Exception as e:
+        app.logger.error(f"Error generating admin token: {str(e)}")
+        return jsonify({"success": False, "message": f"Error generating token: {str(e)}"}), 500
+
+@app.route('/api/auth/refresh', methods=['POST'])
+def refresh_token():
+    """
+    Generate a new access token using a refresh token
+    """
+    # Get refresh token from request
+    auth_header = request.headers.get('Authorization')
+    if not auth_header or not auth_header.startswith('Bearer '):
+        return jsonify({"success": False, "message": "Refresh token is missing"}), 401
+    
+    refresh_token = auth_header.split(' ')[1]
+    
+    # Verify refresh token
+    payload = token_manager.verify_token(refresh_token, 'refresh')
+    if not payload:
+        app.logger.warning(f"Invalid refresh token used")
+        return jsonify({"success": False, "message": "Invalid or expired refresh token"}), 401
+    
+    # Generate new access token
+    try:
+        # Pass admin claim if it was in the original token
+        new_access_token = token_manager.generate_access_token(admin=payload.get('admin', False))
+        
+        app.logger.info(f"Access token refreshed successfully")
+        
+        return jsonify({
+            "success": True,
+            "access_token": new_access_token,
+            "token_type": "Bearer",
+            "expires_in": app.config.get('JWT_ACCESS_TOKEN_EXPIRES', 1800)
+        })
+    except Exception as e:
+        app.logger.error(f"Error refreshing token: {str(e)}")
+        return jsonify({"success": False, "message": f"Error refreshing token: {str(e)}"}), 500
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))

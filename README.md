@@ -163,6 +163,25 @@ The application implements the following functional units:
    - Fallback mechanisms to ensure system availability
    - Detailed error logging for security monitoring
 
+#### Token-Based Authentication
+
+1. **JWT Authentication**:
+   - JSON Web Tokens for secure API access
+   - Role-based tokens (admin vs. regular access)
+   - Short-lived access tokens with refresh capability
+   - Secure token validation and verification
+
+2. **Download Tokens**:
+   - Single-use tokens for secure file downloads
+   - Password verification embedded in token claims
+   - Short expiration time (10 minutes) for download tokens
+   - File-specific tokens that can't be reused for other files
+
+3. **Token Management**:
+   - Secure generation of cryptographically signed tokens
+   - Token refresh mechanism for maintaining sessions
+   - Protection against token reuse and replay attacks
+
 ### Logging Implementation
 
 The logging system is implemented using Python's `logging` module with the goal of detailed activity tracking, diagnostics, and security monitoring.
@@ -326,14 +345,32 @@ SQLAlchemy ORM with the `UploadedFile` model is used for storing file metadata:
 
 #### `/api/admin/check-files` (GET)
 - **GET**: Admin endpoint to check and repair file system and database synchronization
-  - Required Headers:
+  - Required Headers (choose one):
     - `X-Admin-Key`: Authentication key for admin access (default: "admin-key")
+    - `Authorization`: Bearer token from admin token endpoint
   - Actions:
     - Checks for orphaned files (files in uploads directory but not in database)
     - Checks for missing files (records in database but files not on disk)
     - Automatically repairs orphaned files by creating database entries
     - Updates file paths in database if encrypted versions are found
     - Returns JSON with details about orphaned, missing, and repaired files
+
+#### `/api/auth/admin-token` (POST)
+- **POST**: Generates admin access and refresh tokens for API access
+  - Required Headers:
+    - `X-Admin-Key`: Authentication key for admin access (default: "admin-key")
+  - Returns:
+    - Access token (short-lived JWT for API operations)
+    - Refresh token (long-lived JWT for obtaining new access tokens)
+    - Token type and expiration information
+
+#### `/api/auth/refresh` (POST)
+- **POST**: Refreshes access tokens using a refresh token
+  - Required Headers:
+    - `Authorization`: Bearer token containing the refresh token
+  - Returns:
+    - New access token
+    - Token type and expiration information
 
 ### Error Handling
 
