@@ -3919,3 +3919,14 @@ ModuleNotFoundError: No module named 'psycopg2'
 2025-03-22 00:06:18,422 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Request: GET /api/download/98f132b7-c28a-4893-ad49-ca7d65cb3cc9 - Referrer: http://localhost:5001/?file=98f132b7-c28a-4893-ad49-ca7d65cb3cc9
 2025-03-22 00:06:18,426 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Direct file download: 98f132b7-c28a-4893-ad49-ca7d65cb3cc9 - Screenshot_2025-03-19_at_16.22.12.png
 2025-03-22 00:06:24,074 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Request: GET /favicon.ico - Referrer: http://localhost:5001/
+2025-03-22 01:11:35,303 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-22 01:11:35,381 - INFO - 127.0.0.1 - werkzeug/2.0.1 - Request: GET / - Referrer: None
+2025-03-22 01:11:35,396 - INFO - 127.0.0.1 - werkzeug/2.0.1 - Request: GET /api/logs - Referrer: None
+2025-03-22 01:11:35,411 - INFO - 127.0.0.1 - werkzeug/2.0.1 - Request: GET /nonexistent-route - Referrer: None
+2025-03-22 01:11:35,411 - WARNING - 127.0.0.1 - werkzeug/2.0.1 - 404 error: /nonexistent-route
+2025-03-22 01:11:35,426 - INFO - 127.0.0.1 - werkzeug/2.0.1 - Request: POST /api/upload - Referrer: None
+2025-03-22 01:11:35,428 - INFO - 127.0.0.1 - werkzeug/2.0.1 - API Upload attempt: test.txt
+2025-03-22 01:11:35,428 - INFO - 127.0.0.1 - werkzeug/2.0.1 - File saved: /var/folders/j1/mjygfnq14v1crt1wg2sc50xh0000gn/T/tmp5oo94n_8/3cc5b318-31c0-4c76-939a-7ddd04c64e39_test.txt - Size: 0.00MB
+2025-03-22 01:11:35,708 - INFO - 127.0.0.1 - werkzeug/2.0.1 - File metadata saved to database: 3cc5b318-31c0-4c76-939a-7ddd04c64e39 - test.txt
+2025-03-22 01:11:35,718 - INFO - 127.0.0.1 - werkzeug/2.0.1 - Request: POST /api/upload - Referrer: None
+2025-03-22 01:11:35,724 - INFO - 127.0.0.1 - werkzeug/2.0.1 - Request: POST /api/upload - Referrer: None

@@ -2697,3 +2697,4 @@ ModuleNotFoundError: No module named 'psycopg2'
 2025-03-21 23:16:13,585 - WARNING - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Safari/605.1.15 - API: Incorrect password attempt for file: 3d0c8403-a85c-47dd-bcda-3ff9e1303876
 2025-03-21 23:16:27,480 - WARNING - 192.168.65.1 - com.apple.WebKit.Networking/20620.2.4.11.6 Network/4277.81.1 macOS/15.3.2 - 404 error: /apple-touch-icon-precomposed.png
 2025-03-21 23:16:27,482 - WARNING - 192.168.65.1 - com.apple.WebKit.Networking/20620.2.4.11.6 Network/4277.81.1 macOS/15.3.2 - 404 error: /apple-touch-icon.png
+2025-03-22 01:11:35,411 - WARNING - 127.0.0.1 - werkzeug/2.0.1 - 404 error: /nonexistent-route
