@@ -15,6 +15,9 @@ const Navbar = ({ navigateWithoutFileParam }) => {
   
   // Check if a path is active - works with hash router
   const isActive = (path) => {
+    // Add safety check for tests when location might be undefined
+    if (!location) return false;
+    
     if (path === '/') {
       return location.pathname === '/' || location.hash === '#/' || location.hash === '';
     }

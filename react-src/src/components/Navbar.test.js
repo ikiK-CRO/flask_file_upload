@@ -2,43 +2,28 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import Navbar from './Navbar';
 import { ThemeContext } from '../ThemeContext';
-import * as ReactRouterDom from 'react-router-dom';
 
-// Create a proper mock for useLocation
-const mockLocation = {
-  pathname: '/',
-  hash: '',
-  search: '',
-  state: null
-};
-
-// Mock useLocation directly instead of mocking the whole module
-jest.spyOn(ReactRouterDom, 'useLocation').mockImplementation(() => mockLocation);
+// Tell Jest to use the mock
+jest.mock('react-router-dom');
 
 describe('Navbar component', () => {
-  beforeEach(() => {
-    // Reset mocks before each test
-    jest.clearAllMocks();
-  });
-
   it('renders navigation links correctly', () => {
-    // Create mock context value
-    const mockContext = {
+    // Mock theme context
+    const mockTheme = {
       theme: 'light',
       toggleTheme: jest.fn()
     };
     
-    // Create mock prop
     const mockNavigate = jest.fn();
-
-    // Render with context provider
+    
+    // Render with mocked providers
     render(
-      <ThemeContext.Provider value={mockContext}>
+      <ThemeContext.Provider value={mockTheme}>
         <Navbar navigateWithoutFileParam={mockNavigate} />
       </ThemeContext.Provider>
     );
     
-    // Check if basic elements are rendered
+    // Check if links are rendered
     expect(screen.getByText(/home/i)).toBeInTheDocument();
     expect(screen.getByText(/activity log/i, { exact: false })).toBeInTheDocument();
   });

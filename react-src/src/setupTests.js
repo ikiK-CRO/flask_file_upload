@@ -18,18 +18,27 @@ Object.defineProperty(document, 'cookie', {
   value: '',
 });
 
-// Mock react-router-dom - use less intrusive mocking
+// Setup consistent react-router-dom mocks for all tests
 jest.mock('react-router-dom', () => {
-  const originalModule = jest.requireActual('react-router-dom');
+  // Create mock location and navigation
+  const mockLocation = {
+    pathname: '/',
+    hash: '',
+    search: '',
+    state: null
+  };
+  
+  const mockNavigate = jest.fn();
+  
+  // Return mocked module
   return {
-    ...originalModule,
-    useLocation: jest.fn().mockReturnValue({
-      pathname: '/',
-      hash: '',
-      search: '',
-      state: null
-    }),
-    useNavigate: jest.fn().mockReturnValue(jest.fn())
+    ...jest.requireActual('react-router-dom'),
+    useLocation: jest.fn().mockReturnValue(mockLocation),
+    useNavigate: jest.fn().mockReturnValue(mockNavigate),
+    Link: ({ children, to }) => <a href={to}>{children}</a>,
+    HashRouter: ({ children }) => <div>{children}</div>,
+    Routes: ({ children }) => <div>{children}</div>,
+    Route: ({ children }) => <div>{children}</div>
   };
 });
 
