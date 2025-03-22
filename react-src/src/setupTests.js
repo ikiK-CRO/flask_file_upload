@@ -4,25 +4,49 @@
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom';
 
-// Mock i18next
+// Mock for document.cookie
+Object.defineProperty(document, 'cookie', {
+  writable: true,
+  value: '',
+});
+
+// Mock react-router-dom
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useLocation: () => ({
+    pathname: '/',
+    hash: '',
+    search: '',
+    state: null
+  }),
+  Link: ({ children, to }) => <a href={to}>{children}</a>
+}));
+
+// Mock i18next and react-i18next
+jest.mock('i18next', () => ({
+  init: () => Promise.resolve(),
+  use: () => ({ init: () => Promise.resolve() }),
+  t: (key) => key,
+  changeLanguage: () => Promise.resolve(),
+  language: 'en'
+}));
+
 jest.mock('react-i18next', () => ({
-  // this mock makes sure any components using the translate hook can use it without a warning being shown
-  useTranslation: () => {
-    return {
-      t: (str) => str,
-      i18n: {
-        changeLanguage: () => new Promise(() => {}),
-        language: 'en'
-      }
-    };
-  },
-  // mock Trans component
+  useTranslation: () => ({
+    t: (key) => key,
+    i18n: {
+      changeLanguage: () => Promise.resolve(),
+      language: 'en'
+    }
+  }),
   Trans: ({ children }) => children,
-  // mock withTranslation HOC
   withTranslation: () => Component => {
     Component.defaultProps = { ...Component.defaultProps, t: (str) => str };
     return Component;
   },
-  // mock I18nextProvider component
+  initReactI18next: {
+    type: '3rdParty',
+    init: () => {}
+  },
   I18nextProvider: ({ children }) => children
 }));

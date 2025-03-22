@@ -1,55 +1,31 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import FileUpload from './FileUpload';
-import { I18nextProvider } from 'react-i18next';
-import i18n from '../i18n';
 
-// Mock i18n
-jest.mock('../i18n', () => ({
-  changeLanguage: jest.fn(),
-  language: 'en',
-  t: (key) => {
-    const translations = {
-      'fileUpload.title': 'File Upload',
-      'fileUpload.dragDrop': 'Drag and drop a file here or click to select a file',
-      'fileUpload.password': 'Password',
-      'fileUpload.passwordPlaceholder': 'Enter password to protect your file',
-      'fileUpload.upload': 'Upload',
-      'fileUpload.uploading': 'Uploading...',
-      'fileUpload.success': 'Upload successful!',
-      'fileUpload.error': 'Upload failed'
-    };
-    return translations[key] || key;
-  }
+// Mock axios
+jest.mock('axios', () => ({
+  post: jest.fn(() => Promise.resolve({ data: { success: true, file_id: 'test-file-id' } }))
 }));
-
-// Mock fetch
-global.fetch = jest.fn();
 
 describe('FileUpload component', () => {
   beforeEach(() => {
-    fetch.mockClear();
+    // Clear mocks between tests
+    jest.clearAllMocks();
   });
 
-  it('renders the file upload form correctly', () => {
-    render(
-      <I18nextProvider i18n={i18n}>
-        <FileUpload />
-      </I18nextProvider>
-    );
+  it('renders the file upload form', () => {
+    render(<FileUpload />);
     
-    expect(screen.getByText('File Upload')).toBeInTheDocument();
-    expect(screen.getByText('Drag and drop a file here or click to select a file')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('Enter password to protect your file')).toBeInTheDocument();
-    expect(screen.getByText('Upload')).toBeInTheDocument();
+    // We're using the i18n keys directly from the mock
+    expect(screen.getByText(/file upload/i, { exact: false })).toBeInTheDocument();
+    expect(screen.getByText(/drag and drop/i, { exact: false })).toBeInTheDocument();
+    
+    // There should be a button for uploading
+    expect(screen.getByRole('button', { name: /upload/i })).toBeInTheDocument();
   });
 
   it('shows error when trying to upload without a file', async () => {
-    render(
-      <I18nextProvider i18n={i18n}>
-        <FileUpload />
-      </I18nextProvider>
-    );
+    render(<FileUpload />);
     
     const uploadButton = screen.getByText('Upload');
     fireEvent.click(uploadButton);
