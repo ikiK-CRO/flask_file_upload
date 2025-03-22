@@ -322,6 +322,17 @@ Za pohranu metapodataka o datotekama koristi se SQLAlchemy ORM s modelom `Upload
     - Čitanje i parsiranje log datoteka
     - Prikaz tablice s podacima i logovima
 
+#### `/api/admin/check-files` (GET)
+- **GET**: Admin krajnja točka za provjeru i popravak sinkronizacije datotečnog sustava i baze podataka
+  - Potrebna zaglavlja:
+    - `X-Admin-Key`: Autentifikacijski ključ za administratorski pristup (zadano: "admin-key")
+  - Akcije:
+    - Provjera siročadskih datoteka (datoteke u direktoriju uploads koje nisu u bazi)
+    - Provjera nestalih datoteka (zapisi u bazi za koje datoteke ne postoje na disku)
+    - Automatski popravak siročadskih datoteka kreiranjem zapisa u bazi
+    - Ažuriranje putanja datoteka u bazi ako su pronađene šifrirane verzije
+    - Vraćanje JSON-a s detaljima o siročadskim, nestalim i popravljenim datotekama
+
 #### Promjena jezika
 
 1. U gornjem desnom kutu svake stranice nalaze se dugmad za odabir jezika (HR, EN)
@@ -372,7 +383,7 @@ Aplikacija ima implementirano sveobuhvatno upravljanje greškama:
 - Flask-Bcrypt
 - Werkzeug
 - Cryptography
-- SQLite (za demonstraciju) ili PostgreSQL (za produkciju)
+- PostgreSQL (primarna baza podataka za sva okruženja)
 
 ## Okvir za testiranje
 

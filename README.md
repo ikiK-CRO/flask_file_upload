@@ -322,6 +322,17 @@ SQLAlchemy ORM with the `UploadedFile` model is used for storing file metadata:
     - Reading and parsing log files
     - Displaying table with data and logs
 
+#### `/api/admin/check-files` (GET)
+- **GET**: Admin endpoint to check and repair file system and database synchronization
+  - Required Headers:
+    - `X-Admin-Key`: Authentication key for admin access (default: "admin-key")
+  - Actions:
+    - Checks for orphaned files (files in uploads directory but not in database)
+    - Checks for missing files (records in database but files not on disk)
+    - Automatically repairs orphaned files by creating database entries
+    - Updates file paths in database if encrypted versions are found
+    - Returns JSON with details about orphaned, missing, and repaired files
+
 ### Error Handling
 
 The application has comprehensive error handling implemented:
@@ -357,7 +368,7 @@ The application has comprehensive error handling implemented:
 - Flask-Bcrypt
 - Werkzeug
 - Cryptography
-- SQLite (for demonstration) or PostgreSQL (for production)
+- PostgreSQL (primary database used across all environments)
 
 ## Testing Framework
 
@@ -517,165 +528,3 @@ When extending the application with new features, follow these guidelines for ad
    ```bash
    python app.py
    ```
-   The application will be available at `http://localhost:5000`
-
-#### Docker Installation
-
-1. **Build Docker Image**
-   ```bash
-   docker build -t flask_file_upload .
-   ```
-
-2. **Run Docker Container**
-   ```bash
-   docker run -p 5000:5000 flask_file_upload
-   ```
-
-#### Testing the Application
-
-To ensure the application works correctly, you can run the automated tests:
-
-1. **Install Test Dependencies**
-   ```bash
-   pip install -r requirements-dev.txt
-   ```
-
-2. **Run All Tests**
-   ```bash
-   make test
-   ```
-
-3. **Run Only Backend Tests**
-   ```bash
-   make test-flask
-   ```
-
-4. **Run Only Frontend Tests**
-   ```bash
-   make test-react
-   ```
-
-5. **Run Tests in Docker Environment**
-   ```bash
-   make test-docker
-   ```
-
-6. **Run Encryption Tests**
-   ```bash
-   python -m pytest tests/test_encryption.py -v
-   ```
-
-The test output will show you if all components are functioning correctly. If any tests fail, the error messages can help you identify the issue.
-
-### Using the Application
-
-#### Uploading a File
-
-1. Open the application's home page (`/`)
-2. Click "Choose file" and select a file to upload
-   - Supported formats: txt, pdf, png, jpg, jpeg, gif, doc, docx, xls, xlsx, zip
-   - Maximum size: 10MB
-3. Enter a password that will be required for downloading the file
-4. Click "Upload"
-5. After successful upload, you'll receive a unique URL to access the file
-6. All files are automatically encrypted for security
-
-#### Downloading a File
-
-1. Open the file download link (`/get-file/<file_uuid>`)
-2. Enter the password that was set during upload
-3. Click "Download"
-4. The file will be automatically decrypted and downloaded to your computer
-
-#### Viewing Activity Logs
-
-1. Open the logs page (`/logs`)
-2. View the table with data about uploaded files
-3. Use tabs to view upload and download logs
-4. Use the search field to filter logs
-
-### Security Recommendations
-
-1. **Use strong passwords** to protect your files.
-2. **Don't share download URLs** through insecure channels.
-3. **Regularly delete unnecessary files** from the system.
-4. **Check files for viruses** before upload and after download.
-5. **Set a secure master encryption key** in production environments.
-6. **Regularly rotate encryption keys** for enhanced security.
-
-### Troubleshooting
-
-#### File Upload Error
-
-- **Problem**: "An error occurred while saving the file."
-- **Solution**: 
-  - Check if the application has sufficient permissions to write to the `uploads` directory.
-  - Check if the file size is below 10MB.
-  - Check if the file type is allowed.
-
-#### File Download Error
-
-- **Problem**: "Incorrect password!"
-- **Solution**: 
-  - Check if you've entered the correct password.
-  - Be careful about uppercase/lowercase letters in the password.
-
-#### Decryption Error
-
-- **Problem**: "Error processing file download" or "Decryption failed"
-- **Solution**: 
-  - Ensure the master encryption key hasn't changed since the file was uploaded.
-  - If you've changed the encryption key, you may need to restore the previous key.
-  - In some cases, restarting the application can resolve temporary cryptographic issues.
-
-#### Log Access Error
-
-- **Problem**: "Could not load logs"
-- **Solution**: 
-  - Check if the `logs` directory exists and if the application has sufficient permissions to read and write.
-  - If necessary, manually create the `logs` directory in the application's root directory.
-
-#### "File not found" Error
-
-- **Problem**: "File not found" when trying to download
-- **Solution**: 
-  - Check if you've entered the correct download URL.
-  - If the file has been deleted, it will no longer be available for download.
-
-#### Language Selection Not Working
-
-- **Problem**: "Language isn't changing when I click on the language button."
-- **Solution**: 
-  - Check if cookies are enabled in your browser.
-  - Try clearing your browser cache and cookies.
-  - Ensure the page is fully reloaded after language selection.
-
-## Frontend Architecture
-
-The frontend is built using React with the following component structure:
-
-### Components
-- **App**: Main application component and routing
-- **Navbar**: Navigation bar with language selection
-- **FileUpload**: Drag-and-drop file upload functionality
-- **FileDownload**: Password-protected file download
-- **ActivityLog**: Tabbed interface for viewing upload/download logs
-
-### State Management
-- Component-level state using React hooks (useState, useEffect)
-- Context API for global state (language settings)
-
-### Internationalization
-- i18next integration for multilingual support
-- Language detection from browser settings and cookies
-- Language switching with persistent selection
-
-### API Integration
-- Axios for HTTP requests to the Flask backend
-- JSON-based data exchange
-- Form data handling for file uploads
-
-### Styling
-- Bootstrap 5 for responsive layout
-- Custom CSS for theming and component styling
-- Responsive design for mobile and desktop views 
