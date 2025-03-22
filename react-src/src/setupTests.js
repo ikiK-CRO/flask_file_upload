@@ -5,6 +5,13 @@
 import '@testing-library/jest-dom';
 import './silenceWarnings';
 
+// Add transformIgnorePatterns setting to fix axios import issues
+if (typeof window !== 'undefined') {
+  // This code only runs in the browser context (during tests)
+  window.jest = window.jest || {};
+  window.jest.transformIgnorePatterns = ['node_modules/(?!(axios)/)'];
+}
+
 // Mock for document.cookie
 Object.defineProperty(document, 'cookie', {
   writable: true,

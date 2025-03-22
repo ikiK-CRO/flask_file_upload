@@ -16,12 +16,14 @@ describe('FileUpload component', () => {
   it('renders the file upload form', () => {
     render(<FileUpload />);
     
-    // We're using the i18n keys directly from the mock
-    expect(screen.getByText(/file upload/i, { exact: false })).toBeInTheDocument();
-    expect(screen.getByText(/drag and drop/i, { exact: false })).toBeInTheDocument();
+    // Look for the actual text in the component (from line 91 in FileUpload.js)
+    expect(screen.getByText('Upload File')).toBeInTheDocument();
+    
+    // Check for the drag and drop instruction
+    expect(screen.getByText(/drag and drop a file here/i, { exact: false })).toBeInTheDocument();
     
     // There should be a button for uploading
-    expect(screen.getByRole('button', { name: /upload/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Upload' })).toBeInTheDocument();
   });
 
   it('shows error when trying to upload without a file', async () => {
@@ -31,8 +33,8 @@ describe('FileUpload component', () => {
     fireEvent.click(uploadButton);
     
     await waitFor(() => {
-      // Use regex to be more flexible with punctuation
-      expect(screen.getByText(/please select a file/i)).toBeInTheDocument();
+      // The actual error message from the component (line 44)
+      expect(screen.getByText('Please select a file.')).toBeInTheDocument();
     });
   });
 }); 
