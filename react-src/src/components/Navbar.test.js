@@ -2,19 +2,25 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import Navbar from './Navbar';
 import { ThemeContext } from '../ThemeContext';
+import * as ReactRouterDom from 'react-router-dom';
 
-// Mock components and hooks used in Navbar to avoid routing issues
-jest.mock('react-router-dom', () => ({
-  useLocation: jest.fn().mockReturnValue({
-    pathname: '/',
-    hash: '',
-    search: '',
-    state: null
-  }),
-  Link: ({ children }) => <span>{children}</span>
-}));
+// Create a proper mock for useLocation
+const mockLocation = {
+  pathname: '/',
+  hash: '',
+  search: '',
+  state: null
+};
+
+// Mock useLocation directly instead of mocking the whole module
+jest.spyOn(ReactRouterDom, 'useLocation').mockImplementation(() => mockLocation);
 
 describe('Navbar component', () => {
+  beforeEach(() => {
+    // Reset mocks before each test
+    jest.clearAllMocks();
+  });
+
   it('renders navigation links correctly', () => {
     // Create mock context value
     const mockContext = {
