@@ -1,30 +1,46 @@
+version: '3.8'
 
 services:
   web:
     build: .
     ports:
       - "5001:5000"
-    depends_on:
-      - db
-    environment:
-      # PostgreSQL connection string: "postgresql://user:password@host:port/database"
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/fileupload_db
     volumes:
       - .:/app
-      # Persist uploaded files using a named volume
-      - uploads_data:/app/uploads
+      - /app/node_modules
+      - /app/react-src/node_modules
+    environment:
+      - FLASK_ENV=development
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/fileupload
+      - MASTER_ENCRYPTION_KEY=${MASTER_ENCRYPTION_KEY:-generate}
+    depends_on:
+      - db
+    restart: unless-stopped
+    # Wait for db to be ready
+    command: >
+      bash -c "
+        echo 'Waiting for PostgreSQL to start...'
+        sleep 5
+        python app.py
+      "
 
   db:
     image: postgres:13
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: fileupload_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=fileupload
+    restart: unless-stopped
     ports:
       - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+    # Initialize the database
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
   postgres_data:
-  uploads_data:

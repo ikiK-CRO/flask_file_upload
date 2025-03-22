@@ -5,7 +5,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 import datetime
 import functools
-from flask import Flask, request, redirect, url_for, render_template, send_from_directory, flash, jsonify, Response
+from flask import Flask, request, redirect, url_for, render_template, send_from_directory, flash, jsonify, Response, after_this_request
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from werkzeug.utils import secure_filename
@@ -166,12 +166,80 @@ db = SQLAlchemy(app)
 # Define the database model
 class UploadedFile(db.Model):
     id = db.Column(db.String(36), primary_key=True)  # UUID4 as string
-    file_name = db.Column(db.String(255), nullable=False)
-    file_path = db.Column(db.String(255), nullable=False)
+    _file_name = db.Column('file_name_encrypted', db.Text, nullable=False)  # Encrypted filename
+    _file_path = db.Column('file_path_encrypted', db.Text, nullable=False)  # Encrypted filepath
     password_hash = db.Column(db.String(255), nullable=False)  # Store hashed password
     password = db.Column(db.String(255), nullable=False)  # This might be the missing column
     upload_date = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     download_count = db.Column(db.Integer, default=0)
+    is_encrypted = db.Column(db.Boolean, default=True)  # Flag to indicate if file is encrypted
+    encryption_salt = db.Column(db.LargeBinary, nullable=True)  # Salt for encryption (if used)
+    
+    @property
+    def file_name(self):
+        """Get decrypted file name"""
+        try:
+            from crypto_utils import decrypt_db_field
+            if self.is_encrypted and self._file_name:
+                decrypted = decrypt_db_field(self._file_name)
+                if decrypted:
+                    return decrypted
+                app.logger.warning(f"Failed to decrypt file_name, using raw value for: {self.id}")
+            return self._file_name
+        except Exception as e:
+            app.logger.error(f"Error in file_name getter: {str(e)} for file: {self.id}")
+            return self._file_name or "unknown_file"
+        
+    @file_name.setter
+    def file_name(self, value):
+        """Set encrypted file name"""
+        try:
+            from crypto_utils import encrypt_db_field
+            if value and self.is_encrypted:
+                encrypted = encrypt_db_field(value)
+                if encrypted:
+                    self._file_name = encrypted
+                else:
+                    app.logger.warning(f"Failed to encrypt file_name, using raw value for: {value}")
+                    self._file_name = value
+            else:
+                self._file_name = value
+        except Exception as e:
+            app.logger.error(f"Error in file_name setter: {str(e)}")
+            self._file_name = value
+    
+    @property
+    def file_path(self):
+        """Get decrypted file path"""
+        try:
+            from crypto_utils import decrypt_db_field
+            if self.is_encrypted and self._file_path:
+                decrypted = decrypt_db_field(self._file_path)
+                if decrypted:
+                    return decrypted
+                app.logger.warning(f"Failed to decrypt file_path, using raw value for: {self.id}")
+            return self._file_path
+        except Exception as e:
+            app.logger.error(f"Error in file_path getter: {str(e)} for file: {self.id}")
+            return self._file_path
+        
+    @file_path.setter
+    def file_path(self, value):
+        """Set encrypted file path"""
+        try:
+            from crypto_utils import encrypt_db_field
+            if value and self.is_encrypted:
+                encrypted = encrypt_db_field(value)
+                if encrypted:
+                    self._file_path = encrypted
+                else:
+                    app.logger.warning(f"Failed to encrypt file_path, using raw value for: {value}")
+                    self._file_path = value
+            else:
+                self._file_path = value
+        except Exception as e:
+            app.logger.error(f"Error in file_path setter: {str(e)}")
+            self._file_path = value
 
 # Create database tables (if they don't exist)
 with app.app_context():
@@ -353,104 +421,27 @@ def serve_react():
     return render_template('minimal_react.html')
 
 # API endpoints for React
-@app.route('/api/upload', methods=['POST'])
-def api_upload_file():
-    # Mostly same logic as upload_file but returns JSON
-    if 'file' not in request.files:
-        return jsonify({'success': False, 'message': _("No file part in the request")})
-            
-    uploaded_file = request.files.get('file')
-    password = request.form.get('password')
-    
-    if not uploaded_file or uploaded_file.filename == '':
-        return jsonify({'success': False, 'message': _("No file selected")})
+@app.route('/api/upload', methods=['GET', 'POST', 'OPTIONS'])
+def api_upload_endpoint():
+    """API endpoint for file uploads"""
+    # Handle preflight OPTIONS request
+    if request.method == 'OPTIONS':
+        response = app.make_default_options_response()
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+        return response
         
-    if not password:
-        return jsonify({'success': False, 'message': _("Password is required")})
-    
-    app.logger.info(f"API Upload attempt: {uploaded_file.filename}")
+    # For GET, return instructions
+    if request.method == 'GET':
+        return jsonify({
+            "success": True,
+            "message": "Upload files via POST with multipart/form-data",
+            "required_fields": ["file", "password"]
+        })
         
-    if not allowed_file(uploaded_file.filename):
-        message = f"File type not allowed. Allowed types: {', '.join(ALLOWED_EXTENSIONS)}"
-        return jsonify({'success': False, 'message': message})
-        
-    # File Size Validation
-    uploaded_file.seek(0, os.SEEK_END)
-    file_size = uploaded_file.tell()
-    uploaded_file.seek(0)
-    
-    if file_size > MAX_CONTENT_LENGTH:
-        message = f"File size exceeds the {MAX_CONTENT_LENGTH // (1024 * 1024)}MB limit!"
-        return jsonify({'success': False, 'message': message})
-        
-    # MIME type validation
-    if not validate_mime_type(uploaded_file):
-        return jsonify({'success': False, 'message': "Invalid file content or MIME type"})
-
-    # Input Validation and Sanitization
-    filename = secure_filename(uploaded_file.filename)
-    if filename == '':
-        return jsonify({'success': False, 'message': "Invalid file name after sanitization"})
-        
-    # Additional sanitization
-    filename = re.sub(r'[^a-zA-Z0-9_.-]', '_', filename)
-
-    file_uuid = str(uuid.uuid4())
-    file_path = os.path.join(app.config['UPLOAD_FOLDER'], f"{file_uuid}_{filename}")
-    
-    try:
-        uploaded_file.save(file_path)
-        app.logger.info(f"File saved: {file_path} - Size: {file_size/1024/1024:.2f}MB")
-    except Exception as e:
-        app.logger.error(f"File save error: {str(e)} - Path: {file_path}")
-        return jsonify({'success': False, 'message': "Error saving file"})
-
-    # Hash the password
-    try:
-        password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
-    except Exception as e:
-        app.logger.error(f"Password hashing error: {str(e)}")
-        return jsonify({'success': False, 'message': "Password hashing failed!"})
-    
-    # Create the new_file instance
-    new_file = UploadedFile(
-        id=file_uuid,
-        file_name=filename,
-        file_path=file_path,
-        password_hash=password_hash,
-        password=password
-    )
-    
-    # Save file metadata in the database
-    db.session.add(new_file)
-    try:
-        db.session.commit()
-        app.logger.info(f"File metadata saved to database: {file_uuid} - {filename}")
-    except Exception as e:
-        app.logger.error(f"Database error: {str(e)}")
-        
-        # Delete the uploaded file if database operation failed
-        if os.path.exists(file_path):
-            try:
-                os.remove(file_path)
-                app.logger.info(f"Cleaned up file after database error: {file_path}")
-            except Exception as cleanup_error:
-                app.logger.error(f"Error cleaning up file: {str(cleanup_error)} - Path: {file_path}")
-            
-        return jsonify({'success': False, 'message': "An error occurred while saving the file."})
-
-    # Return the download URL to the user
-    scheme = request.scheme
-    # Force HTTPS only on Heroku
-    if 'herokuapp.com' in request.host:
-        scheme = 'https'
-    host = request.host
-    file_url = f"{scheme}://{host}/get-file/{file_uuid}"
-    return jsonify({
-        'success': True, 
-        'message': _("File uploaded successfully! You will need the password you provided to access it at: {}").format(file_url),
-        'file_url': file_url
-    })
+    # For POST, handle file upload
+    return api_upload_file()
 
 @app.route('/api/files/<file_uuid>', methods=['POST'])
 def api_get_file(file_uuid):
@@ -491,7 +482,7 @@ def api_get_file(file_uuid):
         if 'herokuapp.com' in request.host:
             scheme = 'https'
         host = request.host
-        download_url = f"{scheme}://{host}/api/download/{file_uuid}"
+        download_url = f"{scheme}://{host}/api/download/{file_uuid}?authenticated=true"
         app.logger.info(f"API: Password verified, returning download URL: {download_url}")
         
         return jsonify({
@@ -505,59 +496,107 @@ def api_get_file(file_uuid):
 
 @app.route('/api/download/<file_uuid>', methods=['GET', 'OPTIONS'])
 def download_file_direct(file_uuid):
+    app.logger.info(f"Direct download attempt for file: {file_uuid}")
+    
     # Ensure we're only serving over HTTPS in production
     if request.headers.get('X-Forwarded-Proto') == 'http' and 'herokuapp.com' in request.host:
-        scheme = 'https'
-        host = request.host
-        return redirect(f'{scheme}://{host}/api/download/{file_uuid}', code=301)
+        https_url = url_for('download_file_direct', file_uuid=file_uuid, _external=True).replace('http://', 'https://')
+        return redirect(https_url, code=301)
         
-    # Add support for preflight OPTIONS requests
+    # Add CORS headers for preflight requests
     if request.method == 'OPTIONS':
-        resp = jsonify({'success': True})
-        resp.headers['Access-Control-Allow-Origin'] = '*'
-        resp.headers['Access-Control-Allow-Methods'] = 'GET, OPTIONS'
-        resp.headers['Access-Control-Allow-Headers'] = 'Content-Type, Content-Disposition, X-Requested-With'
-        if 'herokuapp.com' in request.host:
-            resp.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
-        return resp
-        
-    # This route would handle the actual file download after auth is completed
-    file_record = UploadedFile.query.filter_by(id=file_uuid).first()
+        return '', 200
+    
+    # Get file from database
+    file_record = UploadedFile.query.get(file_uuid)
     if not file_record:
-        app.logger.warning(f"File not found for direct download: {file_uuid}")
-        return "File not found", 404
-        
+        app.logger.warning(f"Download attempt for non-existent file: {file_uuid}")
+        return jsonify({"success": False, "message": "File not found"}), 404
+    
+    # User must have authenticated first
+    authenticated = request.args.get('authenticated') == 'true'
+    app.logger.info(f"Authentication parameter: {request.args.get('authenticated')} for file: {file_uuid}")
+    
+    if not authenticated:
+        app.logger.warning(f"Download attempt without authentication: {file_uuid}")
+        return jsonify({"success": False, "message": "Authentication required"}), 401
+    
     try:
-        directory, stored_file = os.path.split(file_record.file_path)
-        app.logger.info(f"Direct file download: {file_uuid} - {file_record.file_name}")
+        # Get the file path and create the response
+        file_path = file_record.file_path  # This uses the decryption getter
+        original_filename = file_record.file_name  # This uses the decryption getter
         
-        # Get the file response
-        response = send_from_directory(directory, stored_file, as_attachment=True, download_name=file_record.file_name)
+        # Check if file_path is None or empty
+        if not file_path:
+            app.logger.error(f"File path is None or empty for UUID: {file_uuid}")
+            return jsonify({"success": False, "message": "File path is missing or corrupted"}), 404
+            
+        app.logger.info(f"Preparing to serve file: {original_filename} from path: {file_path}")
         
-        # Add headers for cross-browser compatibility, especially for Chrome
-        response.headers["Content-Disposition"] = f"attachment; filename=\"{file_record.file_name}\"; filename*=UTF-8''{quote(file_record.file_name)}"
-        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-        response.headers["Pragma"] = "no-cache"
-        response.headers["Expires"] = "0"
+        # Check if file exists
+        if not os.path.exists(file_path):
+            app.logger.error(f"File not found on disk: {file_path} for UUID: {file_uuid}")
+            return jsonify({"success": False, "message": "File not available"}), 404
         
-        # Enhanced cross-origin headers for Chrome on HTTPS
-        response.headers["Access-Control-Allow-Origin"] = "*"
-        response.headers["Access-Control-Allow-Methods"] = "GET, OPTIONS"
-        response.headers["Access-Control-Allow-Headers"] = "Content-Type, Content-Disposition, X-Requested-With"
-        response.headers["Access-Control-Expose-Headers"] = "Content-Disposition, Content-Length, X-Content-Transfer-Id"
-        response.headers["Cross-Origin-Resource-Policy"] = "cross-origin"
+        # Determine if file needs decryption
+        if file_record.is_encrypted:
+            app.logger.info(f"File is encrypted, decrypting: {file_uuid}")
+            # Create a temporary file to hold the decrypted content
+            import tempfile
+            from crypto_utils import decrypt_file
+            
+            # Create temp file with original extension
+            _, file_ext = os.path.splitext(original_filename)
+            with tempfile.NamedTemporaryFile(delete=False, suffix=file_ext) as temp_file:
+                temp_path = temp_file.name
+            app.logger.info(f"Created temp file for decryption: {temp_path}")
+            
+            # Decrypt the file to the temporary location
+            decrypt_result = decrypt_file(file_path, temp_path)
+            if decrypt_result:
+                app.logger.info(f"File decrypted successfully to: {decrypt_result}")
+                # Set this as the path to serve
+                serve_path = decrypt_result
+            else:
+                app.logger.error(f"File decryption failed for: {file_uuid}")
+                return jsonify({"success": False, "message": "Decryption failed"}), 500
+            
+            # Ensure temp file is deleted after sending
+            @after_this_request
+            def cleanup_temp_file(response):
+                app.logger.info(f"Cleaning up temp file: {temp_path}")
+                if os.path.exists(temp_path):
+                    try:
+                        os.remove(temp_path)
+                        app.logger.info(f"Temp file removed: {temp_path}")
+                    except Exception as e:
+                        app.logger.error(f"Error removing temp file: {e}")
+                return response
+        else:
+            # No decryption needed
+            app.logger.info(f"File is not encrypted, serving directly: {file_uuid}")
+            serve_path = file_path
         
-        # Only add these security headers in production
-        if 'herokuapp.com' in request.host:
-            response.headers["Cross-Origin-Embedder-Policy"] = "unsafe-none"
-            response.headers["Feature-Policy"] = "downloads *"
-            response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
-            response.headers["Content-Security-Policy"] = "upgrade-insecure-requests"
+        # Update download count
+        file_record.download_count += 1
+        db.session.commit()
+        app.logger.info(f"Download count updated for {file_uuid}, new count: {file_record.download_count}")
         
-        return response
+        # Log the download
+        app.logger.info(f"File downloaded: {original_filename} (UUID: {file_uuid})")
+        
+        # Send the file with original filename
+        return send_from_directory(
+            directory=os.path.dirname(serve_path),
+            path=os.path.basename(serve_path),
+            as_attachment=True,
+            download_name=original_filename,
+            mimetype=mimetypes.guess_type(original_filename)[0]
+        )
+        
     except Exception as e:
-        app.logger.error(f"Error during direct file download: {str(e)} for file {file_uuid}")
-        return "Error downloading file", 500
+        app.logger.error(f"Error during file download: {str(e)} for UUID: {file_uuid}")
+        return jsonify({"success": False, "message": f"Error processing file download: {str(e)}"}), 500
 
 @app.route('/api/logs', methods=['GET'])
 def api_get_logs():
@@ -600,6 +639,143 @@ def api_get_logs():
         app.logger.error(f"Error loading logs: {str(e)}")
         return jsonify({'success': False, 'message': f"Could not load logs: {str(e)}"})
 
+def api_upload_file():
+    """Handle file upload from API"""
+    # Mostly same logic as upload_file but returns JSON
+    if 'file' not in request.files:
+        app.logger.warning("Upload attempt with no file part")
+        return jsonify({"success": False, "message": _("No file part")})
+    
+    file = request.files['file']
+    if file.filename == '':
+        app.logger.warning("Upload attempt with empty filename")
+        return jsonify({"success": False, "message": _("No file selected")})
+    
+    password = request.form.get('password', '')
+    if not password:
+        app.logger.warning("Upload attempt with no password")
+        return jsonify({"success": False, "message": _("No password provided")})
+    
+    if file and allowed_file(file.filename):
+        # Check file size
+        file.seek(0, os.SEEK_END)
+        file_size = file.tell()
+        file.seek(0)
+        
+        if file_size > MAX_CONTENT_LENGTH:
+            app.logger.warning(f"Upload attempt with too large file: {file_size} bytes, max is {MAX_CONTENT_LENGTH}")
+            return jsonify({
+                "success": False, 
+                "message": _("File too large, max 10MB allowed")
+            })
+        
+        # Validate MIME type
+        if not validate_mime_type(file):
+            app.logger.warning(f"Upload attempt with invalid MIME type for file: {file.filename}")
+            return jsonify({
+                "success": False, 
+                "message": _("Invalid file type")
+            })
+        
+        # Create a secure filename
+        original_filename = secure_filename(file.filename)
+        file_uuid = str(uuid.uuid4())
+        
+        # Create unique filename with UUID
+        secure_filename_with_uuid = f"{file_uuid}_{original_filename}"
+        temp_file_path = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename_with_uuid)
+        
+        # Save the file temporarily
+        try:
+            app.logger.info(f"Attempting to save file to {temp_file_path}")
+            file.save(temp_file_path)
+            app.logger.info(f"File temporarily saved at: {temp_file_path}")
+            
+            # Verify the file was saved correctly
+            if not os.path.exists(temp_file_path):
+                app.logger.error(f"Failed to save file at: {temp_file_path}")
+                return jsonify({
+                    "success": False,
+                    "message": _("Failed to save uploaded file")
+                })
+            
+            # Encrypt the file
+            app.logger.info(f"Attempting to encrypt file: {temp_file_path}")
+            try:
+                from crypto_utils import encrypt_file
+                encrypted_file_path = encrypt_file(temp_file_path)
+                app.logger.info(f"File encrypted: {encrypted_file_path}")
+                
+                # Delete the original unencrypted file if encryption was successful
+                if encrypted_file_path != temp_file_path and os.path.exists(temp_file_path):
+                    os.remove(temp_file_path)
+                    app.logger.info(f"Removed original unencrypted file: {temp_file_path}")
+            except Exception as e:
+                app.logger.error(f"Encryption error: {str(e)}")
+                # If encryption fails, continue with the unencrypted file
+                encrypted_file_path = temp_file_path
+                app.logger.warning(f"Continuing with unencrypted file: {encrypted_file_path}")
+            
+            # Generate password hash
+            password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
+            
+            try:
+                # Store file information in database
+                is_encrypted = encrypted_file_path != temp_file_path
+                new_file = UploadedFile(
+                    id=file_uuid,
+                    file_name=original_filename,  # This will be encrypted by the setter
+                    file_path=encrypted_file_path,  # This will be encrypted by the setter
+                    password=password,  # Raw password for demonstration purposes
+                    password_hash=password_hash,
+                    is_encrypted=is_encrypted
+                )
+                db.session.add(new_file)
+                db.session.commit()
+                
+                # Log the successful upload
+                app.logger.info(f"File uploaded successfully: {original_filename} (UUID: {file_uuid})")
+                
+                # Create file URL for download
+                file_url = url_for('get_file', file_uuid=file_uuid, _external=True)
+                
+                return jsonify({
+                    "success": True, 
+                    "message": _("File uploaded successfully!"),
+                    "file_uuid": file_uuid,
+                    "file_url": file_url
+                })
+                
+            except Exception as e:
+                # If database error, delete the uploaded file to avoid orphaned files
+                if os.path.exists(encrypted_file_path):
+                    try:
+                        os.remove(encrypted_file_path)
+                        app.logger.info(f"Removed file after database error: {encrypted_file_path}")
+                    except Exception as remove_error:
+                        app.logger.error(f"Error removing file: {str(remove_error)}")
+                
+                app.logger.error(f"Database error during file upload: {str(e)}")
+                return jsonify({
+                    "success": False, 
+                    "message": _("An error occurred while saving the file information.")
+                })
+                
+        except Exception as e:
+            app.logger.error(f"File system error during upload: {str(e)}")
+            return jsonify({
+                "success": False, 
+                "message": _("An error occurred while saving the file.")
+            })
+    
+    else:
+        # Handle invalid file type
+        allowed_extensions = ', '.join(ALLOWED_EXTENSIONS)
+        app.logger.warning(f"Upload attempt with invalid file type: {file.filename}")
+        return jsonify({
+            "success": False, 
+            "message": _("Invalid file type. Allowed types: %(types)s", types=allowed_extensions)
+        })
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))

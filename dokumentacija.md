@@ -26,6 +26,7 @@
 - **Docker Compose**: Definicija više-kontejnerskog okruženja
 - **GitHub Actions**: CI/CD automatizacija
 - **Makefile**: Automatizacija izgradnje i orkestracije testova
+- **Cryptography**: Python biblioteka za sigurno šifriranje/dešifriranje
 
 ### Baze podataka
 - **PostgreSQL**: Primarna baza podataka koja se koristi u svim okruženjima (lokalni Docker, razvoj i produkcija)
@@ -39,6 +40,8 @@
 - **Werkzeug**: Utility biblioteka za sigurnosne funkcije
 - **Regularne ekspresije**: Validacija i sanitizacija korisničkog unosa
 - **MIME validacija**: Provjera stvarnog tipa uploadanih datoteka
+- **Fernet enkripcija**: Simetrično šifriranje za datoteke i osjetljive podatke
+- **Generiranje ključeva iz lozinke**: PBKDF2 za sigurno generiranje ključeva
 
 ### Praćenje i dijagnostika
 - **Python logging**: Strukturirano logiranje aktivnosti
@@ -78,6 +81,7 @@ Glavne komponente sustava su:
 3. **Baza podataka**: PostgreSQL za pohranu metapodataka o uploadanim datotekama
 4. **Sustav za datoteke**: Lokalni datotečni sustav za pohranu uploadanih datoteka
 5. **Sustav za logiranje**: Strukturirano logiranje aktivnosti korisnika i sustava
+6. **Sloj za enkripciju**: Fernet-bazirano šifriranje za datoteke i polja u bazi podataka
 
 Aplikacija implementira slijedeće funkcionalne cjeline:
 
@@ -86,6 +90,7 @@ Aplikacija implementira slijedeće funkcionalne cjeline:
 - Strukturirano logiranje svih aktivnosti
 - Pregledavanje logova aktivnosti s tabovima
 - Internacionalizacija s promjenom jezika
+- End-to-end enkripcija sadržaja datoteka i metapodataka
 
 ### Sigurnosne implementacije
 
@@ -119,6 +124,28 @@ Aplikacija implementira slijedeće funkcionalne cjeline:
    - Sigurna provjera hash vrijednosti bez otkrivanja originalne lozinke
    - Zaštita od brute-force napada
 
+#### Sustav enkripcije
+
+1. **Enkripcija datoteka**:
+   - Fernet simetrična enkripcija za sve uploadane datoteke
+   - Automatsko šifriranje pri uploadu i dešifriranje pri downloadu
+   - Sigurno upravljanje ključevima s mehanizmom rezerve
+
+2. **Enkripcija polja u bazi podataka**:
+   - Transparentna enkripcija osjetljivih polja (ime datoteke, putanja do datoteke)
+   - Šifriranje podataka u mirovanju za zaštitu od krađe baze podataka
+   - Automatsko dešifriranje prilikom pristupa poljima
+
+3. **Upravljanje ključevima**:
+   - Glavni ključ za šifriranje sigurno pohranjen u varijablama okruženja
+   - Rezervno generiranje ključa s jasnim upozorenjima
+   - Validacija i korekcija formata ključa
+
+4. **Enkripcija bazirana na lozinki**:
+   - PBKDF2 generiranje ključa iz lozinke za operacije zaštićene lozinkom
+   - Generiranje i pohrana soli za sigurno generiranje ključa
+   - Zaštita od napada pomoću rainbow tablice
+
 #### Dodatne sigurnosne mjere
 
 1. **Jedinstveni identifikatori**:
@@ -128,6 +155,11 @@ Aplikacija implementira slijedeće funkcionalne cjeline:
 2. **Čišćenje resursa**:
    - Automatsko brisanje uploadanih datoteka u slučaju greške s bazom podataka
    - Sprječavanje zaostalih datoteka u sustavu
+
+3. **Otpornost na pogreške**:
+   - Elegantno upravljanje pogreškama pri šifriranju/dešifriranju
+   - Rezervni mehanizmi za osiguravanje dostupnosti sustava
+   - Detaljno logiranje pogrešaka za sigurnosni nadzor
 
 ### Implementacija logiranja
 
@@ -176,6 +208,7 @@ Sustav za logiranje implementiran je koristeći Python-ov `logging` modul s cilj
    - Neispravni tipovi datoteka
    - Pokušaji zaobilaženja validacije
    - Neuspjeli pokušaji autentikacije
+   - Događaji šifriranja/dešifriranja i povezane pogreške
 
 #### Pregled logova
 
@@ -225,12 +258,14 @@ Za pohranu metapodataka o datotekama koristi se SQLAlchemy ORM s modelom `Upload
 | Polje | Tip | Opis |
 |-------|-----|------|
 | id | String(36) | Primarni ključ, UUID |
-| file_name | String(255) | Originalno ime datoteke |
-| file_path | String(255) | Putanja do datoteke u sustavu |
+| _file_name | Text | Šifrirano originalno ime datoteke |
+| _file_path | Text | Šifrirana putanja do datoteke u sustavu |
 | password_hash | String(255) | Hash vrijednost lozinke |
 | password | String(255) | Lozinka (za demonstraciju) |
 | upload_date | DateTime | Datum i vrijeme uploada |
 | download_count | Integer | Broj preuzimanja |
+| is_encrypted | Boolean | Zastavica koja označava je li datoteka šifrirana |
+| encryption_salt | LargeBinary | Sol za šifriranje (ako se koristi) |
 
 ### API krajnje točke
 
@@ -243,6 +278,7 @@ Za pohranu metapodataka o datotekama koristi se SQLAlchemy ORM s modelom `Upload
   - Akcije:
     - Validacija datoteke
     - Pohrana datoteke
+    - Šifriranje datoteke
     - Kreiranje zapisa u bazi podataka
     - Generiranje i vraćanje URL-a za preuzimanje
 
@@ -254,7 +290,30 @@ Za pohranu metapodataka o datotekama koristi se SQLAlchemy ORM s modelom `Upload
   - Akcije:
     - Validacija lozinke
     - Ažuriranje broja preuzimanja
+    - Dešifriranje datoteke
     - Slanje datoteke klijentu
+
+#### `/api/download/<file_uuid>` (GET, OPTIONS)
+- **GET**: Direktno preuzimanje datoteke nakon autentikacije
+  - Parametri upita:
+    - `authenticated`: Zastavica koja označava uspješnu autentikaciju
+  - Akcije:
+    - Provjera autentikacije
+    - Dešifriranje datoteke ako je potrebno
+    - Sigurno serviranje datoteke
+
+#### `/api/upload` (GET, POST, OPTIONS)
+- **GET**: Vraća informacije o zahtjevima za upload
+- **POST**: API krajnja točka za upload datoteke
+  - Parametri forme:
+    - `file`: Datoteka za upload
+    - `password`: Lozinka za zaštitu datoteke
+  - Akcije:
+    - Validacija datoteke
+    - Pohrana datoteke
+    - Šifriranje datoteke
+    - Kreiranje zapisa u bazi podataka
+    - Vraćanje JSON-a s detaljima datoteke i URL-om za preuzimanje
 
 #### `/logs` (GET)
 - **GET**: Prikazuje logove aktivnosti
@@ -287,7 +346,12 @@ Aplikacija ima implementirano sveobuhvatno upravljanje greškama:
    - Poruke za neispravnu lozinku
    - Poruke za nedostajuću lozinku
 
-4. **Greške sustava**:
+4. **Greške šifriranja**:
+   - Elegantno upravljanje neuspjesima šifriranja
+   - Povratak na nešifrirano pohranjivanje kada je potrebno
+   - Transparentno oporavljanje od pogrešaka tijekom dešifriranja
+
+5. **Greške sustava**:
    - Upravljanje greškama baze podataka
    - Upravljanje greškama datotečnog sustava
    - Logiranje detalja grešaka
@@ -307,6 +371,7 @@ Aplikacija ima implementirano sveobuhvatno upravljanje greškama:
 - Flask-SQLAlchemy
 - Flask-Bcrypt
 - Werkzeug
+- Cryptography
 - SQLite (za demonstraciju) ili PostgreSQL (za produkciju)
 
 ## Okvir za testiranje
@@ -343,7 +408,13 @@ Aplikacija uključuje sveobuhvatan okvir za testiranje koji osigurava pouzdanost
    - Validacija uploada datoteka bez datoteka
    - Validacija uploada datoteka bez lozinki
    
-3. **Test fixtures** (`tests/conftest.py`):
+3. **Testovi enkripcije** (`tests/test_encryption.py`):
+   - Šifriranje i dešifriranje polja u bazi podataka
+   - Šifriranje i dešifriranje datoteka
+   - Enkripcija bazirana na lozinki
+   - Upravljanje ključevima i validacija
+   
+4. **Test fixtures** (`tests/conftest.py`):
    - Postavljanje Flask aplikacije s test konfiguracijom
    - Kreiranje test klijenta
    - Inicijalizacija i čišćenje baze podataka
@@ -382,10 +453,10 @@ Različite naredbe za testiranje dostupne su putem Makefile-a za jednostavnije i
    ```bash
    make test-docker
    ```
-
-5. **Čišćenje test okruženja**:
+   
+6. **Pokretanje testova enkripcije**
    ```bash
-   make clean
+   python -m pytest tests/test_encryption.py -v
    ```
 
 ### Pokrivenost testovima
@@ -396,6 +467,7 @@ Testovi pokrivaju nekoliko kritičnih aspekata aplikacije:
    - Rukovanje i zaštita lozinki
    - Validacija i sanitizacija datoteka
    - Rukovanje pogreškama za nevažeće unose
+   - Funkcionalnost enkripcije i dekripcije
 
 2. **Funkcionalni testovi**:
    - Workflow uploada i downloada datoteka
@@ -451,6 +523,9 @@ Prilikom proširenja aplikacije novim značajkama, slijedite ove smjernice za do
    
    # Za korištenje PostgreSQL baze
    export DATABASE_URL=postgresql://korisnik:lozinka@localhost/baza_podataka
+   
+   # Opcijski: Postavite glavni ključ za šifriranje (preporučeno za produkciju)
+   export MASTER_ENCRYPTION_KEY=vaš_sigurni_base64_ključ
    ```
 
 4. **Pokretanje aplikacije**
@@ -499,6 +574,11 @@ Da biste osigurali da aplikacija radi ispravno, možete pokrenuti automatizirane
    ```bash
    make test-docker
    ```
+   
+6. **Pokretanje testova enkripcije**
+   ```bash
+   python -m pytest tests/test_encryption.py -v
+   ```
 
 Izlaz testova pokazat će vam rade li sve komponente ispravno. Ako neki test ne uspije, poruke o pogreškama pomoći će vam identificirati problem.
 
@@ -513,13 +593,14 @@ Izlaz testova pokazat će vam rade li sve komponente ispravno. Ako neki test ne 
 3. Unesite lozinku koja će biti potrebna za preuzimanje datoteke
 4. Kliknite na "Upload"
 5. Nakon uspješnog uploada, dobit ćete jedinstveni URL za pristup datoteci
+6. Sve datoteke se automatski šifriraju za dodatnu sigurnost
 
 #### Preuzimanje datoteke
 
 1. Otvorite link za preuzimanje datoteke (`/get-file/<file_uuid>`)
 2. Unesite lozinku koja je postavljena prilikom uploada
 3. Kliknite na "Download"
-4. Datoteka će biti preuzeta na vaše računalo
+4. Datoteka će biti automatski dešifrirana i preuzeta na vaše računalo
 
 #### Pregledavanje logova aktivnosti
 
@@ -534,7 +615,8 @@ Izlaz testova pokazat će vam rade li sve komponente ispravno. Ako neki test ne 
 2. **Ne dijelite URL za preuzimanje** putem nesigurnih kanala.
 3. **Redovito brišite nepotrebne datoteke** iz sustava.
 4. **Provjerite datoteke na viruse** prije uploada i nakon downloada.
-5. **Ne uploadajte osjetljive podatke** bez dodatne enkripcije.
+5. **Postavite siguran glavni ključ za šifriranje** u produkcijskim okruženjima.
+6. **Redovito mijenjajte ključeve za šifriranje** za poboljšanu sigurnost.
 
 ### Rješavanje problema
 
@@ -553,6 +635,14 @@ Izlaz testova pokazat će vam rade li sve komponente ispravno. Ako neki test ne 
   - Provjerite jeste li unijeli točnu lozinku.
   - Pazite na velika/mala slova u lozinki.
 
+#### Greška dešifriranja
+
+- **Problem**: "Error processing file download" ili "Decryption failed"
+- **Rješenje**: 
+  - Osigurajte da se glavni ključ za šifriranje nije promijenio od kada je datoteka uploadana.
+  - Ako ste promijenili ključ za šifriranje, možda ćete morati vratiti prethodni ključ.
+  - U nekim slučajevima, ponovno pokretanje aplikacije može riješiti privremene kriptografske probleme.
+
 #### Greška pri pristupu logovima
 
 - **Problem**: "Could not load logs"
@@ -566,6 +656,14 @@ Izlaz testova pokazat će vam rade li sve komponente ispravno. Ako neki test ne 
 - **Rješenje**: 
   - Provjerite jeste li unijeli ispravan URL za preuzimanje.
   - Ako je datoteka obrisana, više neće biti dostupna za preuzimanje.
+
+#### Greška pri promjeni jezika
+
+- **Problem**: "Jezik se ne mijenja kada kliknem na dugme za odabir jezika."
+- **Rješenje**: 
+  - Provjerite jesu li kolačići (cookies) omogućeni u vašem pregledniku.
+  - Pokušajte očistiti cache i kolačiće preglednika.
+  - Osigurajte da se stranica u potpunosti ponovno učitava nakon promjene jezika.
 
 ## Frontend arhitektura
 

@@ -3,9 +3,11 @@ Flask-Bcrypt==0.7.1
 Werkzeug==2.0.1
 Flask-SQLAlchemy==2.5.1
 SQLAlchemy==1.4.46
-psycopg2==2.9.5
+psycopg2-binary==2.9.5
 Flask-Babel==2.0.0
 Flask-CORS==4.0.0
 pytest==7.3.1
 pytest-flask==1.2.0
 coverage==7.2.5
+cryptography==41.0.3
+python-dotenv==1.0.0

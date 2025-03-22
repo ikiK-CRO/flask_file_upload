@@ -1,33 +1,38 @@
 # Use an official Python runtime as a base image
 FROM python:3.9-slim
 
-# Prevent Python from writing .pyc files and enable unbuffered output
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-
 # Set the working directory
 WORKDIR /app
 
-# Install build dependencies for psycopg2
+# Install build dependencies for PostgreSQL
 RUN apt-get update && apt-get install -y \
-    build-essential \
+    gcc \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy the requirements file into the container
-COPY requirements.txt /app/
+# Copy requirements first for better caching
+COPY requirements.txt .
 
-# Install pip dependencies globally
-RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application code into the container
-COPY . /app/
+# Copy the application
+COPY . .
 
-# The React build files are already in the static/react directory
-# No need to copy from react-src/build
+# Create required directories
+RUN mkdir -p uploads logs
 
-# Expose port 5000 for Flask (container-side)
+# Make sure the app can write to these directories
+RUN chmod -R 777 uploads logs
+
+# Environment variables
+ENV FLASK_APP=app.py
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+# Encryption key will be set in docker-compose or at runtime
+
+# Expose the port
 EXPOSE 5000
 
-# Run the Flask application
+# Run the application
 CMD ["python", "app.py"]

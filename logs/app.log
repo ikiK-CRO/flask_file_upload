@@ -4100,3 +4100,282 @@ ModuleNotFoundError: No module named 'psycopg2'
 2025-03-22 17:15:01,630 - INFO - 127.0.0.1 - werkzeug/2.0.1 - File metadata saved to database: d960e0b3-be0a-4b29-9666-2f5b677a1c7e - test.txt
 2025-03-22 17:15:01,642 - INFO - 127.0.0.1 - werkzeug/2.0.1 - Request: POST /api/upload - Referrer: None
 2025-03-22 17:15:01,654 - INFO - 127.0.0.1 - werkzeug/2.0.1 - Request: POST /api/upload - Referrer: None
+2025-03-22 16:30:24,698 - ERROR - N/A - N/A - Error recreating database tables: (psycopg2.OperationalError) connection to server at "db" (172.18.0.2), port 5432 failed: FATAL:  database "fileupload" does not exist
+
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2025-03-22 16:30:24,700 - WARNING - N/A - N/A - Attempting to fall back to SQLite database
+2025-03-22 16:30:24,747 - INFO - N/A - N/A - Database tables created successfully with SQLite fallback
+2025-03-22 16:31:14,089 - ERROR - N/A - N/A - Error recreating database tables: (psycopg2.OperationalError) connection to server at "db" (172.18.0.2), port 5432 failed: FATAL:  database "fileupload" does not exist
+
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2025-03-22 16:31:14,091 - WARNING - N/A - N/A - Attempting to fall back to SQLite database
+2025-03-22 16:31:14,143 - INFO - N/A - N/A - Database tables created successfully with SQLite fallback
+2025-03-22 16:32:09,729 - ERROR - N/A - N/A - Error recreating database tables: (psycopg2.OperationalError) connection to server at "db" (172.18.0.2), port 5432 failed: FATAL:  database "fileupload" does not exist
+
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2025-03-22 16:32:09,731 - WARNING - N/A - N/A - Attempting to fall back to SQLite database
+2025-03-22 16:32:09,772 - INFO - N/A - N/A - Database tables created successfully with SQLite fallback
+2025-03-22 16:33:17,222 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-22 16:33:24,821 - INFO - 192.168.65.1 - curl/8.7.1 - Request: GET / - Referrer: None
+2025-03-22 16:34:44,072 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: None
+2025-03-22 16:34:44,153 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/css/main.d9ff70d7.css - Referrer: http://localhost:5001/
+2025-03-22 16:34:44,156 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/js/453.79ab6d77.chunk.js - Referrer: http://localhost:5001/
+2025-03-22 16:34:44,160 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/js/main.cc63b99f.js - Referrer: http://localhost:5001/
+2025-03-22 16:34:44,391 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /favicon.ico - Referrer: http://localhost:5001/
+2025-03-22 16:37:03,228 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: POST /api/upload - Referrer: http://localhost:5001/
+2025-03-22 16:37:03,456 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File temporarily saved at: /app/uploads/3e13e680-af45-4f72-ba9d-6199022b71d2_20250211_145846.jpg
+2025-03-22 16:37:03,472 - ERROR - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File system error during upload: Fernet key must be 32 url-safe base64-encoded bytes.
+2025-03-22 16:37:07,676 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: None
+2025-03-22 16:37:07,758 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/css/main.d9ff70d7.css - Referrer: http://localhost:5001/
+2025-03-22 16:37:07,762 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/js/453.79ab6d77.chunk.js - Referrer: http://localhost:5001/
+2025-03-22 16:37:07,767 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/js/main.cc63b99f.js - Referrer: http://localhost:5001/
+2025-03-22 16:37:07,910 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /favicon.ico - Referrer: http://localhost:5001/
+2025-03-22 16:37:23,770 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: POST /api/upload - Referrer: http://localhost:5001/
+2025-03-22 16:37:23,780 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File temporarily saved at: /app/uploads/04c9c0c9-0740-4c69-b5af-e576cc4d1c74_test.png
+2025-03-22 16:37:23,781 - ERROR - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File system error during upload: Fernet key must be 32 url-safe base64-encoded bytes.
+2025-03-22 16:39:33,362 - INFO - 192.168.65.1 - curl/8.7.1 - Request: OPTIONS /api/upload - Referrer: None
+2025-03-22 16:39:45,464 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-22 16:39:46,035 - INFO - 127.0.0.1 - werkzeug/2.0.1 - Request: POST /api/upload - Referrer: None
+2025-03-22 16:39:46,039 - INFO - 127.0.0.1 - werkzeug/2.0.1 - Attempting to save file to /app/uploads/2fad8e1e-c5a1-4a83-a683-06acaf3de0c2_test.txt
+2025-03-22 16:39:46,043 - INFO - 127.0.0.1 - werkzeug/2.0.1 - File temporarily saved at: /app/uploads/2fad8e1e-c5a1-4a83-a683-06acaf3de0c2_test.txt
+2025-03-22 16:39:46,045 - INFO - 127.0.0.1 - werkzeug/2.0.1 - Attempting to encrypt file: /app/uploads/2fad8e1e-c5a1-4a83-a683-06acaf3de0c2_test.txt
+2025-03-22 16:39:46,051 - INFO - 127.0.0.1 - werkzeug/2.0.1 - File encrypted: /app/uploads/2fad8e1e-c5a1-4a83-a683-06acaf3de0c2_test.txt.encrypted
+2025-03-22 16:39:46,053 - INFO - 127.0.0.1 - werkzeug/2.0.1 - Removed original unencrypted file: /app/uploads/2fad8e1e-c5a1-4a83-a683-06acaf3de0c2_test.txt
+2025-03-22 16:39:46,421 - INFO - 127.0.0.1 - werkzeug/2.0.1 - Removed file after database error: /app/uploads/2fad8e1e-c5a1-4a83-a683-06acaf3de0c2_test.txt.encrypted
+2025-03-22 16:39:46,422 - ERROR - 127.0.0.1 - werkzeug/2.0.1 - Database error during file upload: (sqlite3.OperationalError) no such table: uploaded_file
+[SQL: INSERT INTO uploaded_file (id, file_name_encrypted, file_path_encrypted, password_hash, password, upload_date, download_count, is_encrypted, encryption_salt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)]
+[parameters: ('2fad8e1e-c5a1-4a83-a683-06acaf3de0c2', 'test.txt', '/app/uploads/2fad8e1e-c5a1-4a83-a683-06acaf3de0c2_test.txt.encrypted', '$2b$12$q7X4LNJx73EY3YD7XIPe6OMz/0LOG/ya9ejtMBv0kyVrcpEdvXBiq', 'test-password', '2025-03-22 16:39:46.420030', 0, 1, None)]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2025-03-22 16:40:56,689 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-22 16:41:02,792 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-22 16:41:35,495 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-22 16:41:35,873 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-22 16:41:48,396 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-22 16:41:48,520 - INFO - 127.0.0.1 - werkzeug/2.0.1 - Request: POST /api/upload - Referrer: None
+2025-03-22 16:41:48,523 - INFO - 127.0.0.1 - werkzeug/2.0.1 - Attempting to save file to /app/uploads/366b282a-1ad5-413c-8f5f-f6d1a1468ffa_test.txt
+2025-03-22 16:41:48,525 - INFO - 127.0.0.1 - werkzeug/2.0.1 - File temporarily saved at: /app/uploads/366b282a-1ad5-413c-8f5f-f6d1a1468ffa_test.txt
+2025-03-22 16:41:48,526 - INFO - 127.0.0.1 - werkzeug/2.0.1 - Attempting to encrypt file: /app/uploads/366b282a-1ad5-413c-8f5f-f6d1a1468ffa_test.txt
+2025-03-22 16:41:48,583 - INFO - 127.0.0.1 - werkzeug/2.0.1 - File encrypted: /app/uploads/366b282a-1ad5-413c-8f5f-f6d1a1468ffa_test.txt.encrypted
+2025-03-22 16:41:48,585 - INFO - 127.0.0.1 - werkzeug/2.0.1 - Removed original unencrypted file: /app/uploads/366b282a-1ad5-413c-8f5f-f6d1a1468ffa_test.txt
+2025-03-22 16:41:48,897 - INFO - 127.0.0.1 - werkzeug/2.0.1 - File uploaded successfully: test.txt (UUID: 366b282a-1ad5-413c-8f5f-f6d1a1468ffa)
+2025-03-22 16:41:48,909 - INFO - 127.0.0.1 - werkzeug/2.0.1 - Request: POST /api/files/366b282a-1ad5-413c-8f5f-f6d1a1468ffa - Referrer: None
+2025-03-22 16:41:48,910 - INFO - 127.0.0.1 - werkzeug/2.0.1 - API file access attempt: 366b282a-1ad5-413c-8f5f-f6d1a1468ffa
+2025-03-22 16:41:48,914 - INFO - 127.0.0.1 - werkzeug/2.0.1 - API: Processing JSON request for file: 366b282a-1ad5-413c-8f5f-f6d1a1468ffa
+2025-03-22 16:41:48,915 - INFO - 127.0.0.1 - werkzeug/2.0.1 - API: Verifying password for file: 366b282a-1ad5-413c-8f5f-f6d1a1468ffa
+2025-03-22 16:41:49,218 - INFO - 127.0.0.1 - werkzeug/2.0.1 - API: Download count updated: 366b282a-1ad5-413c-8f5f-f6d1a1468ffa - New count: 1
+2025-03-22 16:41:49,219 - INFO - 127.0.0.1 - werkzeug/2.0.1 - API: Password verified, returning download URL: http://localhost/api/download/366b282a-1ad5-413c-8f5f-f6d1a1468ffa
+2025-03-22 16:41:49,221 - INFO - 127.0.0.1 - werkzeug/2.0.1 - Request: POST /api/files/366b282a-1ad5-413c-8f5f-f6d1a1468ffa - Referrer: None
+2025-03-22 16:41:49,222 - INFO - 127.0.0.1 - werkzeug/2.0.1 - API file access attempt: 366b282a-1ad5-413c-8f5f-f6d1a1468ffa
+2025-03-22 16:41:49,224 - INFO - 127.0.0.1 - werkzeug/2.0.1 - API: Processing JSON request for file: 366b282a-1ad5-413c-8f5f-f6d1a1468ffa
+2025-03-22 16:41:49,225 - INFO - 127.0.0.1 - werkzeug/2.0.1 - API: Verifying password for file: 366b282a-1ad5-413c-8f5f-f6d1a1468ffa
+2025-03-22 16:41:49,558 - WARNING - 127.0.0.1 - werkzeug/2.0.1 - API: Incorrect password attempt for file: 366b282a-1ad5-413c-8f5f-f6d1a1468ffa
+2025-03-22 16:42:56,788 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-22 16:43:01,863 - INFO - 192.168.65.1 - curl/8.7.1 - Request: GET /api/upload - Referrer: None
+2025-03-22 16:43:19,623 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: None
+2025-03-22 16:43:19,684 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/css/main.d9ff70d7.css - Referrer: http://localhost:5001/
+2025-03-22 16:43:19,689 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/js/453.79ab6d77.chunk.js - Referrer: http://localhost:5001/
+2025-03-22 16:43:19,693 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/js/main.cc63b99f.js - Referrer: http://localhost:5001/
+2025-03-22 16:43:19,795 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /favicon.ico - Referrer: http://localhost:5001/
+2025-03-22 16:43:26,705 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: POST /api/upload - Referrer: http://localhost:5001/
+2025-03-22 16:43:26,735 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Attempting to save file to /app/uploads/b5286b88-c5e3-4faf-b6ad-b87fa7c409f1_i_heart_ProseccoRose-2024.png
+2025-03-22 16:43:26,773 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File temporarily saved at: /app/uploads/b5286b88-c5e3-4faf-b6ad-b87fa7c409f1_i_heart_ProseccoRose-2024.png
+2025-03-22 16:43:26,775 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Attempting to encrypt file: /app/uploads/b5286b88-c5e3-4faf-b6ad-b87fa7c409f1_i_heart_ProseccoRose-2024.png
+2025-03-22 16:43:26,870 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File encrypted: /app/uploads/b5286b88-c5e3-4faf-b6ad-b87fa7c409f1_i_heart_ProseccoRose-2024.png.encrypted
+2025-03-22 16:43:26,873 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Removed original unencrypted file: /app/uploads/b5286b88-c5e3-4faf-b6ad-b87fa7c409f1_i_heart_ProseccoRose-2024.png
+2025-03-22 16:43:27,126 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File uploaded successfully: i_heart_ProseccoRose-2024.png (UUID: b5286b88-c5e3-4faf-b6ad-b87fa7c409f1)
+2025-03-22 16:43:28,831 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /get-file/b5286b88-c5e3-4faf-b6ad-b87fa7c409f1 - Referrer: http://localhost:5001/
+2025-03-22 16:43:28,832 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File download page accessed: b5286b88-c5e3-4faf-b6ad-b87fa7c409f1
+2025-03-22 16:43:28,852 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/
+2025-03-22 16:43:28,923 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/css/main.d9ff70d7.css - Referrer: http://localhost:5001/?file=b5286b88-c5e3-4faf-b6ad-b87fa7c409f1
+2025-03-22 16:43:28,925 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/js/453.79ab6d77.chunk.js - Referrer: http://localhost:5001/?file=b5286b88-c5e3-4faf-b6ad-b87fa7c409f1
+2025-03-22 16:43:28,928 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/js/main.cc63b99f.js - Referrer: http://localhost:5001/?file=b5286b88-c5e3-4faf-b6ad-b87fa7c409f1
+2025-03-22 16:43:31,502 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: POST /api/files/b5286b88-c5e3-4faf-b6ad-b87fa7c409f1 - Referrer: http://localhost:5001/?file=b5286b88-c5e3-4faf-b6ad-b87fa7c409f1
+2025-03-22 16:43:31,503 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - API file access attempt: b5286b88-c5e3-4faf-b6ad-b87fa7c409f1
+2025-03-22 16:43:31,506 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - API: Processing JSON request for file: b5286b88-c5e3-4faf-b6ad-b87fa7c409f1
+2025-03-22 16:43:31,507 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - API: Verifying password for file: b5286b88-c5e3-4faf-b6ad-b87fa7c409f1
+2025-03-22 16:43:31,788 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - API: Download count updated: b5286b88-c5e3-4faf-b6ad-b87fa7c409f1 - New count: 1
+2025-03-22 16:43:31,789 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - API: Password verified, returning download URL: http://localhost:5001/api/download/b5286b88-c5e3-4faf-b6ad-b87fa7c409f1
+2025-03-22 16:43:31,810 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /api/download/b5286b88-c5e3-4faf-b6ad-b87fa7c409f1 - Referrer: http://localhost:5001/?file=b5286b88-c5e3-4faf-b6ad-b87fa7c409f1
+2025-03-22 16:43:31,815 - WARNING - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Download attempt without authentication: b5286b88-c5e3-4faf-b6ad-b87fa7c409f1
+2025-03-22 16:43:31,817 - ERROR - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Exception on /api/download/b5286b88-c5e3-4faf-b6ad-b87fa7c409f1 [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.9/site-packages/flask/app.py", line 2070, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.9/site-packages/flask/app.py", line 1515, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.9/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.9/site-packages/flask/app.py", line 1513, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.9/site-packages/flask/app.py", line 1499, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+  File "/app/app.py", line 486, in download_file_direct
+    return jsonify({"success": False, "message": _("Authentication required")}), 401
+UnboundLocalError: local variable '_' referenced before assignment
+2025-03-22 16:43:31,820 - ERROR - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - 500 error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.
+2025-03-22 16:43:31,887 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /favicon.ico - Referrer: http://localhost:5001/api/download/b5286b88-c5e3-4faf-b6ad-b87fa7c409f1
+2025-03-22 16:45:42,773 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-22 16:45:43,374 - INFO - 192.168.65.1 - curl/8.7.1 - Request: GET /api/upload - Referrer: None
+2025-03-22 16:46:30,669 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-22 16:47:26,489 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-22 16:47:53,596 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/
+2025-03-22 16:47:53,645 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/css/main.d9ff70d7.css - Referrer: http://localhost:5001/
+2025-03-22 16:47:53,647 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/js/453.79ab6d77.chunk.js - Referrer: http://localhost:5001/
+2025-03-22 16:47:53,649 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/js/main.cc63b99f.js - Referrer: http://localhost:5001/
+2025-03-22 16:47:53,747 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /favicon.ico - Referrer: http://localhost:5001/
+2025-03-22 16:47:56,462 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /api/logs - Referrer: http://localhost:5001/
+2025-03-22 16:48:03,465 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: POST /api/upload - Referrer: http://localhost:5001/
+2025-03-22 16:48:03,500 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Attempting to save file to /app/uploads/30040b2f-43d8-4a41-8302-e5779f64e489_i_heart_ProseccoRose-2024.png
+2025-03-22 16:48:03,539 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File temporarily saved at: /app/uploads/30040b2f-43d8-4a41-8302-e5779f64e489_i_heart_ProseccoRose-2024.png
+2025-03-22 16:48:03,540 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Attempting to encrypt file: /app/uploads/30040b2f-43d8-4a41-8302-e5779f64e489_i_heart_ProseccoRose-2024.png
+2025-03-22 16:48:03,632 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File encrypted: /app/uploads/30040b2f-43d8-4a41-8302-e5779f64e489_i_heart_ProseccoRose-2024.png.encrypted
+2025-03-22 16:48:03,633 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Removed original unencrypted file: /app/uploads/30040b2f-43d8-4a41-8302-e5779f64e489_i_heart_ProseccoRose-2024.png
+2025-03-22 16:48:03,894 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File uploaded successfully: i_heart_ProseccoRose-2024.png (UUID: 30040b2f-43d8-4a41-8302-e5779f64e489)
+2025-03-22 16:48:05,106 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /get-file/30040b2f-43d8-4a41-8302-e5779f64e489 - Referrer: http://localhost:5001/
+2025-03-22 16:48:05,107 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File download page accessed: 30040b2f-43d8-4a41-8302-e5779f64e489
+2025-03-22 16:48:05,130 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/
+2025-03-22 16:48:05,193 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/js/main.cc63b99f.js - Referrer: http://localhost:5001/?file=30040b2f-43d8-4a41-8302-e5779f64e489
+2025-03-22 16:48:05,195 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/css/main.d9ff70d7.css - Referrer: http://localhost:5001/?file=30040b2f-43d8-4a41-8302-e5779f64e489
+2025-03-22 16:48:05,197 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/js/453.79ab6d77.chunk.js - Referrer: http://localhost:5001/?file=30040b2f-43d8-4a41-8302-e5779f64e489
+2025-03-22 16:48:07,403 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: POST /api/files/30040b2f-43d8-4a41-8302-e5779f64e489 - Referrer: http://localhost:5001/?file=30040b2f-43d8-4a41-8302-e5779f64e489
+2025-03-22 16:48:07,404 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - API file access attempt: 30040b2f-43d8-4a41-8302-e5779f64e489
+2025-03-22 16:48:07,407 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - API: Processing JSON request for file: 30040b2f-43d8-4a41-8302-e5779f64e489
+2025-03-22 16:48:07,407 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - API: Verifying password for file: 30040b2f-43d8-4a41-8302-e5779f64e489
+2025-03-22 16:48:07,676 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - API: Download count updated: 30040b2f-43d8-4a41-8302-e5779f64e489 - New count: 1
+2025-03-22 16:48:07,678 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - API: Password verified, returning download URL: http://localhost:5001/api/download/30040b2f-43d8-4a41-8302-e5779f64e489?authenticated=true
+2025-03-22 16:48:07,701 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /api/download/30040b2f-43d8-4a41-8302-e5779f64e489 - Referrer: http://localhost:5001/?file=30040b2f-43d8-4a41-8302-e5779f64e489
+2025-03-22 16:48:07,702 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Direct download attempt for file: 30040b2f-43d8-4a41-8302-e5779f64e489
+2025-03-22 16:48:07,708 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Authentication parameter: true for file: 30040b2f-43d8-4a41-8302-e5779f64e489
+2025-03-22 16:48:07,710 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Preparing to serve file: None from path: None
+2025-03-22 16:48:07,711 - ERROR - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Error during file download: stat: path should be string, bytes, os.PathLike or integer, not NoneType for UUID: 30040b2f-43d8-4a41-8302-e5779f64e489
+2025-03-22 16:48:07,784 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /favicon.ico - Referrer: http://localhost:5001/api/download/30040b2f-43d8-4a41-8302-e5779f64e489?authenticated=true
+2025-03-22 17:00:09,703 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-22 17:00:09,818 - INFO - 192.168.65.1 - curl/8.7.1 - Request: GET /api/upload - Referrer: None
+2025-03-22 17:00:23,508 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/
+2025-03-22 17:00:23,563 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/css/main.d9ff70d7.css - Referrer: http://localhost:5001/?file=30040b2f-43d8-4a41-8302-e5779f64e489
+2025-03-22 17:00:23,565 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/js/453.79ab6d77.chunk.js - Referrer: http://localhost:5001/?file=30040b2f-43d8-4a41-8302-e5779f64e489
+2025-03-22 17:00:23,567 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/js/main.cc63b99f.js - Referrer: http://localhost:5001/?file=30040b2f-43d8-4a41-8302-e5779f64e489
+2025-03-22 17:00:23,677 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /favicon.ico - Referrer: http://localhost:5001/?file=30040b2f-43d8-4a41-8302-e5779f64e489
+2025-03-22 17:00:26,795 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /api/logs - Referrer: http://localhost:5001/
+2025-03-22 17:00:33,283 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: POST /api/upload - Referrer: http://localhost:5001/
+2025-03-22 17:00:33,308 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Attempting to save file to /app/uploads/8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0_i_heart_ProseccoRose-2024.png
+2025-03-22 17:00:33,344 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File temporarily saved at: /app/uploads/8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0_i_heart_ProseccoRose-2024.png
+2025-03-22 17:00:33,345 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Attempting to encrypt file: /app/uploads/8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0_i_heart_ProseccoRose-2024.png
+2025-03-22 17:00:33,446 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File encrypted: /app/uploads/8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0_i_heart_ProseccoRose-2024.png.encrypted
+2025-03-22 17:00:33,448 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Removed original unencrypted file: /app/uploads/8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0_i_heart_ProseccoRose-2024.png
+2025-03-22 17:00:33,740 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File uploaded successfully: i_heart_ProseccoRose-2024.png (UUID: 8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0)
+2025-03-22 17:00:34,865 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /get-file/8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0 - Referrer: http://localhost:5001/
+2025-03-22 17:00:34,867 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File download page accessed: 8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0
+2025-03-22 17:00:34,884 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET / - Referrer: http://localhost:5001/
+2025-03-22 17:00:34,948 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/css/main.d9ff70d7.css - Referrer: http://localhost:5001/?file=8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0
+2025-03-22 17:00:34,951 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/js/453.79ab6d77.chunk.js - Referrer: http://localhost:5001/?file=8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0
+2025-03-22 17:00:34,954 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /static/react/static/js/main.cc63b99f.js - Referrer: http://localhost:5001/?file=8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0
+2025-03-22 17:00:37,489 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: POST /api/files/8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0 - Referrer: http://localhost:5001/?file=8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0
+2025-03-22 17:00:37,490 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - API file access attempt: 8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0
+2025-03-22 17:00:37,493 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - API: Processing JSON request for file: 8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0
+2025-03-22 17:00:37,494 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - API: Verifying password for file: 8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0
+2025-03-22 17:00:37,781 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - API: Download count updated: 8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0 - New count: 1
+2025-03-22 17:00:37,782 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - API: Password verified, returning download URL: http://localhost:5001/api/download/8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0?authenticated=true
+2025-03-22 17:00:37,806 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /api/download/8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0 - Referrer: http://localhost:5001/?file=8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0
+2025-03-22 17:00:37,807 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Direct download attempt for file: 8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0
+2025-03-22 17:00:37,813 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Authentication parameter: true for file: 8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0
+2025-03-22 17:00:37,814 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Preparing to serve file: i_heart_ProseccoRose-2024.png from path: /app/uploads/8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0_i_heart_ProseccoRose-2024.png.encrypted
+2025-03-22 17:00:37,816 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File is encrypted, decrypting: 8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0
+2025-03-22 17:00:37,817 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Created temp file for decryption: /tmp/tmp033y9xv_.png
+2025-03-22 17:00:37,868 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File decrypted successfully to: /tmp/tmp033y9xv_.png
+2025-03-22 17:00:37,876 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Download count updated for 8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0, new count: 2
+2025-03-22 17:00:37,878 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File downloaded: i_heart_ProseccoRose-2024.png (UUID: 8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0)
+2025-03-22 17:00:37,880 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Cleaning up temp file: /tmp/tmp033y9xv_.png
+2025-03-22 17:00:37,881 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Temp file removed: /tmp/tmp033y9xv_.png
+2025-03-22 17:00:43,276 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /api/logs - Referrer: http://localhost:5001/?file=8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0
+2025-03-22 17:00:47,210 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: POST /api/files/8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0 - Referrer: http://localhost:5001/?file=8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0
+2025-03-22 17:00:47,211 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - API file access attempt: 8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0
+2025-03-22 17:00:47,214 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - API: Processing JSON request for file: 8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0
+2025-03-22 17:00:47,215 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - API: Verifying password for file: 8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0
+2025-03-22 17:00:47,485 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - API: Download count updated: 8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0 - New count: 3
+2025-03-22 17:00:47,485 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - API: Password verified, returning download URL: http://localhost:5001/api/download/8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0?authenticated=true
+2025-03-22 17:00:47,513 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Request: GET /api/download/8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0 - Referrer: http://localhost:5001/?file=8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0
+2025-03-22 17:00:47,515 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Direct download attempt for file: 8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0
+2025-03-22 17:00:47,521 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Authentication parameter: true for file: 8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0
+2025-03-22 17:00:47,523 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Preparing to serve file: i_heart_ProseccoRose-2024.png from path: /app/uploads/8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0_i_heart_ProseccoRose-2024.png.encrypted
+2025-03-22 17:00:47,525 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File is encrypted, decrypting: 8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0
+2025-03-22 17:00:47,526 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Created temp file for decryption: /tmp/tmpne37_8mq.png
+2025-03-22 17:00:47,578 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File decrypted successfully to: /tmp/tmpne37_8mq.png
+2025-03-22 17:00:47,585 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Download count updated for 8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0, new count: 4
+2025-03-22 17:00:47,586 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File downloaded: i_heart_ProseccoRose-2024.png (UUID: 8f2bbc22-6e05-40d4-a4fe-c65c3d33b7a0)
+2025-03-22 17:00:47,587 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Cleaning up temp file: /tmp/tmpne37_8mq.png
+2025-03-22 17:00:47,588 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Temp file removed: /tmp/tmpne37_8mq.png
+2025-03-22 17:00:55,020 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Request: GET / - Referrer: None
+2025-03-22 17:00:55,043 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Request: GET /static/react/static/css/main.d9ff70d7.css - Referrer: http://localhost:5001/
+2025-03-22 17:00:55,048 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Request: GET /static/react/static/js/453.79ab6d77.chunk.js - Referrer: http://localhost:5001/
+2025-03-22 17:00:55,052 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Request: GET /static/react/static/js/main.cc63b99f.js - Referrer: http://localhost:5001/
+2025-03-22 17:00:55,131 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Request: GET /favicon.ico - Referrer: http://localhost:5001/
+2025-03-22 17:01:03,608 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Request: GET / - Referrer: None
+2025-03-22 17:01:03,626 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Request: GET /static/react/static/css/main.d9ff70d7.css - Referrer: http://localhost:5001/
+2025-03-22 17:01:03,628 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Request: GET /static/react/static/js/453.79ab6d77.chunk.js - Referrer: http://localhost:5001/
+2025-03-22 17:01:03,630 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Request: GET /static/react/static/js/main.cc63b99f.js - Referrer: http://localhost:5001/
+2025-03-22 17:01:03,688 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Request: GET /favicon.ico - Referrer: http://localhost:5001/
+2025-03-22 17:01:12,083 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Request: POST /api/upload - Referrer: http://localhost:5001/
+2025-03-22 17:01:12,121 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Attempting to save file to /app/uploads/077cf425-2eb6-4e43-a688-643d36f5a2cc_2.png
+2025-03-22 17:01:12,170 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - File temporarily saved at: /app/uploads/077cf425-2eb6-4e43-a688-643d36f5a2cc_2.png
+2025-03-22 17:01:12,172 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Attempting to encrypt file: /app/uploads/077cf425-2eb6-4e43-a688-643d36f5a2cc_2.png
+2025-03-22 17:01:12,232 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - File encrypted: /app/uploads/077cf425-2eb6-4e43-a688-643d36f5a2cc_2.png.encrypted
+2025-03-22 17:01:12,235 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Removed original unencrypted file: /app/uploads/077cf425-2eb6-4e43-a688-643d36f5a2cc_2.png
+2025-03-22 17:01:12,512 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - File uploaded successfully: 2.png (UUID: 077cf425-2eb6-4e43-a688-643d36f5a2cc)
+2025-03-22 17:01:13,626 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Request: GET /get-file/077cf425-2eb6-4e43-a688-643d36f5a2cc - Referrer: http://localhost:5001/
+2025-03-22 17:01:13,627 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - File download page accessed: 077cf425-2eb6-4e43-a688-643d36f5a2cc
+2025-03-22 17:01:13,638 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Request: GET / - Referrer: http://localhost:5001/
+2025-03-22 17:01:13,654 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Request: GET /static/react/static/js/main.cc63b99f.js - Referrer: http://localhost:5001/?file=077cf425-2eb6-4e43-a688-643d36f5a2cc
+2025-03-22 17:01:13,656 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Request: GET /static/react/static/css/main.d9ff70d7.css - Referrer: http://localhost:5001/?file=077cf425-2eb6-4e43-a688-643d36f5a2cc
+2025-03-22 17:01:13,657 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Request: GET /static/react/static/js/453.79ab6d77.chunk.js - Referrer: http://localhost:5001/?file=077cf425-2eb6-4e43-a688-643d36f5a2cc
+2025-03-22 17:01:13,715 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Request: GET /favicon.ico - Referrer: http://localhost:5001/?file=077cf425-2eb6-4e43-a688-643d36f5a2cc
+2025-03-22 17:01:15,458 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Request: POST /api/files/077cf425-2eb6-4e43-a688-643d36f5a2cc - Referrer: http://localhost:5001/?file=077cf425-2eb6-4e43-a688-643d36f5a2cc
+2025-03-22 17:01:15,460 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - API file access attempt: 077cf425-2eb6-4e43-a688-643d36f5a2cc
+2025-03-22 17:01:15,463 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - API: Processing JSON request for file: 077cf425-2eb6-4e43-a688-643d36f5a2cc
+2025-03-22 17:01:15,464 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - API: Verifying password for file: 077cf425-2eb6-4e43-a688-643d36f5a2cc
+2025-03-22 17:01:15,731 - WARNING - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - API: Incorrect password attempt for file: 077cf425-2eb6-4e43-a688-643d36f5a2cc
+2025-03-22 17:01:19,009 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Request: POST /api/files/077cf425-2eb6-4e43-a688-643d36f5a2cc - Referrer: http://localhost:5001/?file=077cf425-2eb6-4e43-a688-643d36f5a2cc
+2025-03-22 17:01:19,011 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - API file access attempt: 077cf425-2eb6-4e43-a688-643d36f5a2cc
+2025-03-22 17:01:19,014 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - API: Processing JSON request for file: 077cf425-2eb6-4e43-a688-643d36f5a2cc
+2025-03-22 17:01:19,015 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - API: Verifying password for file: 077cf425-2eb6-4e43-a688-643d36f5a2cc
+2025-03-22 17:01:19,295 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - API: Download count updated: 077cf425-2eb6-4e43-a688-643d36f5a2cc - New count: 1
+2025-03-22 17:01:19,296 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - API: Password verified, returning download URL: http://localhost:5001/api/download/077cf425-2eb6-4e43-a688-643d36f5a2cc?authenticated=true
+2025-03-22 17:01:19,306 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Request: GET /api/download/077cf425-2eb6-4e43-a688-643d36f5a2cc - Referrer: http://localhost:5001/?file=077cf425-2eb6-4e43-a688-643d36f5a2cc
+2025-03-22 17:01:19,307 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Direct download attempt for file: 077cf425-2eb6-4e43-a688-643d36f5a2cc
+2025-03-22 17:01:19,312 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Authentication parameter: true for file: 077cf425-2eb6-4e43-a688-643d36f5a2cc
+2025-03-22 17:01:19,314 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Preparing to serve file: 2.png from path: /app/uploads/077cf425-2eb6-4e43-a688-643d36f5a2cc_2.png.encrypted
+2025-03-22 17:01:19,316 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - File is encrypted, decrypting: 077cf425-2eb6-4e43-a688-643d36f5a2cc
+2025-03-22 17:01:19,317 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Created temp file for decryption: /tmp/tmp2e9hrsf3.png
+2025-03-22 17:01:19,360 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - File decrypted successfully to: /tmp/tmp2e9hrsf3.png
+2025-03-22 17:01:19,369 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Download count updated for 077cf425-2eb6-4e43-a688-643d36f5a2cc, new count: 2
+2025-03-22 17:01:19,370 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - File downloaded: 2.png (UUID: 077cf425-2eb6-4e43-a688-643d36f5a2cc)
+2025-03-22 17:01:19,371 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Cleaning up temp file: /tmp/tmp2e9hrsf3.png
+2025-03-22 17:01:19,372 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Temp file removed: /tmp/tmp2e9hrsf3.png
+2025-03-22 17:01:24,655 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Request: GET /api/logs - Referrer: http://localhost:5001/?file=077cf425-2eb6-4e43-a688-643d36f5a2cc
+2025-03-22 17:01:24,660 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Request: GET /favicon.ico - Referrer: http://localhost:5001/?file=077cf425-2eb6-4e43-a688-643d36f5a2cc
+2025-03-22 17:01:30,033 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Request: POST /api/files/077cf425-2eb6-4e43-a688-643d36f5a2cc - Referrer: http://localhost:5001/?file=077cf425-2eb6-4e43-a688-643d36f5a2cc
+2025-03-22 17:01:30,034 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - API file access attempt: 077cf425-2eb6-4e43-a688-643d36f5a2cc
+2025-03-22 17:01:30,037 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - API: Processing JSON request for file: 077cf425-2eb6-4e43-a688-643d36f5a2cc
+2025-03-22 17:01:30,038 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - API: Verifying password for file: 077cf425-2eb6-4e43-a688-643d36f5a2cc
+2025-03-22 17:01:30,305 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - API: Download count updated: 077cf425-2eb6-4e43-a688-643d36f5a2cc - New count: 3
+2025-03-22 17:01:30,306 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - API: Password verified, returning download URL: http://localhost:5001/api/download/077cf425-2eb6-4e43-a688-643d36f5a2cc?authenticated=true
+2025-03-22 17:01:30,316 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Request: GET /api/download/077cf425-2eb6-4e43-a688-643d36f5a2cc - Referrer: http://localhost:5001/?file=077cf425-2eb6-4e43-a688-643d36f5a2cc
+2025-03-22 17:01:30,318 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Direct download attempt for file: 077cf425-2eb6-4e43-a688-643d36f5a2cc
+2025-03-22 17:01:30,322 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Authentication parameter: true for file: 077cf425-2eb6-4e43-a688-643d36f5a2cc
+2025-03-22 17:01:30,323 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Preparing to serve file: 2.png from path: /app/uploads/077cf425-2eb6-4e43-a688-643d36f5a2cc_2.png.encrypted
+2025-03-22 17:01:30,324 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - File is encrypted, decrypting: 077cf425-2eb6-4e43-a688-643d36f5a2cc
+2025-03-22 17:01:30,327 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Created temp file for decryption: /tmp/tmpl5y1gbrt.png
+2025-03-22 17:01:30,373 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - File decrypted successfully to: /tmp/tmpl5y1gbrt.png
+2025-03-22 17:01:30,379 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Download count updated for 077cf425-2eb6-4e43-a688-643d36f5a2cc, new count: 4
+2025-03-22 17:01:30,380 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - File downloaded: 2.png (UUID: 077cf425-2eb6-4e43-a688-643d36f5a2cc)
+2025-03-22 17:01:30,381 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Cleaning up temp file: /tmp/tmpl5y1gbrt.png
+2025-03-22 17:01:30,382 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Temp file removed: /tmp/tmpl5y1gbrt.png
+2025-03-22 17:01:39,627 - INFO - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - Request: GET /favicon.ico - Referrer: http://localhost:5001/
+2025-03-22 18:18:48,734 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-22 18:18:49,771 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-22 18:18:52,107 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-22 18:18:53,112 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-22 18:18:55,998 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-22 18:18:57,260 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-22 18:19:12,157 - INFO - N/A - N/A - Database tables dropped and recreated successfully
+2025-03-22 18:19:13,224 - INFO - N/A - N/A - Database tables dropped and recreated successfully

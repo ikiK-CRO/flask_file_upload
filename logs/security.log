@@ -2701,3 +2701,41 @@ ModuleNotFoundError: No module named 'psycopg2'
 2025-03-22 01:28:05,091 - WARNING - 127.0.0.1 - werkzeug/2.0.1 - 404 error: /nonexistent-route
 2025-03-22 01:47:02,888 - WARNING - 127.0.0.1 - werkzeug/2.0.1 - 404 error: /nonexistent-route
 2025-03-22 17:15:01,281 - WARNING - 127.0.0.1 - werkzeug/2.0.1 - 404 error: /nonexistent-route
+2025-03-22 16:30:24,698 - ERROR - N/A - N/A - Error recreating database tables: (psycopg2.OperationalError) connection to server at "db" (172.18.0.2), port 5432 failed: FATAL:  database "fileupload" does not exist
+
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2025-03-22 16:30:24,700 - WARNING - N/A - N/A - Attempting to fall back to SQLite database
+2025-03-22 16:31:14,089 - ERROR - N/A - N/A - Error recreating database tables: (psycopg2.OperationalError) connection to server at "db" (172.18.0.2), port 5432 failed: FATAL:  database "fileupload" does not exist
+
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2025-03-22 16:31:14,091 - WARNING - N/A - N/A - Attempting to fall back to SQLite database
+2025-03-22 16:32:09,729 - ERROR - N/A - N/A - Error recreating database tables: (psycopg2.OperationalError) connection to server at "db" (172.18.0.2), port 5432 failed: FATAL:  database "fileupload" does not exist
+
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2025-03-22 16:32:09,731 - WARNING - N/A - N/A - Attempting to fall back to SQLite database
+2025-03-22 16:37:03,472 - ERROR - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File system error during upload: Fernet key must be 32 url-safe base64-encoded bytes.
+2025-03-22 16:37:23,781 - ERROR - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - File system error during upload: Fernet key must be 32 url-safe base64-encoded bytes.
+2025-03-22 16:39:46,422 - ERROR - 127.0.0.1 - werkzeug/2.0.1 - Database error during file upload: (sqlite3.OperationalError) no such table: uploaded_file
+[SQL: INSERT INTO uploaded_file (id, file_name_encrypted, file_path_encrypted, password_hash, password, upload_date, download_count, is_encrypted, encryption_salt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)]
+[parameters: ('2fad8e1e-c5a1-4a83-a683-06acaf3de0c2', 'test.txt', '/app/uploads/2fad8e1e-c5a1-4a83-a683-06acaf3de0c2_test.txt.encrypted', '$2b$12$q7X4LNJx73EY3YD7XIPe6OMz/0LOG/ya9ejtMBv0kyVrcpEdvXBiq', 'test-password', '2025-03-22 16:39:46.420030', 0, 1, None)]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2025-03-22 16:41:49,558 - WARNING - 127.0.0.1 - werkzeug/2.0.1 - API: Incorrect password attempt for file: 366b282a-1ad5-413c-8f5f-f6d1a1468ffa
+2025-03-22 16:43:31,815 - WARNING - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Download attempt without authentication: b5286b88-c5e3-4faf-b6ad-b87fa7c409f1
+2025-03-22 16:43:31,817 - ERROR - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Exception on /api/download/b5286b88-c5e3-4faf-b6ad-b87fa7c409f1 [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.9/site-packages/flask/app.py", line 2070, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.9/site-packages/flask/app.py", line 1515, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.9/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.9/site-packages/flask/app.py", line 1513, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.9/site-packages/flask/app.py", line 1499, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+  File "/app/app.py", line 486, in download_file_direct
+    return jsonify({"success": False, "message": _("Authentication required")}), 401
+UnboundLocalError: local variable '_' referenced before assignment
+2025-03-22 16:43:31,820 - ERROR - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - 500 error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.
+2025-03-22 16:48:07,711 - ERROR - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0 - Error during file download: stat: path should be string, bytes, os.PathLike or integer, not NoneType for UUID: 30040b2f-43d8-4a41-8302-e5779f64e489
+2025-03-22 17:01:15,731 - WARNING - 192.168.65.1 - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 - API: Incorrect password attempt for file: 077cf425-2eb6-4e43-a688-643d36f5a2cc

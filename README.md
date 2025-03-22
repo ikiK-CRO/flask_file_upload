@@ -26,6 +26,7 @@
 - **Docker Compose**: Multi-container environment definition
 - **GitHub Actions**: CI/CD pipeline automation
 - **Makefile**: Build automation and test orchestration
+- **Cryptography**: Python library for secure encryption/decryption
 
 ### Databases
 - **PostgreSQL**: Primary database used across all environments (local Docker, development, and production)
@@ -39,6 +40,8 @@
 - **Werkzeug**: Utility library for security functions
 - **Regular Expressions**: User input validation and sanitization
 - **MIME Validation**: Verification of actual uploaded file types
+- **Fernet Encryption**: Symmetric encryption for files and sensitive data
+- **Password-based Key Derivation**: PBKDF2 for secure key generation
 
 ### Monitoring and Diagnostics
 - **Python logging**: Structured activity logging
@@ -78,6 +81,7 @@ The main components of the system are:
 3. **Database**: PostgreSQL for storing metadata about uploaded files
 4. **File System**: Local file system for storing uploaded files
 5. **Logging System**: Structured logging of user and system activities
+6. **Encryption Layer**: Fernet-based encryption for files and database fields
 
 The application implements the following functional units:
 
@@ -86,6 +90,7 @@ The application implements the following functional units:
 - Structured logging of all activities
 - Activity log viewing with tabbed interface
 - Internationalization with language switching
+- End-to-end encryption for file contents and metadata
 
 ### Security Implementations
 
@@ -119,6 +124,28 @@ The application implements the following functional units:
    - Secure hash value verification without revealing the original password
    - Protection against brute-force attacks
 
+#### Encryption System
+
+1. **File Encryption**:
+   - Fernet symmetric encryption for all uploaded files
+   - Automatic encryption on upload and decryption on download
+   - Secure key management with fallback mechanism
+
+2. **Database Field Encryption**:
+   - Transparent encryption of sensitive fields (filename, file path)
+   - Encrypted at rest to protect from database breaches
+   - Automatic decryption when fields are accessed
+
+3. **Key Management**:
+   - Master encryption key stored securely in environment variables
+   - Fallback key generation with explicit warnings
+   - Proper key format validation and correction
+
+4. **Password-based Encryption**:
+   - PBKDF2-based key derivation for password-protected operations
+   - Salt generation and storage for secure key derivation
+   - Protection against rainbow table attacks
+
 #### Additional Security Measures
 
 1. **Unique Identifiers**:
@@ -128,6 +155,11 @@ The application implements the following functional units:
 2. **Resource Cleanup**:
    - Automatic deletion of uploaded files in case of database errors
    - Prevention of orphaned files in the system
+   
+3. **Error Resilience**:
+   - Graceful handling of encryption/decryption errors
+   - Fallback mechanisms to ensure system availability
+   - Detailed error logging for security monitoring
 
 ### Logging Implementation
 
@@ -176,6 +208,7 @@ The logging system is implemented using Python's `logging` module with the goal 
    - Invalid file types
    - Validation bypass attempts
    - Failed authentication attempts
+   - Encryption/decryption events and errors
 
 #### Log Viewing
 
@@ -225,12 +258,14 @@ SQLAlchemy ORM with the `UploadedFile` model is used for storing file metadata:
 | Field | Type | Description |
 |-------|-----|------|
 | id | String(36) | Primary key, UUID |
-| file_name | String(255) | Original filename |
-| file_path | String(255) | File path in the system |
+| _file_name | Text | Encrypted original filename |
+| _file_path | Text | Encrypted file path in the system |
 | password_hash | String(255) | Password hash value |
 | password | String(255) | Password (for demonstration) |
 | upload_date | DateTime | Upload date and time |
 | download_count | Integer | Number of downloads |
+| is_encrypted | Boolean | Flag indicating if the file is encrypted |
+| encryption_salt | LargeBinary | Salt for encryption (if used) |
 
 ### API Endpoints
 
@@ -243,6 +278,7 @@ SQLAlchemy ORM with the `UploadedFile` model is used for storing file metadata:
   - Actions:
     - File validation
     - File storage
+    - File encryption
     - Database record creation
     - Generation and return of download URL
 
@@ -254,7 +290,30 @@ SQLAlchemy ORM with the `UploadedFile` model is used for storing file metadata:
   - Actions:
     - Password validation
     - Download count update
+    - File decryption
     - File sending to client
+
+#### `/api/download/<file_uuid>` (GET, OPTIONS)
+- **GET**: Direct file download after authentication
+  - Query parameters:
+    - `authenticated`: Flag indicating successful authentication
+  - Actions:
+    - Authentication verification
+    - File decryption if needed
+    - Secure file delivery
+
+#### `/api/upload` (GET, POST, OPTIONS)
+- **GET**: Returns information about upload requirements
+- **POST**: API endpoint for file upload
+  - Form parameters:
+    - `file`: File to upload
+    - `password`: Password to protect the file
+  - Actions:
+    - File validation
+    - File storage
+    - File encryption
+    - Database record creation
+    - Return of JSON with file details and download URL
 
 #### `/logs` (GET)
 - **GET**: Displays activity logs
@@ -280,7 +339,12 @@ The application has comprehensive error handling implemented:
    - Messages for incorrect passwords
    - Messages for missing passwords
 
-4. **System Errors**:
+4. **Encryption Errors**:
+   - Graceful handling of encryption failures
+   - Fallback to unencrypted storage when necessary
+   - Transparent error recovery during decryption
+
+5. **System Errors**:
    - Database error handling
    - File system error handling
    - Detailed error logging
@@ -292,6 +356,7 @@ The application has comprehensive error handling implemented:
 - Flask-SQLAlchemy
 - Flask-Bcrypt
 - Werkzeug
+- Cryptography
 - SQLite (for demonstration) or PostgreSQL (for production)
 
 ## Testing Framework
@@ -328,7 +393,13 @@ The application includes a comprehensive testing framework to ensure reliability
    - Validation of file uploads without files
    - Validation of file uploads without passwords
    
-3. **Test Fixtures** (`tests/conftest.py`):
+3. **Encryption Tests** (`tests/test_encryption.py`):
+   - Database field encryption and decryption
+   - File encryption and decryption
+   - Password-based encryption
+   - Key management and validation
+
+4. **Test Fixtures** (`tests/conftest.py`):
    - Flask application setup with test configuration
    - Test client creation
    - Database initialization and teardown
@@ -381,6 +452,7 @@ The tests cover several critical aspects of the application:
    - Password handling and protection
    - File validation and sanitization
    - Error handling for invalid inputs
+   - Encryption and decryption functionality
 
 2. **Functionality Tests**:
    - File upload and download workflows
@@ -436,6 +508,9 @@ When extending the application with new features, follow these guidelines for ad
    
    # For using PostgreSQL database
    export DATABASE_URL=postgresql://username:password@localhost/database_name
+   
+   # Optional: Set master encryption key (recommended for production)
+   export MASTER_ENCRYPTION_KEY=your_secure_base64_key
    ```
 
 4. **Start the Application**
@@ -485,6 +560,11 @@ To ensure the application works correctly, you can run the automated tests:
    make test-docker
    ```
 
+6. **Run Encryption Tests**
+   ```bash
+   python -m pytest tests/test_encryption.py -v
+   ```
+
 The test output will show you if all components are functioning correctly. If any tests fail, the error messages can help you identify the issue.
 
 ### Using the Application
@@ -498,13 +578,14 @@ The test output will show you if all components are functioning correctly. If an
 3. Enter a password that will be required for downloading the file
 4. Click "Upload"
 5. After successful upload, you'll receive a unique URL to access the file
+6. All files are automatically encrypted for security
 
 #### Downloading a File
 
 1. Open the file download link (`/get-file/<file_uuid>`)
 2. Enter the password that was set during upload
 3. Click "Download"
-4. The file will be downloaded to your computer
+4. The file will be automatically decrypted and downloaded to your computer
 
 #### Viewing Activity Logs
 
@@ -519,7 +600,8 @@ The test output will show you if all components are functioning correctly. If an
 2. **Don't share download URLs** through insecure channels.
 3. **Regularly delete unnecessary files** from the system.
 4. **Check files for viruses** before upload and after download.
-5. **Don't upload sensitive data** without additional encryption.
+5. **Set a secure master encryption key** in production environments.
+6. **Regularly rotate encryption keys** for enhanced security.
 
 ### Troubleshooting
 
@@ -537,6 +619,14 @@ The test output will show you if all components are functioning correctly. If an
 - **Solution**: 
   - Check if you've entered the correct password.
   - Be careful about uppercase/lowercase letters in the password.
+
+#### Decryption Error
+
+- **Problem**: "Error processing file download" or "Decryption failed"
+- **Solution**: 
+  - Ensure the master encryption key hasn't changed since the file was uploaded.
+  - If you've changed the encryption key, you may need to restore the previous key.
+  - In some cases, restarting the application can resolve temporary cryptographic issues.
 
 #### Log Access Error
 

@@ -1,7 +1,7 @@
-.PHONY: test test-flask test-react test-docker clean
+.PHONY: test test-flask test-react test-docker test-encryption clean
 
 # Run all tests locally
-test: test-flask test-react
+test: test-flask test-react test-encryption
 
 # Run Flask tests
 test-flask:
@@ -12,6 +12,11 @@ test-flask:
 test-react:
 	@echo "Running React tests..."
 	cd react-src && npm test -- --watchAll=false
+
+# Run encryption tests
+test-encryption:
+	@echo "Running encryption tests..."
+	python -m pytest tests/test_encryption.py -v
 
 # Run tests in Docker
 test-docker:
