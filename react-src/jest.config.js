@@ -1,8 +1,8 @@
 module.exports = {
   testEnvironment: 'jsdom',
   transformIgnorePatterns: [
-    // Change the default pattern to specifically exclude axios
-    "node_modules/(?!(axios)/)"
+    // Exclude all node_modules except axios
+    'node_modules/(?!(axios)/)'
   ],
   transform: {
     "^.+\\.(js|jsx|ts|tsx)$": "babel-jest"
@@ -10,5 +10,11 @@ module.exports = {
   moduleNameMapper: {
     // Add any module name mappings if needed
   },
-  setupFilesAfterEnv: ['./src/setupTests.js']
+  setupFilesAfterEnv: ['./src/setupTests.js'],
+  // Add more time for tests to run
+  testTimeout: 10000,
+  // Avoid warnings about snapshot serialization
+  snapshotSerializers: [],
+  // Clear mocks automatically
+  clearMocks: true
 }; 

@@ -10,6 +10,9 @@ const mockThemeContext = {
   toggleTheme: jest.fn()
 };
 
+// Mock for navigateWithoutFileParam
+const mockNavigateWithoutFileParam = jest.fn();
+
 // Wrap component with necessary providers
 const renderWithProviders = (ui) => {
   return render(
@@ -23,7 +26,7 @@ const renderWithProviders = (ui) => {
 
 describe('Navbar component', () => {
   it('renders navigation links correctly', () => {
-    renderWithProviders(<Navbar />);
+    renderWithProviders(<Navbar navigateWithoutFileParam={mockNavigateWithoutFileParam} />);
     
     // Using regex to make the test more flexible with translations
     expect(screen.getByText(/home/i)).toBeInTheDocument();

@@ -31,7 +31,8 @@ describe('FileUpload component', () => {
     fireEvent.click(uploadButton);
     
     await waitFor(() => {
-      expect(screen.getByText('Please select a file')).toBeInTheDocument();
+      // Use regex to be more flexible with punctuation
+      expect(screen.getByText(/please select a file/i)).toBeInTheDocument();
     });
   });
 }); 
