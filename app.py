@@ -165,6 +165,137 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # Initialize logging
 setup_logging()
 
+# Clean up function for fresh start
+def cleanup_on_startup():
+    """
+    Cleans up database records, uploaded files, and logs on application startup
+    based on environment variables.
+    """
+    # Check if cleanup is enabled via environment variable (default to disabled)
+    cleanup_enabled = os.environ.get('ENABLE_STARTUP_CLEANUP', 'false').lower() == 'true'
+    
+    if not cleanup_enabled:
+        app.logger.info("Startup cleanup is disabled. Set ENABLE_STARTUP_CLEANUP=true to enable.")
+        return
+    
+    app.logger.info("Starting application cleanup process...")
+    
+    # Determine cleanup strategy from environment variable
+    # Options: all, db, files, logs, or comma-separated combinations
+    cleanup_strategy = os.environ.get('CLEANUP_STRATEGY', 'all').lower()
+    strategies = [s.strip() for s in cleanup_strategy.split(',')]
+    
+    # Clean database if specified
+    if 'all' in strategies or 'db' in strategies:
+        try:
+            # Ensure database tables exist before cleaning
+            with app.app_context():
+                db.create_all()
+                app.logger.info("Ensured database tables exist")
+                
+                # Count existing records before deletion
+                file_count = UploadedFile.query.count()
+                
+                # Delete all records
+                UploadedFile.query.delete()
+                db.session.commit()
+                
+                # Verify deletion
+                remaining = UploadedFile.query.count()
+                app.logger.info(f"Cleaned up {file_count} records from database, {remaining} remaining")
+                
+                if remaining > 0:
+                    app.logger.warning(f"Some records could not be deleted ({remaining} remaining)")
+                    # Try more aggressive approach
+                    try:
+                        db.session.execute('TRUNCATE TABLE uploaded_file RESTART IDENTITY CASCADE')
+                        db.session.commit()
+                        app.logger.info("Used TRUNCATE as fallback to clean database")
+                    except Exception as truncate_error:
+                        app.logger.error(f"Error during TRUNCATE: {str(truncate_error)}")
+                        # If TRUNCATE fails, try with raw DELETE
+                        try:
+                            db.session.execute('DELETE FROM uploaded_file')
+                            db.session.commit()
+                            app.logger.info("Used raw DELETE as fallback to clean database")
+                        except Exception as delete_error:
+                            app.logger.error(f"Error during raw DELETE: {str(delete_error)}")
+        except Exception as e:
+            app.logger.error(f"Error cleaning database: {str(e)}")
+    
+    # Clean uploaded files if specified
+    if 'all' in strategies or 'files' in strategies:
+        try:
+            # Ensure uploads directory exists
+            os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+            
+            # First approach: Use glob to find all files
+            import glob
+            file_paths = glob.glob(os.path.join(app.config['UPLOAD_FOLDER'], '*'))
+            files_removed = 0
+            
+            for file_path in file_paths:
+                try:
+                    if os.path.isfile(file_path):
+                        os.remove(file_path)
+                        files_removed += 1
+                except Exception as e:
+                    app.logger.error(f"Error removing file {file_path}: {str(e)}")
+            
+            app.logger.info(f"Cleaned up {files_removed}/{len(file_paths)} files from uploads directory")
+            
+            # Second approach: Check if files remain and use additional methods
+            remaining_files = glob.glob(os.path.join(app.config['UPLOAD_FOLDER'], '*'))
+            if remaining_files:
+                app.logger.warning(f"Found {len(remaining_files)} files still in uploads directory")
+                # Try alternative approach with direct system command
+                try:
+                    import subprocess
+                    # Use rm -f to force removal without confirmation
+                    result = subprocess.run(['rm', '-f', os.path.join(app.config['UPLOAD_FOLDER'], '*')], 
+                                          capture_output=True, text=True)
+                    if result.returncode == 0:
+                        app.logger.info("Used system command to clean uploads directory")
+                    else:
+                        app.logger.error(f"System command failed: {result.stderr}")
+                except Exception as cmd_error:
+                    app.logger.error(f"Error using system command: {str(cmd_error)}")
+        except Exception as e:
+            app.logger.error(f"Error cleaning uploads directory: {str(e)}")
+    
+    # Clean logs if specified
+    if 'all' in strategies or 'logs' in strategies:
+        try:
+            logs_dir = os.path.join(os.getcwd(), 'logs')
+            log_files = ['app.log', 'security.log']
+            
+            for log_file in log_files:
+                log_path = os.path.join(logs_dir, log_file)
+                if os.path.exists(log_path):
+                    # Option 1: Delete log files
+                    # os.remove(log_path)
+                    
+                    # Option 2: Empty log files but keep them (better)
+                    open(log_path, 'w').close()
+            
+            app.logger.info(f"Cleaned up log files in {logs_dir}")
+        except Exception as e:
+            app.logger.error(f"Error cleaning log files: {str(e)}")
+
+    # Add an explicit log cleanup to prevent showing old file records in logs page
+    try:
+        # Reset upload and download logs in memory
+        app.config.setdefault('upload_logs', [])
+        app.config.setdefault('download_logs', [])
+        app.logger.info("Reset in-memory log references")
+    except Exception as e:
+        app.logger.error(f"Error resetting in-memory logs: {str(e)}")
+
+    app.logger.info("Application cleanup process completed")
+
+# Run cleanup on startup
+cleanup_on_startup()
+
 # Define allowed file extensions and max file size
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'doc', 'docx', 'xls', 'xlsx', 'zip'}
 MAX_CONTENT_LENGTH = 10 * 1024 * 1024  # 10MB
@@ -215,7 +346,7 @@ class UploadedFile(db.Model):
         except Exception as e:
             app.logger.error(f"Error in file_name setter: {str(e)}")
             self._file_name = value
-    
+    <p></p>
     @property
     def file_path(self):
         """Get decrypted file path"""
@@ -238,7 +369,7 @@ class UploadedFile(db.Model):
             from crypto_utils import encrypt_db_field
             if value and self.is_encrypted:
                 encrypted = encrypt_db_field(value)
-                if encrypted:
+                if encrypted:<p></p><p></p>
                     self._file_path = encrypted
                 else:
                     app.logger.warning(f"Failed to encrypt file_path, using raw value for: {value}")
@@ -387,6 +518,18 @@ def get_file(file_uuid):
                     response.headers["Cross-Origin-Embedder-Policy"] = "unsafe-none"
                     response.headers["Feature-Policy"] = "downloads *"
                 
+                # Ensure temp file is deleted after sending
+                @after_this_request
+                def cleanup_temp_file(response):
+                    app.logger.info(f"Cleaning up temp file: {directory}/{stored_file}")
+                    if os.path.exists(os.path.join(directory, stored_file)):
+                        try:
+                            os.remove(os.path.join(directory, stored_file))
+                            app.logger.info(f"Temp file removed: {os.path.join(directory, stored_file)}")
+                        except Exception as e:
+                            app.logger.error(f"Error removing temp file: {e}")
+                    return response
+                
                 return response
             except Exception as e:
                 app.logger.error(f"File send error: {str(e)} - Path: {file_record.file_path}")
@@ -476,13 +619,8 @@ def api_get_file(file_uuid):
     app.logger.info(f"API: Verifying password for file: {file_uuid}")
     
     if bcrypt.check_password_hash(file_record.password_hash, entered_password):
-        # Update download count
-        file_record.download_count += 1
-        try:
-            db.session.commit()
-            app.logger.info(f"API: Download count updated: {file_uuid} - New count: {file_record.download_count}")
-        except Exception as e:
-            app.logger.error(f"API: Error updating download count: {str(e)} - UUID: {file_uuid}")
+        # Do not update download count here as it will be updated during the actual download
+        app.logger.info(f"API: Password verified for file: {file_uuid}")
         
         # Generate a download token with password verification
         download_token = token_manager.generate_download_token(
@@ -548,10 +686,6 @@ def download_file_direct(file_uuid):
             app.logger.error(f"File not found on disk: {file_path} for UUID: {file_uuid}")
             
             # Check if there's an alternative file that matches
-            base_dir = os.path.dirname(file_path)
-            base_name = os.path.basename(file_path)
-            
-            # Check for files with same UUID
             import glob
             matching_files = glob.glob(os.path.join(app.config['UPLOAD_FOLDER'], f"{file_uuid}_*"))
             
@@ -562,6 +696,9 @@ def download_file_direct(file_uuid):
                 return jsonify({"success": False, "message": "File not available on disk"}), 404
         
         # Determine if file needs decryption
+        serve_path = None
+        temp_path = None
+        
         if file_record.is_encrypted:
             app.logger.info(f"File is encrypted, decrypting: {file_uuid}")
             # Create a temporary file to hold the decrypted content
@@ -583,18 +720,6 @@ def download_file_direct(file_uuid):
             else:
                 app.logger.error(f"File decryption failed for: {file_uuid}")
                 return jsonify({"success": False, "message": "Decryption failed"}), 500
-            
-            # Ensure temp file is deleted after sending
-            @after_this_request
-            def cleanup_temp_file(response):
-                app.logger.info(f"Cleaning up temp file: {temp_path}")
-                if os.path.exists(temp_path):
-                    try:
-                        os.remove(temp_path)
-                        app.logger.info(f"Temp file removed: {temp_path}")
-                    except Exception as e:
-                        app.logger.error(f"Error removing temp file: {e}")
-                return response
         else:
             # No decryption needed
             app.logger.info(f"File is not encrypted, serving directly: {file_uuid}")
@@ -607,6 +732,23 @@ def download_file_direct(file_uuid):
         
         # Log the download
         app.logger.info(f"File downloaded: {original_filename} (UUID: {file_uuid})")
+        
+        # Clear the logs cache to ensure fresh data on next log retrieval
+        app.config.pop('upload_logs', None)
+        app.config.pop('download_logs', None)
+        
+        # If we have a temporary file, ensure it's deleted after sending
+        if temp_path:
+            @after_this_request
+            def cleanup_temp_file(response):
+                app.logger.info(f"Cleaning up temp file: {temp_path}")
+                if os.path.exists(temp_path):
+                    try:
+                        os.remove(temp_path)
+                        app.logger.info(f"Temp file removed: {temp_path}")
+                    except Exception as e:
+                        app.logger.error(f"Error removing temp file: {e}")
+                return response
         
         # Send the file with original filename
         return send_from_directory(
@@ -624,11 +766,28 @@ def download_file_direct(file_uuid):
 @app.route('/api/logs', methods=['GET'])
 def api_get_logs():
     try:
+        # Force a refresh of the cached logs
+        app.config.pop('upload_logs', None)
+        app.config.pop('download_logs', None)
+        
         files = UploadedFile.query.order_by(UploadedFile.upload_date.desc()).all()
+        
+        # Filter files to only include those that exist on disk
+        valid_files = []
+        for file in files:
+            try:
+                file_path = file.file_path
+                # Check both regular file path and encrypted file path
+                if file_path and (os.path.exists(file_path) or os.path.exists(f"{file_path}.encrypted")):
+                    valid_files.append(file)
+                else:
+                    app.logger.warning(f"File not found on disk for id {file.id}, excluding from logs")
+            except Exception as e:
+                app.logger.error(f"Error checking file existence: {str(e)}")
         
         # Convert file objects to dictionaries
         file_list = []
-        for file in files:
+        for file in valid_files:
             file_list.append({
                 'id': file.id,
                 'file_name': file.file_name,
@@ -636,7 +795,7 @@ def api_get_logs():
                 'download_count': file.download_count
             })
         
-        # Get upload logs
+        # Get upload logs from our stored cache or log file
         upload_logs = []
         download_logs = []
         
@@ -645,13 +804,26 @@ def api_get_logs():
         try:
             with open(log_path, 'r') as log_file:
                 for line in log_file:
-                    if "File metadata saved to database:" in line:
-                        upload_logs.append(line.strip())
-                    elif "File download successful:" in line:
-                        download_logs.append(line.strip())
+                    if "File metadata saved to database:" in line or "File uploaded successfully:" in line:
+                        # Include log entries for all valid files
+                        for file in valid_files:
+                            if file.id in line:
+                                upload_logs.append(line.strip())
+                                break
+                            
+                    elif "File downloaded:" in line or "File download successful:" in line or "Download count updated" in line:
+                        # Include log entries for all valid files
+                        for file in valid_files:
+                            if file.id in line:
+                                download_logs.append(line.strip())
+                                break
         except Exception as e:
             app.logger.error(f"Error reading log file: {str(e)}")
             
+        # Cache the logs we just read
+        app.config['upload_logs'] = upload_logs
+        app.config['download_logs'] = download_logs
+        
         return jsonify({
             'success': True,
             'files': file_list,

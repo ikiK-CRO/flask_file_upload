@@ -552,8 +552,17 @@ Docker Compose provides the easiest way to set up and run the entire application
    ```bash
    # Example .env file contents
    MASTER_ENCRYPTION_KEY=your_secure_base64_key  # Optional: For production use
+   ENABLE_STARTUP_CLEANUP=true                  # Enable cleanup on startup
+   CLEANUP_STRATEGY=all                         # Options: all, db, files, logs or combinations
    ```
 
+   Available cleanup strategies:
+   - `all`: Clean everything (database, uploaded files, and logs)
+   - `db`: Clean only database records
+   - `files`: Clean only uploaded files
+   - `logs`: Clean only log files
+   - Comma-separated combinations: `db,logs` to clean database and logs
+   
 3. **Build and Start the Application**
    ```bash
    docker-compose up -d
@@ -583,63 +592,88 @@ Docker Compose provides the easiest way to set up and run the entire application
    docker-compose down
    ```
 
-#### Manual Setup (Without Docker)
+#### Cleaning Up the Project
 
-If you prefer to run the application without Docker:
+The project includes several methods to ensure it starts with a clean state on restart:
 
-1. **Prerequisites**
-   - Python 3.6+ installed
-   - PostgreSQL database installed and running
-   - pip (Python package manager)
+1. **Automatic Cleanup on Startup**
+   
+   By default, the application is configured to clean database records, uploaded files, and logs on every restart. This behavior is controlled by environment variables in `docker-compose.yml`:
+   ```yaml
+   ENABLE_STARTUP_CLEANUP=true
+   CLEANUP_STRATEGY=all
+   ```
 
-2. **Clone Repository**
+2. **Manual Cleanup Using Make Commands**
+   
+   The project includes several Make commands for managing the application state:
    ```bash
-   git clone <repository-url>
-   cd flask_file_upload
+   # Start the application
+   make start
+   
+   # Stop the application
+   make stop
+   
+   # Clean everything and reset to initial state
+   make clean
+   
+   # Clean everything and restart the application
+   make clean-restart
+   
+   # Restart without cleaning (keeps existing data)
+   make restart
    ```
 
-3. **Install Required Packages**
+3. **Using the Cleanup Script**
+   
+   For more fine-grained control, use the included cleanup script:
    ```bash
-   pip install -r requirements.txt
+   # Show help
+   ./cleanup.sh
+   
+   # Clean everything (database, uploads, logs)
+   ./cleanup.sh --all
+   
+   # Clean only database
+   ./cleanup.sh --db
+   
+   # Clean only uploaded files
+   ./cleanup.sh --files
+   
+   # Clean only log files
+   ./cleanup.sh --logs
+   
+   # Clean everything and restart
+   ./cleanup.sh --restart
    ```
 
-4. **Environment Configuration**
-   
-   **For Linux/macOS:**
-   ```bash
-   # Required environment variables
-   export DATABASE_URL=postgresql://username:password@localhost/database_name
-   
-   # Optional environment variables
-   export FLASK_ENV=development  # or production
-   export MASTER_ENCRYPTION_KEY=your_secure_base64_key  # For production use
-   ```
-   
-   **For Windows (Command Prompt):**
-   ```cmd
-   # Required environment variables
-   set DATABASE_URL=postgresql://username:password@localhost/database_name
-   
-   # Optional environment variables
-   set FLASK_ENV=development
-   set MASTER_ENCRYPTION_KEY=your_secure_base64_key
-   ```
-   
-   **For Windows (PowerShell):**
-   ```powershell
-   # Required environment variables
-   $env:DATABASE_URL="postgresql://username:password@localhost/database_name"
-   
-   # Optional environment variables
-   $env:FLASK_ENV="development"
-   $env:MASTER_ENCRYPTION_KEY="your_secure_base64_key"
-   ```
+4. **Complete System Rebuild**
 
-5. **Start the Application**
+   If you need a completely fresh start with no persistence of old data:
    ```bash
-   python app.py
+   # Complete rebuild - removes all volumes, rebuilds containers, starts fresh
+   make full-cleanup
    ```
-   The application will be available at `http://localhost:5000`
+   
+   This command:
+   - Stops all containers
+   - Removes the database volume
+   - Rebuilds all Docker images without cache
+   - Starts the system completely fresh
+   - Ensures no old data remains anywhere
+
+5. **Cleaning Log Entries for Missing Files**
+
+   If you've deleted files but still see them in the logs page, use the log cleaning script:
+   ```bash
+   # Using the dedicated script
+   ./clean_logs.sh
+   
+   # Or using make
+   make clean-logs
+   ```
+   
+   This will remove log entries for files that no longer exist in the uploads directory.
 
 #### Testing the Application
 

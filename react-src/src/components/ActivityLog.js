@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 
@@ -15,26 +15,28 @@ const ActivityLog = () => {
   const [passwordError, setPasswordError] = useState('');
   const [downloadLoading, setDownloadLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchLogs = async () => {
-      try {
-        const response = await axios.get('/api/logs');
-        
-        if (response.data.success) {
-          setFiles(response.data.files || []);
-          setUploadLogs(response.data.upload_logs || []);
-          setDownloadLogs(response.data.download_logs || []);
-        } else {
-          setError(response.data.message || t('Could not load logs.'));
-        }
-        
-        setLoading(false);
-      } catch (err) {
-        setError(err.response?.data?.message || t('Could not load logs.'));
-        setLoading(false);
+  // Create fetchLogs as a callback function so we can reuse it
+  const fetchLogs = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get('/api/logs');
+      
+      if (response.data.success) {
+        setFiles(response.data.files || []);
+        setUploadLogs(response.data.upload_logs || []);
+        setDownloadLogs(response.data.download_logs || []);
+      } else {
+        setError(response.data.message || t('Could not load logs.'));
       }
-    };
-    
+      
+      setLoading(false);
+    } catch (err) {
+      setError(err.response?.data?.message || t('Could not load logs.'));
+      setLoading(false);
+    }
+  }, [t]);
+
+  useEffect(() => {
     fetchLogs();
     
     // Load Bootstrap modal functionality dynamically
@@ -50,7 +52,7 @@ const ActivityLog = () => {
     };
     
     loadBootstrapModal();
-  }, [t]);
+  }, [fetchLogs]);
 
   const initiateDownload = (fileId) => {
     console.log('Initiating download for file:', fileId);
@@ -106,6 +108,18 @@ const ActivityLog = () => {
           console.error('Error hiding modal:', e);
         }
         
+        // Set up a listener to refresh logs after download completes
+        const refreshLogsAfterDownload = () => {
+          console.log('Download completed, refreshing logs');
+          setTimeout(() => {
+            fetchLogs();
+          }, 1000); // Give the server a moment to process the download
+          window.removeEventListener('focus', refreshLogsAfterDownload);
+        };
+        
+        // Add listener for when window regains focus (after download dialog)
+        window.addEventListener('focus', refreshLogsAfterDownload);
+        
         // Redirect to download URL
         console.log('Redirecting to download URL:', response.data.download_url);
         window.location.href = response.data.download_url;
@@ -124,6 +138,11 @@ const ActivityLog = () => {
     }
   };
 
+  // Function to explicitly refresh the logs
+  const refreshLogs = () => {
+    fetchLogs();
+  };
+
   if (loading) {
     return <div className="text-center py-5">{t('Loading logs...')}</div>;
   }
@@ -132,7 +151,15 @@ const ActivityLog = () => {
     <>
       <div className="card shadow-sm">
         <div className="card-header">
-          <h2 className="mb-0">{t('Activity Logs')}</h2>
+          <div className="d-flex justify-content-between align-items-center">
+            <h2 className="mb-0">{t('Activity Logs')}</h2>
+            <button 
+              className="btn btn-sm btn-outline-secondary" 
+              onClick={refreshLogs}
+            >
+              {t('Refresh')}
+            </button>
+          </div>
         </div>
         <div className="card-body">
           {error ? (

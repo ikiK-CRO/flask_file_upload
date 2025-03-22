@@ -13,6 +13,8 @@ services:
       - FLASK_ENV=development
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/fileupload
       - MASTER_ENCRYPTION_KEY=${MASTER_ENCRYPTION_KEY:-generate}
+      - ENABLE_STARTUP_CLEANUP=true
+      - CLEANUP_STRATEGY=all
     depends_on:
       - db
     restart: unless-stopped
@@ -44,3 +46,5 @@ services:
 
 volumes:
   postgres_data:
+    # Use this specific name to make it easier to remove with docker volume rm
+    name: flask_file_upload_postgres_data

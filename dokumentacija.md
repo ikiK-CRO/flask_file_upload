@@ -568,8 +568,17 @@ Docker Compose pruža najlakši način za postavljanje i pokretanje cijelog stac
    ```bash
    # Primjer sadržaja .env datoteke
    MASTER_ENCRYPTION_KEY=vaš_sigurni_base64_ključ  # Opcionalno: Za produkcijsko korištenje
+   ENABLE_STARTUP_CLEANUP=true                    # Omogući čišćenje pri pokretanju
+   CLEANUP_STRATEGY=all                           # Opcije: all, db, files, logs ili kombinacije
    ```
 
+   Dostupne strategije čišćenja:
+   - `all`: Očisti sve (bazu podataka, uploadane datoteke i logove)
+   - `db`: Očisti samo zapise u bazi podataka
+   - `files`: Očisti samo uploadane datoteke
+   - `logs`: Očisti samo log datoteke
+   - Kombinacije odvojene zarezom: `db,logs` za čišćenje baze podataka i logova
+   
 3. **Izgradnja i pokretanje aplikacije**
    ```bash
    docker-compose up -d
@@ -599,63 +608,88 @@ Docker Compose pruža najlakši način za postavljanje i pokretanje cijelog stac
    docker-compose down
    ```
 
-#### Ručno postavljanje (Bez Docker-a)
+#### Čišćenje projekta
 
-Ako preferirate pokretanje aplikacije bez Docker-a:
+Projekt uključuje nekoliko metoda za osiguravanje čistog stanja pri ponovnom pokretanju:
 
-1. **Preduvjeti**
-   - Python 3.6+ instaliran
-   - PostgreSQL baza podataka instalirana i pokrenuta
-   - pip (Python package manager)
+1. **Automatsko čišćenje pri pokretanju**
+   
+   Prema zadanim postavkama, aplikacija je konfigurirana da očisti zapise u bazi podataka, uploadane datoteke i logove pri svakom ponovnom pokretanju. Ovo ponašanje kontroliraju varijable okruženja u `docker-compose.yml`:
+   ```yaml
+   ENABLE_STARTUP_CLEANUP=true
+   CLEANUP_STRATEGY=all
+   ```
 
-2. **Kloniranje repozitorija**
+2. **Ručno čišćenje korištenjem Make naredbi**
+   
+   Projekt uključuje nekoliko Make naredbi za upravljanje stanjem aplikacije:
    ```bash
-   git clone <url-repozitorija>
-   cd flask_file_upload
+   # Pokretanje aplikacije
+   make start
+   
+   # Zaustavljanje aplikacije
+   make stop
+   
+   # Čišćenje svega i vraćanje na početno stanje
+   make clean
+   
+   # Čišćenje svega i ponovno pokretanje aplikacije
+   make clean-restart
+   
+   # Ponovno pokretanje bez čišćenja (zadržava postojeće podatke)
+   make restart
    ```
 
-3. **Instalacija potrebnih paketa**
+3. **Korištenje skripte za čišćenje**
+   
+   Za detaljniju kontrolu, koristite uključenu skriptu za čišćenje:
    ```bash
-   pip install -r requirements.txt
+   # Prikaži pomoć
+   ./cleanup.sh
+   
+   # Očisti sve (bazu podataka, uploadane datoteke, logove)
+   ./cleanup.sh --all
+   
+   # Očisti samo bazu podataka
+   ./cleanup.sh --db
+   
+   # Očisti samo uploadane datoteke
+   ./cleanup.sh --files
+   
+   # Očisti samo log datoteke
+   ./cleanup.sh --logs
+   
+   # Očisti sve i ponovno pokreni
+   ./cleanup.sh --restart
    ```
 
-4. **Konfiguracija okruženja**
-   
-   **Za Linux/macOS:**
-   ```bash
-   # Obavezne varijable okruženja
-   export DATABASE_URL=postgresql://korisnik:lozinka@localhost/baza_podataka
-   
-   # Opcionalne varijable okruženja
-   export FLASK_ENV=development  # ili production
-   export MASTER_ENCRYPTION_KEY=vaš_sigurni_base64_ključ  # Za produkcijsko korištenje
-   ```
-   
-   **Za Windows (Command Prompt):**
-   ```cmd
-   # Obavezne varijable okruženja
-   set DATABASE_URL=postgresql://korisnik:lozinka@localhost/baza_podataka
-   
-   # Opcionalne varijable okruženja
-   set FLASK_ENV=development
-   set MASTER_ENCRYPTION_KEY=vaš_sigurni_base64_ključ
-   ```
-   
-   **Za Windows (PowerShell):**
-   ```powershell
-   # Obavezne varijable okruženja
-   $env:DATABASE_URL="postgresql://korisnik:lozinka@localhost/baza_podataka"
-   
-   # Opcionalne varijable okruženja
-   $env:FLASK_ENV="development"
-   $env:MASTER_ENCRYPTION_KEY="vaš_sigurni_base64_ključ"
-   ```
+4. **Potpuna obnova sustava**
 
-5. **Pokretanje aplikacije**
+   Ako trebate potpuno svježi početak bez zadržavanja starih podataka:
    ```bash
-   python app.py
+   # Potpuna obnova - uklanja sve volumene, ponovno gradi kontejnere, svježi početak
+   make full-cleanup
    ```
-   Aplikacija će biti dostupna na `http://localhost:5000`
+   
+   Ova naredba:
+   - Zaustavlja sve kontejnere
+   - Uklanja volumen baze podataka
+   - Ponovno gradi sve Docker slike bez korištenja kache
+   - Pokreće sustav potpuno svježe
+   - Osigurava da nigdje ne ostaju stari podaci
+
+5. **Čišćenje zapisa logova za izbrisane datoteke**
+
+   Ako ste izbrisali datoteke, ali ih i dalje vidite na stranici logova, koristite skriptu za čišćenje logova:
+   ```bash
+   # Korištenje posebne skripte
+   ./clean_logs.sh
+   
+   # Ili korištenjem make naredbe
+   make clean-logs
+   ```
+   
+   Ovo će ukloniti zapise u logovima za datoteke koje više ne postoje u uploads direktoriju.
 
 #### Testiranje aplikacije
 
