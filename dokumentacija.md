@@ -149,25 +149,6 @@ Aplikacija implementira slijedeće funkcionalne cjeline:
    - Generiranje i pohrana soli za sigurno generiranje ključa
    - Zaštita od napada pomoću rainbow tablice
 
-#### Autentikacija pomoću tokena
-
-1. **JWT Autentikacija**:
-   - JSON Web Tokeni za siguran pristup API-ju
-   - Tokeni bazirani na ulogama (administrator naspram regularnog pristupa)
-   - Kratkotrajni pristupni tokeni s mogućnošću osvježavanja
-   - Sigurna validacija i verifikacija tokena
-
-2. **Tokeni za preuzimanje**:
-   - Jednokratni tokeni za sigurno preuzimanje datoteka
-   - Verifikacija lozinke ugrađena u tvrdnje tokena
-   - Kratko vrijeme isteka (10 minuta) za tokene preuzimanja
-   - Tokeni specifični za datoteke koji se ne mogu ponovno koristiti za druge datoteke
-
-3. **Upravljanje tokenima**:
-   - Sigurna generacija kriptografski potpisanih tokena
-   - Mehanizam osvježavanja tokena za održavanje sesija
-   - Zaštita od ponovnog korištenja tokena i napada reprodukcijom
-
 #### Dodatne sigurnosne mjere
 
 1. **Jedinstveni identifikatori**:
@@ -348,30 +329,12 @@ Za pohranu metapodataka o datotekama koristi se SQLAlchemy ORM s modelom `Upload
 - **GET**: Admin krajnja točka za provjeru i popravak sinkronizacije datotečnog sustava i baze podataka
   - Potrebna zaglavlja (odaberite jedno):
     - `X-Admin-Key`: Autentifikacijski ključ za administratorski pristup (zadano: "admin-key")
-    - `Authorization`: Bearer token dobiven s admin token krajnje točke
   - Akcije:
     - Provjera siročadskih datoteka (datoteke u direktoriju uploads koje nisu u bazi)
     - Provjera nestalih datoteka (zapisi u bazi za koje datoteke ne postoje na disku)
     - Automatski popravak siročadskih datoteka kreiranjem zapisa u bazi
     - Ažuriranje putanja datoteka u bazi ako su pronađene šifrirane verzije
     - Vraćanje JSON-a s detaljima o siročadskim, nestalim i popravljenim datotekama
-
-#### `/api/auth/admin-token` (POST)
-- **POST**: Generira administratorske pristupne i tokene za osvježavanje za API pristup
-  - Potrebna zaglavlja:
-    - `X-Admin-Key`: Autentifikacijski ključ za administratorski pristup (zadano: "admin-key")
-  - Vraća:
-    - Access token (kratkotrajni JWT za API operacije)
-    - Refresh token (dugotrajni JWT za dobivanje novih pristupnih tokena)
-    - Tip tokena i informacije o isteku
-
-#### `/api/auth/refresh` (POST)
-- **POST**: Osvježava pristupne tokene korištenjem tokena za osvježavanje
-  - Potrebna zaglavlja:
-    - `Authorization`: Bearer token koji sadrži token za osvježavanje
-  - Vraća:
-    - Novi pristupni token
-    - Tip tokena i informacije o isteku
 
 #### Promjena jezika
 
