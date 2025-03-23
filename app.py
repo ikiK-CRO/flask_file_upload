@@ -429,10 +429,22 @@ def index(path):
     if path.startswith('api/'):
         return jsonify({"success": False, "message": "API endpoint not found"}), 404
         
-    # For GET requests to the root or any frontend route, serve the React app
-    if request.method == 'GET':
+    # List of known frontend routes
+    known_frontend_routes = ['', 'logs', 'upload', 'files', 'admin']
+    
+    # Check if this is a frontend route we want to handle
+    path_parts = path.split('/')
+    first_part = path_parts[0] if path_parts else ''
+    
+    # For GET requests to known frontend routes, serve the React app
+    if request.method == 'GET' and (not path or first_part in known_frontend_routes):
         app.logger.info("Serving React app")
         return render_template('minimal_react.html')
+    
+    # For paths that don't match any known pattern, return 404
+    if request.method == 'GET' and first_part not in known_frontend_routes:
+        app.logger.warning(f"Unknown route: {path}")
+        return jsonify({"success": False, "message": "Page not found"}), 404
     
     # For POST requests to the root (likely a file upload from a non-React client)
     if request.method == 'POST':
