@@ -1,82 +1,99 @@
 #!/bin/bash
-
 # Script to clean log entries for files that no longer exist in the uploads directory
-# Usage: ./clean_logs.sh
 
-# Set colors for terminal output
-GREEN='\033[0;32m'
-RED='\033[0;31m'
-YELLOW='\033[1;33m'
-NC='\033[0m' # No Color
+# Directory paths
+LOG_DIR="./logs"
+UPLOAD_DIR="./uploads"
+LOG_FILE="${LOG_DIR}/app.log"
+TEMP_LOG="${LOG_DIR}/temp_app.log"
 
-echo -e "${YELLOW}Starting log cleanup for missing files...${NC}"
+echo "=== Starting log cleanup process ==="
+echo "$(date): Running log cleanup" >> "${LOG_DIR}/maintenance.log"
 
-# Get path to logs
-LOGS_DIR="./logs"
-
-# Check if logs directory exists
-if [ ! -d "$LOGS_DIR" ]; then
-    echo -e "${RED}Error: Logs directory not found at $LOGS_DIR${NC}"
-    exit 1
-fi
-
-# Path to app log
-APP_LOG="$LOGS_DIR/app.log"
-
-# Get list of UUIDs from logs
-echo -e "${YELLOW}Searching for file UUIDs in logs...${NC}"
-UUIDS=$(grep -Eo "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}" "$APP_LOG" | sort | uniq)
-
-if [ -z "$UUIDS" ]; then
-    echo -e "${GREEN}No UUIDs found in logs. Nothing to clean.${NC}"
+# Check if log file exists
+if [ ! -f "$LOG_FILE" ]; then
+    echo "Log file $LOG_FILE does not exist. Nothing to clean."
     exit 0
 fi
 
-# Get list of files in uploads directory
-UPLOADS_DIR="./uploads"
-if [ ! -d "$UPLOADS_DIR" ]; then
-    echo -e "${RED}Warning: Uploads directory not found at $UPLOADS_DIR${NC}"
-    mkdir -p "$UPLOADS_DIR"
-    echo -e "${GREEN}Created uploads directory${NC}"
+# Check if uploads directory exists
+if [ ! -d "$UPLOAD_DIR" ]; then
+    echo "Uploads directory $UPLOAD_DIR does not exist."
+    mkdir -p "$UPLOAD_DIR"
+    echo "Created uploads directory."
 fi
 
-echo -e "${YELLOW}Checking each UUID against files in uploads directory...${NC}"
+# Extract UUIDs from log lines
+echo "Extracting UUIDs from logs..."
+UUIDS=$(grep -o -E "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}" "$LOG_FILE" | sort | uniq)
 
-# Temporary file for new logs
-TEMP_LOG=$(mktemp)
+# Count of UUIDs found
+UUID_COUNT=$(echo "$UUIDS" | wc -l)
+echo "Found $UUID_COUNT unique UUIDs in logs"
 
-# Keep track of UUIDs that were removed from logs
-REMOVED_UUIDS=""
+# Initialize counters
+MISSING_COUNT=0
+KEPT_LINES=0
+TOTAL_LINES=$(wc -l < "$LOG_FILE")
 
-# Process each UUID
+# Create a temporary file
+touch "$TEMP_LOG"
+
+# Start with a log reset header
+echo "--- Log cleaned at $(date) ---" > "$TEMP_LOG"
+
+# Check each UUID to see if a corresponding file exists
+echo "Checking for missing files..."
+MISSING_UUIDS=""
+
 for uuid in $UUIDS; do
-    # Check if any file with this UUID exists in uploads
-    if ! ls "$UPLOADS_DIR"/${uuid}* >/dev/null 2>&1; then
-        echo -e "${YELLOW}UUID $uuid has no corresponding file in uploads directory${NC}"
-        REMOVED_UUIDS="$REMOVED_UUIDS $uuid"
+    # Check if any file with this UUID exists in the uploads directory
+    if ! ls "${UPLOAD_DIR}/${uuid}_"* 1>/dev/null 2>&1 && ! ls "${UPLOAD_DIR}/${uuid}*" 1>/dev/null 2>&1; then
+        MISSING_UUIDS="$MISSING_UUIDS|$uuid"
+        MISSING_COUNT=$((MISSING_COUNT+1))
+        echo "UUID $uuid: No matching file found"
     fi
 done
 
-if [ -z "$REMOVED_UUIDS" ]; then
-    echo -e "${GREEN}All UUIDs in logs have corresponding files. No cleanup needed.${NC}"
-    rm "$TEMP_LOG"
-    exit 0
+# Remove leading pipe if it exists
+MISSING_UUIDS=${MISSING_UUIDS#|}
+
+# If there are missing UUIDs, filter the logs
+if [ -n "$MISSING_UUIDS" ]; then
+    echo "Filtering out log entries for $MISSING_COUNT missing UUIDs..."
+    
+    # Grep line by line to avoid issues with long patterns
+    while IFS= read -r line; do
+        match=false
+        for uuid in $(echo "$MISSING_UUIDS" | tr '|' ' '); do
+            if echo "$line" | grep -q "$uuid"; then
+                match=true
+                break
+            fi
+        done
+        
+        if [ "$match" = false ]; then
+            echo "$line" >> "$TEMP_LOG"
+            KEPT_LINES=$((KEPT_LINES+1))
+        fi
+    done < "$LOG_FILE"
+else
+    echo "No missing UUIDs found. All files exist."
+    cp "$LOG_FILE" "$TEMP_LOG"
+    KEPT_LINES=$TOTAL_LINES
 fi
 
-echo -e "${YELLOW}Cleaning log entries for missing files...${NC}"
+# Backup the original log file
+cp "$LOG_FILE" "${LOG_FILE}.bak"
 
-# Filter out lines containing removed UUIDs
-for uuid in $REMOVED_UUIDS; do
-    grep -v "$uuid" "$APP_LOG" > "$TEMP_LOG"
-    mv "$TEMP_LOG" "$APP_LOG"
-    echo -e "${GREEN}Removed log entries for UUID $uuid${NC}"
-done
+# Replace the log file with our filtered version
+mv "$TEMP_LOG" "$LOG_FILE"
 
-echo -e "${GREEN}Log cleanup completed successfully${NC}"
+echo "=== Log cleanup complete ==="
+echo "Total lines in original log: $TOTAL_LINES"
+echo "Lines kept in new log: $KEPT_LINES"
+echo "Lines removed: $((TOTAL_LINES - KEPT_LINES))"
+echo "Missing UUIDs: $MISSING_COUNT"
+echo "$(date): Log cleanup completed. Removed $((TOTAL_LINES - KEPT_LINES)) lines for $MISSING_COUNT missing UUIDs" >> "${LOG_DIR}/maintenance.log"
 
-# Clean backup temp file
-if [ -f "$TEMP_LOG" ]; then
-    rm "$TEMP_LOG"
-fi
-
-exit 0
+exit 0 

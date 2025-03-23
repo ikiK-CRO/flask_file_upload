@@ -1,4 +1,4 @@
-.PHONY: test test-flask test-react test-docker test-encryption clean start stop clean restart clean-restart clean-logs help full-cleanup
+.PHONY: test test-flask test-react test-docker test-encryption clean clean-logs clean-files clean-db clean-restart full-cleanup start stop restart help
 
 # Run all tests locally
 test: test-flask test-react test-encryption
@@ -25,49 +25,68 @@ test-docker:
 
 # Start the application
 start:
+	@echo "Starting the application..."
 	docker-compose up -d
 
 # Stop the application
 stop:
+	@echo "Stopping the application..."
 	docker-compose down
 
-# Clean everything - database volume, uploads, logs
+# Basic cleanup (for test files, etc.)
 clean:
-	docker-compose down -v
-	@echo "Removed database volume"
-	@echo "The next start will be fresh with clean data"
+	@echo "Cleaning up test files..."
+	docker-compose -f docker-compose.test.yml down
+	find . -type d -name "__pycache__" -exec rm -rf {} +
+	find . -type d -name ".pytest_cache" -exec rm -rf {} + 
 
-# Restart with clean state
-clean-restart: clean start
-	@echo "Project restarted with clean state"
-
-# Restart the application (keeps data)
-restart:
-	docker-compose restart
-
-# Clean log entries for missing files
+# Clean log entries
 clean-logs:
 	@echo "Cleaning log entries for missing files..."
+	chmod +x clean_logs.sh
 	./clean_logs.sh
 
-# Complete cleanup - removes volumes, rebuilds containers and starts clean
-full-cleanup:
-	@echo "Performing complete cleanup including database volumes..."
-	docker-compose down -v
-	docker volume rm flask_file_upload_postgres_data 2>/dev/null || echo "Volume already removed"
-	@echo "Rebuilding containers from scratch..."
-	docker-compose build --no-cache
-	@echo "Starting with completely clean state..."
-	docker-compose up -d
-	@echo "Complete cleanup finished - application started with fresh database"
+# Clean uploaded files
+clean-files:
+	@echo "Cleaning uploaded files..."
+	chmod +x cleanup.sh
+	./cleanup.sh --files
 
-# Help command
+# Clean database
+clean-db:
+	@echo "Cleaning database records..."
+	chmod +x cleanup.sh
+	./cleanup.sh --db
+
+# Clean all and restart the application
+clean-restart:
+	@echo "Cleaning all data and restarting the application..."
+	chmod +x cleanup.sh
+	./cleanup.sh --all
+	docker-compose restart
+
+# Full cleanup with volume reset and complete rebuild
+full-cleanup:
+	@echo "Performing complete system rebuild..."
+	chmod +x cleanup.sh
+	./cleanup.sh --full
+
+# Restart the application
+restart:
+	@echo "Restarting the application..."
+	docker-compose restart
+
+# Show help
 help:
 	@echo "Available commands:"
-	@echo "  make start         - Start the application"
-	@echo "  make stop          - Stop the application"
-	@echo "  make restart       - Restart the application (keeps data)"
-	@echo "  make clean         - Stop and clean all data (DB, uploads, logs)"
-	@echo "  make clean-restart - Clean all data and restart"
-	@echo "  make clean-logs    - Clean log entries for missing files"
-	@echo "  make full-cleanup  - Complete rebuild with fresh database (removes all data)"
+	@echo "  make start         - Start the application using docker-compose up -d"
+	@echo "  make stop          - Stop the application using docker-compose down"
+	@echo "  make restart       - Restart the application using docker-compose restart"
+	@echo "  make clean         - Clean up test files and caches"
+	@echo "  make clean-logs    - Clean log entries for files that no longer exist"
+	@echo "  make clean-files   - Clean all uploaded files"
+	@echo "  make clean-db      - Clean database records"
+	@echo "  make clean-restart - Clean all data and restart the application"
+	@echo "  make full-cleanup  - Perform complete system rebuild (stops, removes volumes, rebuilds, restarts)"
+	@echo "  make test          - Run all tests locally"
+	@echo "  make test-docker   - Run all tests in Docker" 
