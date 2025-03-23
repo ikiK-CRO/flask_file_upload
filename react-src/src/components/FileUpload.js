@@ -3,7 +3,7 @@ import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 
-const FileUpload = () => {
+const FileUpload = ({ onSuccessfulUpload }) => {
   const { t } = useTranslation();
   const [file, setFile] = useState(null);
   const [password, setPassword] = useState('');
@@ -89,6 +89,12 @@ const FileUpload = () => {
           `<a href="/get-file/${fileUuid}">/get-file/${fileUuid}</a>`);
         setFile(null);
         setPassword('');
+        
+        // Call the callback if it exists
+        if (typeof onSuccessfulUpload === 'function') {
+          console.log('Calling onSuccessfulUpload callback');
+          onSuccessfulUpload();
+        }
       } else {
         setError(response.data.message);
       }

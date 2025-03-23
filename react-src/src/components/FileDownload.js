@@ -3,7 +3,7 @@ import { useParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 
-const FileDownload = ({ fileUuid: propFileUuid }) => {
+const FileDownload = ({ fileUuid: propFileUuid, onSuccessfulDownload }) => {
   const { t } = useTranslation();
   const { fileUuid } = useParams();
   const location = useLocation();
@@ -93,6 +93,30 @@ const FileDownload = ({ fileUuid: propFileUuid }) => {
       
       if (response.data.success) {
         console.log('Download successful, redirecting to:', response.data.download_url);
+        
+        // Call the onSuccessfulDownload callback if provided
+        if (typeof onSuccessfulDownload === 'function') {
+          // Start polling for log updates
+          let pollCount = 0;
+          const maxPolls = 5;
+          const pollInterval = 1000; // 1 second
+          
+          const pollForLogUpdates = () => {
+            setTimeout(() => {
+              onSuccessfulDownload();
+              pollCount++;
+              if (pollCount < maxPolls) {
+                pollForLogUpdates();
+              }
+            }, pollInterval);
+          };
+          
+          // Initial call to refresh logs
+          onSuccessfulDownload();
+          // Start polling
+          pollForLogUpdates();
+        }
+        
         // Redirect to the download URL
         window.location.href = response.data.download_url;
       } else {

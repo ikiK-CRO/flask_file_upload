@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, forwardRef, useImperativeHandle } from 'react';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 
-const ActivityLog = () => {
+const ActivityLog = forwardRef((props, ref) => {
   const { t } = useTranslation();
   const [files, setFiles] = useState([]);
   const [uploadLogs, setUploadLogs] = useState([]);
@@ -14,8 +14,26 @@ const ActivityLog = () => {
   const [selectedFileId, setSelectedFileId] = useState(null);
   const [passwordError, setPasswordError] = useState('');
   const [downloadLoading, setDownloadLoading] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-  // Create fetchLogs as a callback function so we can reuse it
+  // Create a silent refresh function that doesn't show loading indicators
+  const refreshLogsSilently = useCallback(async () => {
+    try {
+      const response = await axios.get('/api/logs');
+      
+      if (response.data.success) {
+        setFiles(response.data.files || []);
+        setUploadLogs(response.data.upload_logs || []);
+        setDownloadLogs(response.data.download_logs || []);
+      } else {
+        setError(response.data.message || t('Could not load logs.'));
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || t('Could not load logs.'));
+    }
+  }, [t]);
+
+  // Original fetchLogs function that shows loading indicators (for initial load)
   const fetchLogs = useCallback(async () => {
     try {
       setLoading(true);
@@ -30,14 +48,24 @@ const ActivityLog = () => {
       }
       
       setLoading(false);
+      setIsInitialLoad(false);
     } catch (err) {
       setError(err.response?.data?.message || t('Could not load logs.'));
       setLoading(false);
+      setIsInitialLoad(false);
     }
   }, [t]);
 
+  // Expose methods via ref
+  useImperativeHandle(ref, () => ({
+    fetchLogs: refreshLogsSilently // Expose the silent version externally
+  }));
+
   useEffect(() => {
-    fetchLogs();
+    // Only do a full load with loading indicator on initial load
+    if (isInitialLoad) {
+      fetchLogs();
+    }
     
     // Load Bootstrap modal functionality dynamically
     const loadBootstrapModal = () => {
@@ -108,12 +136,29 @@ const ActivityLog = () => {
           console.error('Error hiding modal:', e);
         }
         
-        // Set up a listener to refresh logs after download completes
-        const refreshLogsAfterDownload = () => {
-          console.log('Download completed, refreshing logs');
+        // Improved approach to refresh logs after download
+        let pollCount = 0;
+        const maxPolls = 5;
+        const pollInterval = 1000; // 1 second
+        
+        const pollForLogUpdates = () => {
           setTimeout(() => {
-            fetchLogs();
-          }, 1000); // Give the server a moment to process the download
+            console.log(`Polling for log updates (${pollCount + 1}/${maxPolls})`);
+            refreshLogsSilently(); // Use silent refresh for polling
+            pollCount++;
+            if (pollCount < maxPolls) {
+              pollForLogUpdates();
+            }
+          }, pollInterval);
+        };
+        
+        // Start polling immediately
+        pollForLogUpdates();
+        
+        // Also keep the focus event as a fallback
+        const refreshLogsAfterDownload = () => {
+          console.log('Window regained focus, refreshing logs');
+          refreshLogsSilently(); // Use silent refresh for focus
           window.removeEventListener('focus', refreshLogsAfterDownload);
         };
         
@@ -138,9 +183,12 @@ const ActivityLog = () => {
     }
   };
 
-  // Function to explicitly refresh the logs
+  // Function to explicitly refresh the logs - use loading indicator only for manual refreshes
   const refreshLogs = () => {
-    fetchLogs();
+    setLoading(true);
+    refreshLogsSilently().finally(() => {
+      setLoading(false);
+    });
   };
 
   if (loading) {
@@ -308,6 +356,6 @@ const ActivityLog = () => {
       </div>
     </>
   );
-};
+});
 
 export default ActivityLog;

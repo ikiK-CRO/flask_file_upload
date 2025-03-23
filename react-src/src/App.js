@@ -16,6 +16,7 @@ function MainContent() {
   const navigate = useNavigate();
   const [showComponent, setShowComponent] = useState('upload');
   const [fileUuid, setFileUuid] = useState(null);
+  const activityLogRef = React.useRef(null);
   
   // Custom navigation function that clears file parameter
   const navigateWithoutFileParam = (path) => {
@@ -26,6 +27,14 @@ function MainContent() {
       window.history.replaceState({}, '', '/'); // Remove query params
     }
     navigate(path);
+  };
+  
+  // Function to refresh logs from outside the ActivityLog component
+  const refreshLogs = () => {
+    console.log('Refreshing logs from App component');
+    if (activityLogRef.current && typeof activityLogRef.current.fetchLogs === 'function') {
+      activityLogRef.current.fetchLogs();
+    }
   };
   
   useEffect(() => {
@@ -61,9 +70,9 @@ function MainContent() {
       <Navbar navigateWithoutFileParam={navigateWithoutFileParam} />
       <div className="row mt-4">
         <div className="col-12">
-          {showComponent === 'upload' && <FileUpload />}
-          {showComponent === 'download' && <FileDownload fileUuid={fileUuid} />}
-          {showComponent === 'logs' && <ActivityLog />}
+          {showComponent === 'upload' && <FileUpload onSuccessfulUpload={refreshLogs} />}
+          {showComponent === 'download' && <FileDownload fileUuid={fileUuid} onSuccessfulDownload={refreshLogs} />}
+          {showComponent === 'logs' && <ActivityLog ref={activityLogRef} />}
         </div>
       </div>
     </>
