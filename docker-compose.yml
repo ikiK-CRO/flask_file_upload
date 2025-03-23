@@ -11,17 +11,21 @@ services:
       - /app/react-src/node_modules
     environment:
       - FLASK_ENV=development
+      - FLASK_DEBUG=1
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/fileupload
       - MASTER_ENCRYPTION_KEY=${MASTER_ENCRYPTION_KEY:-generate}
     depends_on:
       - db
     restart: unless-stopped
-    # Wait for db to be ready
+    # Wait for db to be ready and start Flask in debug mode
     command: >
       bash -c "
         echo 'Waiting for PostgreSQL to start...'
         sleep 5
-        python app.py
+        touch app.py
+        export FLASK_APP=app.py
+        export FLASK_DEBUG=1
+        python -m flask run --host=0.0.0.0 --port=5000
       "
 
   db:

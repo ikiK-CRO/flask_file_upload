@@ -780,3 +780,61 @@ Frontend je izgrađen koristeći React sa sljedećom strukturom komponenti:
 - Bootstrap 5 za responzivni layout
 - Prilagođeni CSS za temu i stiliziranje komponenti
 - Responzivni dizajn za mobilne i desktop prikaze 
+
+## Funkcionalnost čišćenja
+
+Aplikacija uključuje sveobuhvatnu funkcionalnost čišćenja kako bi se osiguralo čisto stanje pri svakoj instalaciji i ponovnom pokretanju:
+
+### Automatsko čišćenje
+
+- **Čišćenje pri pokretanju**: Pri pokretanju aplikacije, sustav može automatski očistiti bazu podataka, mapu za prijenos i logove na temelju varijabli okruženja.
+- **Konfiguracija okruženja**:
+  - `ENABLE_STARTUP_CLEANUP`: Postavite na `true` za omogućavanje čišćenja pri pokretanju (zadano: `true`)
+  - `CLEANUP_STRATEGY`: Postavite na `all`, `files`, `db` ili `logs` za kontrolu što se čisti (zadano: `all`)
+
+### Ručno čišćenje
+
+Dostupno je nekoliko naredbi za čišćenje sustava:
+
+```bash
+# Čišćenje zapisa logova za datoteke koje više ne postoje
+make clean-logs
+
+# Čišćenje svih učitanih datoteka
+make clean-files
+
+# Čišćenje zapisa u bazi podataka
+make clean-db
+
+# Čišćenje svega i ponovno pokretanje aplikacije
+make clean-restart
+
+# Potpuno čišćenje s resetiranjem volumena i potpunom ponovnom izgradnjom
+make full-cleanup
+```
+
+### Skripte za čišćenje
+
+- `clean_logs.sh`: Uklanja zapise logova za datoteke koje više ne postoje u direktoriju uploads
+- `cleanup.sh`: Glavna skripta za čišćenje s opcijama za ciljano čišćenje:
+  ```bash
+  ./cleanup.sh --db     # Čišćenje samo baze podataka
+  ./cleanup.sh --files  # Čišćenje samo učitanih datoteka
+  ./cleanup.sh --logs   # Čišćenje samo logova
+  ./cleanup.sh --all    # Čišćenje svega (zadano)
+  ./cleanup.sh --full   # Potpuna ponovna izgradnja sustava
+  ```
+
+### Potpuna ponovna izgradnja
+
+Za svježi početak s potpuno čistim stanjem:
+
+```bash
+make full-cleanup
+```
+
+Ova naredba:
+1. Zaustavlja sve kontejnere
+2. Uklanja volumen baze podataka
+3. Ponovno izgrađuje kontejnere iz početnog stanja
+4. Pokreće aplikaciju s čistim stanjem 

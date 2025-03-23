@@ -655,3 +655,61 @@ The test output will show if all components are functioning correctly. If any te
 ### Using the Application
 
 The application will be available at `http://localhost:5000`
+
+## Cleanup Functionality
+
+The application includes comprehensive cleanup functionality to ensure a clean state on every installation and restart:
+
+### Automatic Cleanup
+
+- **Startup Cleanup**: On application startup, the system can automatically clean the database, uploads folder, and logs based on environment variables.
+- **Environment Configuration**:
+  - `ENABLE_STARTUP_CLEANUP`: Set to `true` to enable cleanup on startup (default: `true`)
+  - `CLEANUP_STRATEGY`: Set to `all`, `files`, `db`, or `logs` to control what gets cleaned (default: `all`)
+
+### Manual Cleanup
+
+Several commands are available for cleaning the system:
+
+```bash
+# Clean log entries for missing files
+make clean-logs
+
+# Clean all uploaded files
+make clean-files
+
+# Clean database records
+make clean-db
+
+# Clean all and restart the application
+make clean-restart
+
+# Full cleanup with volume reset and complete rebuild
+make full-cleanup
+```
+
+### Cleanup Scripts
+
+- `clean_logs.sh`: Removes log entries for files that no longer exist in the uploads directory
+- `cleanup.sh`: Main cleanup script with options for targeted cleaning:
+  ```bash
+  ./cleanup.sh --db     # Clean database only
+  ./cleanup.sh --files  # Clean uploads only
+  ./cleanup.sh --logs   # Clean logs only
+  ./cleanup.sh --all    # Clean everything (default)
+  ./cleanup.sh --full   # Complete system rebuild
+  ```
+
+### Complete Rebuild
+
+For a fresh start with a completely clean state:
+
+```bash
+make full-cleanup
+```
+
+This command:
+1. Stops all containers
+2. Removes the database volume
+3. Rebuilds containers from scratch
+4. Starts the application with a clean state
